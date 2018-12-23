@@ -16,7 +16,7 @@ namespace Backend.Models
             this.RoleStatus = RoleStatus.Active;
         }
         [Key]
-        public string RoleId { get; set; }
+        public int RoleId { get; set; }
         public string Name { get; set; }
         public DateTime CreatedAt { get; set; }
         public DateTime UpdatedAt { get; set; }
