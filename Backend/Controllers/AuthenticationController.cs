@@ -11,19 +11,20 @@ namespace Backend.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class CredentialsController : ControllerBase
+    public class AuthenticationController : ControllerBase
     {
         private readonly BackendContext _context;
 
-        public CredentialsController(BackendContext context)
+        public AuthenticationController(BackendContext context)
         {
             _context = context;
         }
 
-        // GET: api/Credentials
+        // GET: api/Authentication
         [HttpGet]
         public async Task<IActionResult> GetCredential()
         {
+           
             if (HttpContext.Request.Query.ContainsKey("AccessToken"))
             {
                 var cr = await _context.Credential.SingleOrDefaultAsync(c =>
@@ -35,27 +36,29 @@ namespace Backend.Controllers
             }
             return NotFound();
         }
-
-        // GET: api/Credentials/5
-        [HttpGet("{id}")]
-        public async Task<IActionResult> GetCredential([FromRoute] string id)
+        // GET: api/Authentication/5
+        [HttpGet("{CheckAdmin}")]
+        public async Task<IActionResult> CheckAdmin([FromRoute] string CheckAdmin)
         {
-            if (!ModelState.IsValid)
+           if (HttpContext.Request.Query.ContainsKey("AccessToken"))
             {
-                return BadRequest(ModelState);
+                var cr = await _context.Credential.SingleOrDefaultAsync(c =>
+                    c.AccessToken == HttpContext.Request.Query["AccessToken"].ToString());
+                if (cr != null)
+                {
+                    if (_context.AccountRoles.SingleOrDefault(ar => ar.AccountId == cr.AccountId) != null)
+                    {
+                        if (_context.Role.SingleOrDefault(r => r.RoleId == _context.AccountRoles.SingleOrDefault(ar => ar.AccountId == cr.AccountId).RoleId).Name == "Admin")
+                        {
+                            return Ok();
+                        }
+                    }
+                }
             }
-
-            var credential = await _context.Credential.FindAsync(id);
-
-            if (credential == null)
-            {
-                return NotFound();
-            }
-
-            return Ok(credential);
+            return NotFound();
         }
 
-        // PUT: api/Credentials/5
+        // PUT: api/Authentication/5
         [HttpPut("{id}")]
         public async Task<IActionResult> PutCredential([FromRoute] string id, [FromBody] Credential credential)
         {
@@ -90,7 +93,7 @@ namespace Backend.Controllers
             return NoContent();
         }
 
-        // POST: api/Credentials
+        // POST: api/Authentication
         [HttpPost]
         public async Task<IActionResult> PostCredential([FromBody] Credential credential)
         {
@@ -105,7 +108,7 @@ namespace Backend.Controllers
             return CreatedAtAction("GetCredential", new { id = credential.AccountId }, credential);
         }
 
-        // DELETE: api/Credentials/5
+        // DELETE: api/Authentication/5
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteCredential([FromRoute] string id)
         {
