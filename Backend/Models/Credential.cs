@@ -10,11 +10,14 @@ namespace Backend.Models
     {
         public Credential()
         {
-
+            this.CreatedAt = DateTime.Now;
+            this.UpdatedAt = DateTime.Now;
         }
         [Key]
         public string AccountId { get; set; }
         public string AccessToken { get; set; }
+        public DateTime CreatedAt { get; set; }
+        public DateTime UpdatedAt { get; set; }
         public Account Account { get; set; }
     }
 }

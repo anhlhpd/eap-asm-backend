@@ -11,14 +11,21 @@ namespace Backend.Models
     {
         public PersonalInformation()
         {
-            this.Birthday = DateTime.Now;
+            this.Gender = Gender.Other;
         }
         public string AccountId { get; set; }
         public string FirstName { get; set; }
         public string LastName { get; set; }
         public DateTime Birthday { get; set; }
-        public int Gender { get; set; }
+        public Gender Gender { get; set; }
         public string Phone { get; set; }
         public Account Account { get; set; }
+    }
+
+    public enum Gender
+    {
+        Male = 0,
+        Female = 1,
+        Other = 2
     }
 }

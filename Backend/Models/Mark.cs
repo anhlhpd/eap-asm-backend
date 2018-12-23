@@ -7,6 +7,10 @@ namespace Backend.Models
 {
     public class Mark
     {
+        public Mark()
+        {
+            this.CreatedAt = DateTime.Now;
+        }
         public long MarkId { get; set; }
         public string AccountId { get; set; }
         public int SubjectId { get; set; }
