@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -12,6 +13,7 @@ namespace Backend.Models
             this.StartDate = DateTime.Now;
             this.StudentClassStatus = StudentClassStatus.Active;
         }
+        [Key]
         public string StudentClassId { get; set; }
         public DateTime StartDate { get; set; }
         public string Session { get; set; }

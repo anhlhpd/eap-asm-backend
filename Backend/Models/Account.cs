@@ -16,6 +16,7 @@ namespace Backend.Models
             this.DeletedAt = DateTime.Now;
             this.AccountStatus = AccountStatus.Active;
         }
+        [Key]
         public string AccountId { get; set; }
         public string Email { get; set; }
         public string Username { get; set; }

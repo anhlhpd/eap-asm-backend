@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -11,6 +12,7 @@ namespace Backend.Models
         {
             this.CreatedAt = DateTime.Now;
         }
+        [Key]
         public long MarkId { get; set; }
         public string AccountId { get; set; }
         public int SubjectId { get; set; }
