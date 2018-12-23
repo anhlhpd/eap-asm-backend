@@ -3,7 +3,9 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 15
 VisualStudioVersion = 15.0.28010.2046
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Backend", "Backend\Backend.csproj", "{86D4CDBE-F45F-4E0D-8356-7DD34B7386DF}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Backend", "Backend\Backend.csproj", "{86D4CDBE-F45F-4E0D-8356-7DD34B7386DF}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SecurityHandle", "SecurityHandle\SecurityHandle.csproj", "{A303092B-C0A1-4F57-8880-ED3C7190878A}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -15,6 +17,10 @@ Global
 		{86D4CDBE-F45F-4E0D-8356-7DD34B7386DF}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{86D4CDBE-F45F-4E0D-8356-7DD34B7386DF}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{86D4CDBE-F45F-4E0D-8356-7DD34B7386DF}.Release|Any CPU.Build.0 = Release|Any CPU
+		{A303092B-C0A1-4F57-8880-ED3C7190878A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{A303092B-C0A1-4F57-8880-ED3C7190878A}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{A303092B-C0A1-4F57-8880-ED3C7190878A}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{A303092B-C0A1-4F57-8880-ED3C7190878A}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
