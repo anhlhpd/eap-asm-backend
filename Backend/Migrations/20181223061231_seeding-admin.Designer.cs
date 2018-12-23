@@ -4,14 +4,16 @@ using Backend.Models;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace Backend.Migrations
 {
     [DbContext(typeof(BackendContext))]
-    partial class BackendContextModelSnapshot : ModelSnapshot
+    [Migration("20181223061231_seeding-admin")]
+    partial class SeedingAdmin
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -45,7 +47,7 @@ namespace Backend.Migrations
                     b.ToTable("Account");
 
                     b.HasData(
-                        new { AccountId = "ADMIN", AccountStatus = 1, CreatedAt = new DateTime(2018, 12, 23, 13, 33, 8, 18, DateTimeKind.Local), DeletedAt = new DateTime(2018, 12, 23, 13, 33, 8, 19, DateTimeKind.Local), Email = "admin@admin.com", Password = "lD2Hql+8vRsCYWlUL0R0n0PBvfyuXWNthViiPJmg7kE=", Salt = "ft3f24DkXBw1aB3BqyZLGw==", UpdatedAt = new DateTime(2018, 12, 23, 13, 33, 8, 19, DateTimeKind.Local), Username = "ADMIN" }
+                        new { AccountId = "ADMIN", AccountStatus = 1, CreatedAt = new DateTime(2018, 12, 23, 13, 12, 31, 613, DateTimeKind.Local), DeletedAt = new DateTime(2018, 12, 23, 13, 12, 31, 615, DateTimeKind.Local), Email = "admin@admin.com", Password = "bD1wo9lWUhncdeNzKpriLXOapoCdqmQzXBdV//UkNFs=", Salt = "8LK0MsWDvA4sawsyU+PotA==", UpdatedAt = new DateTime(2018, 12, 23, 13, 12, 31, 615, DateTimeKind.Local), Username = "ADMIN" }
                     );
                 });
 
@@ -70,27 +72,6 @@ namespace Backend.Migrations
                     b.HasData(
                         new { AccountId = "ADMIN", Birthday = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), FirstName = "ADMIN", Gender = 2, LastName = "ADMIN" }
                     );
-                });
-
-            modelBuilder.Entity("Backend.Models.Role", b =>
-                {
-                    b.Property<int>("RoleId")
-                        .ValueGeneratedOnAdd()
-                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
-
-                    b.Property<DateTime>("CreatedAt");
-
-                    b.Property<DateTime>("DeletedAt");
-
-                    b.Property<string>("Name");
-
-                    b.Property<int>("RoleStatus");
-
-                    b.Property<DateTime>("UpdatedAt");
-
-                    b.HasKey("RoleId");
-
-                    b.ToTable("Role");
                 });
 
             modelBuilder.Entity("Backend.Models.PersonalInformation", b =>
