@@ -37,5 +37,7 @@ namespace Backend.Models
         public DbSet<Backend.Models.Account> Account { get; set; }
 
         public DbSet<Backend.Models.Role> Role { get; set; }
+
+        public DbSet<Backend.Models.Credential> Credential { get; set; }
     }
 }

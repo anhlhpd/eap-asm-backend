@@ -1,11 +1,15 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Net;
 using System.Net.Http;
+using System.Text;
 using System.Threading.Tasks;
+using Backend.Models;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Http;
+using Newtonsoft.Json;
 
 namespace Backend.Middleware
 {
@@ -29,18 +33,21 @@ namespace Backend.Middleware
 
         public async Task InvokeAsync(HttpContext context)
         {
+            StreamReader reader = new StreamReader(context.Request.Body,Encoding.UTF8);
+            string datastring = await reader.ReadToEndAsync();
+            Credential cr = JsonConvert.DeserializeObject<Credential>(datastring);
+
             bool isValid = false;
-            if (context.Request.Headers.ContainsKey("Authorization"))
+            if (!String.IsNullOrEmpty(cr.AccessToken))
             {
-                //var rawToken = context.Request.B
-                //rawToken = rawToken.Replace("Basic ", "");
-                //HttpClient client = new HttpClient();
-                //var responseResult = client.GetAsync("https://toauth2server.azurewebsites.net/api/authentication?accessToken=" + rawToken).Result;
-                //if (responseResult.StatusCode == HttpStatusCode.OK)
-                //{
-                //    isValid = true;
-                //}
+                HttpClient client = new HttpClient();
+                var responseResult = client.GetAsync("https://localhost:44314/api/Credentials?AccessToken=" + cr.AccessToken).Result;
+                if (responseResult.StatusCode == HttpStatusCode.OK)
+                {
+                    isValid = true;
+                }
             }
+            
             if (isValid)
             {
                 // Call the next delegate/middleware in the pipeline
@@ -48,8 +55,11 @@ namespace Backend.Middleware
             }
             else
             {
+                //context.Response.StatusCode = (int)HttpStatusCode.Forbidden;
+                //await context.Response.WriteAsync("");
+                //await context.Response.WriteAsync("Invalid token" + context.Request.Headers.ContainsKey("Authorization"));
                 context.Response.StatusCode = (int)HttpStatusCode.Forbidden;
-                await context.Response.WriteAsync("Invalid token" + context.Request.Headers.ContainsKey("Authorization"));
+                await context.Response.WriteAsync(HttpStatusCode.Forbidden.ToString());
             }
 
 

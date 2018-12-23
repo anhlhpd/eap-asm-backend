@@ -49,7 +49,7 @@ namespace Backend
             }
 
             app.UseHttpsRedirection();
-            //app.UseACheckAdmin();
+            app.UseACheckAdmin();
             app.UseMvc();
         }
     }
