@@ -14,6 +14,7 @@ namespace Backend.Models
         }
         [Key]
         public int SubjectId { get; set; }
+        [Required]
         public string Name { get; set; }
         public string Description { get; set; }
         public SubjectStatus SubjectStatus { get; set; }

@@ -15,10 +15,15 @@ namespace Backend.Models
         }
         [Key]
         public string AccountId { get; set; }
+        [Required]
         public string FirstName { get; set; }
+        [Required]
         public string LastName { get; set; }
+        [Required]
         public DateTime Birthday { get; set; }
+        [Required]
         public Gender Gender { get; set; }
+        [Required]
         public string Phone { get; set; }
         public Account Account { get; set; }
     }

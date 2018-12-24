@@ -18,8 +18,11 @@ namespace Backend.Models
         }
         [Key]
         public string AccountId { get; set; }
+        [Required]
         public string Email { get; set; }
+        [Required]
         public string Username { get; set; }
+        [Required]
         public string Password { get; set; }
         public string Salt { get; set; }
         public DateTime CreatedAt { get; set; }
