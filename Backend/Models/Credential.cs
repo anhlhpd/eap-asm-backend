@@ -14,6 +14,7 @@ namespace Backend.Models
             this.UpdatedAt = DateTime.Now;
         }
         [Key]
+        [Required]
         public string AccountId { get; set; }
         [Required]
         public string AccessToken { get; set; }

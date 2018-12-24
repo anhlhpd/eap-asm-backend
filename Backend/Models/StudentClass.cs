@@ -14,6 +14,7 @@ namespace Backend.Models
             this.StudentClassStatus = StudentClassStatus.Active;
         }
         [Key]
+        [Required]
         public string StudentClassId { get; set; }
         [Required]
         public DateTime StartDate { get; set; }

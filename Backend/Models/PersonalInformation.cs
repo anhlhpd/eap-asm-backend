@@ -14,6 +14,7 @@ namespace Backend.Models
             this.Gender = Gender.Other;
         }
         [Key]
+        [Required]
         public string AccountId { get; set; }
         [Required]
         public string FirstName { get; set; }

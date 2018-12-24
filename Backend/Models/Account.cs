@@ -17,6 +17,7 @@ namespace Backend.Models
             this.AccountStatus = AccountStatus.Active;
         }
         [Key]
+        [Required]
         public string AccountId { get; set; }
         [Required]
         public string Email { get; set; }
