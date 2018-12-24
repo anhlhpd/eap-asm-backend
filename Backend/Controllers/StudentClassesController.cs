@@ -121,5 +121,12 @@ namespace Backend.Controllers
         {
             return _context.StudentClass.Any(e => e.StudentClassId == id);
         }
+
+        [HttpGet("search")]
+        public async Task<IActionResult> Search([FromQuery] string id)
+        {
+            var studentClass = await _context.StudentClass.FindAsync(id);
+            return new JsonResult(studentClass);
+        }
     }
 }

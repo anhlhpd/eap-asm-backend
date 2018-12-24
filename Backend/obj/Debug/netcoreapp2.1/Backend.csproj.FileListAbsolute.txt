@@ -12,3 +12,17 @@ C:\Users\Phuong Anh\Desktop\EAP ASM\Backend\Backend\obj\Debug\netcoreapp2.1\Back
 C:\Users\Phuong Anh\Desktop\EAP ASM\Backend\Backend\obj\Debug\netcoreapp2.1\Backend.RazorTargetAssemblyInfo.cache
 C:\Users\Phuong Anh\Desktop\EAP ASM\Backend\Backend\obj\Debug\netcoreapp2.1\Backend.dll
 C:\Users\Phuong Anh\Desktop\EAP ASM\Backend\Backend\obj\Debug\netcoreapp2.1\Backend.pdb
+C:\Users\Phuong Anh\Desktop\EAP ASM\Server\Backend\bin\Debug\netcoreapp2.1\Backend.deps.json
+C:\Users\Phuong Anh\Desktop\EAP ASM\Server\Backend\bin\Debug\netcoreapp2.1\Backend.runtimeconfig.json
+C:\Users\Phuong Anh\Desktop\EAP ASM\Server\Backend\bin\Debug\netcoreapp2.1\Backend.runtimeconfig.dev.json
+C:\Users\Phuong Anh\Desktop\EAP ASM\Server\Backend\bin\Debug\netcoreapp2.1\Backend.dll
+C:\Users\Phuong Anh\Desktop\EAP ASM\Server\Backend\bin\Debug\netcoreapp2.1\Backend.pdb
+C:\Users\Phuong Anh\Desktop\EAP ASM\Server\Backend\obj\Debug\netcoreapp2.1\Backend.csprojAssemblyReference.cache
+C:\Users\Phuong Anh\Desktop\EAP ASM\Server\Backend\obj\Debug\netcoreapp2.1\Backend.csproj.CoreCompileInputs.cache
+C:\Users\Phuong Anh\Desktop\EAP ASM\Server\Backend\obj\Debug\netcoreapp2.1\Backend.RazorAssemblyInfo.cache
+C:\Users\Phuong Anh\Desktop\EAP ASM\Server\Backend\obj\Debug\netcoreapp2.1\Backend.RazorAssemblyInfo.cs
+C:\Users\Phuong Anh\Desktop\EAP ASM\Server\Backend\obj\Debug\netcoreapp2.1\Backend.AssemblyInfoInputs.cache
+C:\Users\Phuong Anh\Desktop\EAP ASM\Server\Backend\obj\Debug\netcoreapp2.1\Backend.AssemblyInfo.cs
+C:\Users\Phuong Anh\Desktop\EAP ASM\Server\Backend\obj\Debug\netcoreapp2.1\Backend.RazorTargetAssemblyInfo.cache
+C:\Users\Phuong Anh\Desktop\EAP ASM\Server\Backend\obj\Debug\netcoreapp2.1\Backend.dll
+C:\Users\Phuong Anh\Desktop\EAP ASM\Server\Backend\obj\Debug\netcoreapp2.1\Backend.pdb
