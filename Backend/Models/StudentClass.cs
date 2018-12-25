@@ -14,10 +14,14 @@ namespace Backend.Models
             this.StudentClassStatus = StudentClassStatus.Active;
         }
         [Key]
+        [Required]
         public string StudentClassId { get; set; }
+        [Required]
         public DateTime StartDate { get; set; }
+        [Required]
         public string Session { get; set; }
         public StudentClassStatus StudentClassStatus { get; set; }
+        [Required]
         public int CurrentSubjectId { get; set; }
         public Subject Subject { get; set; }
     }

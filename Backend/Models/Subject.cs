@@ -13,7 +13,9 @@ namespace Backend.Models
             this.SubjectStatus = SubjectStatus.Active;
         }
         [Key]
+        [Required]
         public int SubjectId { get; set; }
+        [Required]
         public string Name { get; set; }
         public string Description { get; set; }
         public SubjectStatus SubjectStatus { get; set; }
