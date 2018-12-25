@@ -16,15 +16,19 @@ namespace Backend.Models
         [Key]
         [Required]
         public string AccountId { get; set; }
-        [Required]
+        [Required(ErrorMessage = "Please enter first name"), 
+            MaxLength(10, ErrorMessage = "Please enter first name under 11 characters")]
         public string FirstName { get; set; }
-        [Required]
+        [Required(ErrorMessage = "Please enter last name"), 
+            MaxLength(10, ErrorMessage = "Please enter last name under 11 characters")]
         public string LastName { get; set; }
-        [Required]
+        [Required(ErrorMessage = "Please input birthday")]
         public DateTime Birthday { get; set; }
-        [Required]
+        [Required(ErrorMessage = "Please input gender")]
         public Gender Gender { get; set; }
-        [Required]
+        [Required(ErrorMessage = "Please enter phone"), 
+            MinLength(10, ErrorMessage = "Please enter phone above 9 characters"), 
+            MaxLength(12, ErrorMessage = "Please enter phone under 13 characters")]
         public string Phone { get; set; }
         public Account Account { get; set; }
     }

@@ -23,7 +23,7 @@ namespace Backend.Models
         public string Email { get; set; }
         [Required]
         public string Username { get; set; }
-        [Required]
+        [Required(ErrorMessage = "Please enter password"), MinLength(6), MaxLength(14)]
         public string Password { get; set; }
         public string Salt { get; set; }
         public DateTime CreatedAt { get; set; }
