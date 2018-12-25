@@ -34,6 +34,32 @@ namespace Backend.Models
                 AccountId = "ADMIN",
                 FirstName = "ADMIN",
                 LastName = "ADMIN",
+                Phone = "0",
+            });
+            modelBuilder.Entity<Account>(entity => {
+                entity.HasIndex(e => e.Email).IsUnique();
+                entity.HasIndex(e => e.Username).IsUnique();
+            });
+            modelBuilder.Entity<Role>(entity => {
+                entity.HasIndex(e => e.Name).IsUnique();
+            });
+            modelBuilder.Entity<StudentClass>(entity => {
+                entity.HasIndex(e => new { e.Session, e.StartDate}).IsUnique();
+            });
+            modelBuilder.Entity<Subject>(entity => {
+                entity.HasIndex(e => e.Name).IsUnique();
+            });
+            modelBuilder.Entity<Credential>(entity => {
+                entity.HasIndex(e => e.AccessToken).IsUnique();
+            });
+            modelBuilder.Entity<PersonalInformation>(entity => {
+                entity.HasIndex(e => e.Phone).IsUnique();
+            });
+            modelBuilder.Entity<AccountRole>(entity => {
+                entity.HasKey(e => new { e.RoleId, e.AccountId });
+            });
+            modelBuilder.Entity<StudentClassAccount>(entity => {
+                entity.HasKey(e => new { e.StudentClassId, e.AccountId });
             });
             
             modelBuilder.Entity<Role>().HasData(new Role()
@@ -48,8 +74,8 @@ namespace Backend.Models
             });
         }
 
-        public DbSet<Backend.Models.Account> Account { get; set; }
-
+        public DbSet<Backend.Models.PersonalInformation> PersonalInformation { get; set; }
+public DbSet<Backend.Models.Account> Account { get; set; }
         public DbSet<Backend.Models.Role> Role { get; set; }
 
         public DbSet<Backend.Models.Credential> Credential { get; set; }

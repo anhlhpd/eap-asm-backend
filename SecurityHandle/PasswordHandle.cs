@@ -22,9 +22,7 @@ namespace SecurityHandle
             }
 
             return Convert.ToBase64String(salt);
-        }
-
-        
+        }      
 
         public string EncryptPassword(string originalPassword, string salt)
         {
