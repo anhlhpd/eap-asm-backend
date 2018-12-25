@@ -16,14 +16,21 @@ namespace Backend.Models
         [Key]
         [Required]
         public string StudentClassId { get; set; }
-        [Required]
+        [Required(ErrorMessage = "Please input class start date")]
         public DateTime StartDate { get; set; }
-        [Required]
-        public string Session { get; set; }
+        [Required(ErrorMessage = "Please input the class session (Morning, Afternoon or Evening)")]
+        public StudentClassSession Session { get; set; }
         public StudentClassStatus StudentClassStatus { get; set; }
-        [Required]
+        [Required(ErrorMessage = "Please input the current subject of the class")]
         public int CurrentSubjectId { get; set; }
         public Subject Subject { get; set; }
+    }
+
+    public enum StudentClassSession
+    {
+        Morning = 0,
+        Afternoon = 1,
+        Evening = 2
     }
 
     public enum StudentClassStatus
