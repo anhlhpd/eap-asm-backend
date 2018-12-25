@@ -31,6 +31,7 @@ namespace Backend.Models
                 AccountId = "ADMIN",
                 FirstName = "ADMIN",
                 LastName = "ADMIN",
+                Phone = "0",
             });
             modelBuilder.Entity<Account>(entity => {
                 entity.HasIndex(e => e.Email).IsUnique();
