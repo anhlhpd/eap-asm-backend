@@ -33,7 +33,13 @@ namespace Backend.Data
                 entity.HasIndex(e => e.AccessToken).IsUnique();
             });
             modelBuilder.Entity<PersonalInformation>(entity => {
-                entity.HasIndex(e => new { e.FirstName, e.LastName, e.Phone }).IsUnique();
+                entity.HasIndex(e => e.Phone).IsUnique();
+            });
+            modelBuilder.Entity<AccountRole>(entity => {
+                entity.HasKey(e => new { e.RoleId, e.AccountId });
+            });
+            modelBuilder.Entity<StudentClassAccount>(entity => {
+                entity.HasKey(e => new { e.StudentClassId, e.AccountId });
             });
         }
 
