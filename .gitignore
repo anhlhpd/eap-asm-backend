@@ -2,3 +2,4 @@ Backend/bin/*
 Backend/obj/*
 SecurityHandle/bin/*
 SecurityHandle/obj/*
+.vs/*
