@@ -16,8 +16,11 @@ namespace Backend.Models
             this.RoleStatus = RoleStatus.Active;
         }
         [Key]
+        [Required]
         public int RoleId { get; set; }
+        [Required(ErrorMessage = "Please enter Name")]
         public string Name { get; set; }
+        public string Description { get; set; }
         public DateTime CreatedAt { get; set; }
         public DateTime UpdatedAt { get; set; }
         public DateTime DeletedAt { get; set; }

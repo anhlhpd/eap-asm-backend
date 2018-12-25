@@ -17,9 +17,13 @@ namespace Backend.Models
             this.AccountStatus = AccountStatus.Active;
         }
         [Key]
+        [Required]
         public string AccountId { get; set; }
+        [Required]
         public string Email { get; set; }
+        [Required]
         public string Username { get; set; }
+        [Required(ErrorMessage = "Please enter password"), MinLength(6), MaxLength(14)]
         public string Password { get; set; }
         public string Salt { get; set; }
         public DateTime CreatedAt { get; set; }

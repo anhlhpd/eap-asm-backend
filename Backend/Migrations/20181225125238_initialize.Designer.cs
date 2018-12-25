@@ -4,14 +4,16 @@ using Backend.Models;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace Backend.Migrations
 {
     [DbContext(typeof(BackendContext))]
-    partial class BackendContextModelSnapshot : ModelSnapshot
+    [Migration("20181225125238_initialize")]
+    partial class initialize
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -161,7 +163,6 @@ namespace Backend.Migrations
                     b.Property<string>("Session")
                         .IsRequired();
 
-
                     b.Property<DateTime>("StartDate");
 
                     b.Property<int>("StudentClassStatus");
@@ -171,7 +172,6 @@ namespace Backend.Migrations
                     b.HasKey("StudentClassId");
 
                     b.HasIndex("SubjectId");
-
 
                     b.HasIndex("Session", "StartDate")
                         .IsUnique();
@@ -203,11 +203,9 @@ namespace Backend.Migrations
                     b.Property<string>("Name")
                         .IsRequired();
 
-
                     b.Property<int>("SubjectStatus");
 
                     b.HasKey("SubjectId");
-
 
                     b.HasIndex("Name")
                         .IsUnique();
@@ -250,7 +248,6 @@ namespace Backend.Migrations
                         .HasForeignKey("SubjectId");
                 });
 
-
             modelBuilder.Entity("Backend.Models.StudentClassAccount", b =>
                 {
                     b.HasOne("Backend.Models.Account", "Account")
@@ -263,7 +260,6 @@ namespace Backend.Migrations
                         .HasForeignKey("StudentClassId")
                         .OnDelete(DeleteBehavior.Cascade);
                 });
-
 #pragma warning restore 612, 618
         }
     }
