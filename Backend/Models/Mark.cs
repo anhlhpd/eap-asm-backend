@@ -13,10 +13,15 @@ namespace Backend.Models
             this.CreatedAt = DateTime.Now;
         }
         [Key]
+        [Required]
         public long MarkId { get; set; }
+        [Required]
         public string AccountId { get; set; }
+        [Required]
         public int SubjectId { get; set; }
+        [Required]
         public float Value { get; set; }
+        [Required]
         public MarkType MarkType { get; set; }
         public DateTime CreatedAt { get; set; }
         public MarkStatus MarkStatus { get; set; }
