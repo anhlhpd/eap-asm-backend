@@ -16,7 +16,7 @@ namespace Backend.Models
         }
 
         public DbSet<Backend.Models.StudentClass> StudentClass { get; set; }
-    }
+    
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             modelBuilder.Entity<AccountRole>()
@@ -77,11 +77,11 @@ namespace Backend.Models
         }
 
         public DbSet<Backend.Models.PersonalInformation> PersonalInformation { get; set; }
-public DbSet<Backend.Models.Account> Account { get; set; }
+        public DbSet<Backend.Models.Account> Account { get; set; }
         public DbSet<Backend.Models.Role> Role { get; set; }
-
         public DbSet<Backend.Models.Credential> Credential { get; set; }
         public DbSet<Backend.Models.AccountRole> AccountRoles { get; set; }
         
     }
+
 }
