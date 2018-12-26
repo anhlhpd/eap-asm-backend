@@ -86,11 +86,11 @@ namespace Backend.Migrations
                 columns: table => new
                 {
                     AccountId = table.Column<string>(nullable: false),
-                    FirstName = table.Column<string>(nullable: false),
-                    LastName = table.Column<string>(nullable: false),
+                    FirstName = table.Column<string>(maxLength: 10, nullable: false),
+                    LastName = table.Column<string>(maxLength: 10, nullable: false),
                     Birthday = table.Column<DateTime>(nullable: false),
                     Gender = table.Column<int>(nullable: false),
-                    Phone = table.Column<string>(nullable: false)
+                    Phone = table.Column<string>(maxLength: 12, nullable: false)
                 },
                 constraints: table =>
                 {
@@ -104,7 +104,7 @@ namespace Backend.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "AccountRole",
+                name: "AccountRoles",
                 columns: table => new
                 {
                     RoleId = table.Column<int>(nullable: false),
@@ -112,15 +112,16 @@ namespace Backend.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_AccountRole", x => new { x.RoleId, x.AccountId });
+                    table.PrimaryKey("PK_AccountRoles", x => new { x.RoleId, x.AccountId });
+                    table.UniqueConstraint("AK_AccountRoles_AccountId_RoleId", x => new { x.AccountId, x.RoleId });
                     table.ForeignKey(
-                        name: "FK_AccountRole_Account_AccountId",
+                        name: "FK_AccountRoles_Account_AccountId",
                         column: x => x.AccountId,
                         principalTable: "Account",
                         principalColumn: "AccountId",
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
-                        name: "FK_AccountRole_Role_RoleId",
+                        name: "FK_AccountRoles_Role_RoleId",
                         column: x => x.RoleId,
                         principalTable: "Role",
                         principalColumn: "RoleId",
@@ -133,7 +134,7 @@ namespace Backend.Migrations
                 {
                     StudentClassId = table.Column<string>(nullable: false),
                     StartDate = table.Column<DateTime>(nullable: false),
-                    Session = table.Column<string>(nullable: false),
+                    Session = table.Column<int>(nullable: false),
                     StudentClassStatus = table.Column<int>(nullable: false),
                     CurrentSubjectId = table.Column<int>(nullable: false),
                     SubjectId = table.Column<int>(nullable: true)
@@ -173,16 +174,6 @@ namespace Backend.Migrations
                         onDelete: ReferentialAction.Cascade);
                 });
 
-            migrationBuilder.InsertData(
-                table: "Account",
-                columns: new[] { "AccountId", "AccountStatus", "CreatedAt", "DeletedAt", "Email", "Password", "Salt", "UpdatedAt", "Username" },
-                values: new object[] { "ADMIN", 1, new DateTime(2018, 12, 25, 19, 52, 37, 894, DateTimeKind.Local), new DateTime(2018, 12, 25, 19, 52, 37, 895, DateTimeKind.Local), "admin@admin.com", "xFibEz32G9f7mfMF3YDP2dHeLlOiSVodL+LD9eSHsks=", "UsbuqtyJbmlCTki5UjOh9Q==", new DateTime(2018, 12, 25, 19, 52, 37, 895, DateTimeKind.Local), "ADMIN" });
-
-            migrationBuilder.InsertData(
-                table: "PersonalInformation",
-                columns: new[] { "AccountId", "Birthday", "FirstName", "Gender", "LastName", "Phone" },
-                values: new object[] { "ADMIN", new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), "ADMIN", 2, "ADMIN", "0" });
-
             migrationBuilder.CreateIndex(
                 name: "IX_Account_Email",
                 table: "Account",
@@ -194,11 +185,6 @@ namespace Backend.Migrations
                 table: "Account",
                 column: "Username",
                 unique: true);
-
-            migrationBuilder.CreateIndex(
-                name: "IX_AccountRole_AccountId",
-                table: "AccountRole",
-                column: "AccountId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Credential_AccessToken",
@@ -250,7 +236,7 @@ namespace Backend.Migrations
         protected override void Down(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.DropTable(
-                name: "AccountRole");
+                name: "AccountRoles");
 
             migrationBuilder.DropTable(
                 name: "Credential");
