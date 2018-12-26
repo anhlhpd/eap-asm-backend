@@ -4,14 +4,16 @@ using Backend.Models;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace Backend.Migrations
 {
     [DbContext(typeof(BackendContext))]
-    partial class BackendContextModelSnapshot : ModelSnapshot
+    [Migration("20181226071207_initialize")]
+    partial class initialize
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -53,10 +55,6 @@ namespace Backend.Migrations
                         .IsUnique();
 
                     b.ToTable("Account");
-
-                    b.HasData(
-                        new { AccountId = "ADMIN", AccountStatus = 1, CreatedAt = new DateTime(2018, 12, 26, 14, 13, 9, 824, DateTimeKind.Local), DeletedAt = new DateTime(2018, 12, 26, 14, 13, 9, 825, DateTimeKind.Local), Email = "admin@admin.com", Password = "99HskOE6DozfKApuZx05xssL3teWKh3F/gI6LDdO+I0=", Salt = "nG9F6wUwm2unLajdOp2lOw==", UpdatedAt = new DateTime(2018, 12, 26, 14, 13, 9, 825, DateTimeKind.Local), Username = "ADMIN" }
-                    );
                 });
 
             modelBuilder.Entity("Backend.Models.AccountRole", b =>
@@ -70,10 +68,6 @@ namespace Backend.Migrations
                     b.HasAlternateKey("AccountId", "RoleId");
 
                     b.ToTable("AccountRoles");
-
-                    b.HasData(
-                        new { RoleId = 1, AccountId = "Admin" }
-                    );
                 });
 
             modelBuilder.Entity("Backend.Models.Credential", b =>
@@ -126,10 +120,6 @@ namespace Backend.Migrations
                         .IsUnique();
 
                     b.ToTable("PersonalInformation");
-
-                    b.HasData(
-                        new { AccountId = "ADMIN", Birthday = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), FirstName = "ADMIN", Gender = 2, LastName = "ADMIN", Phone = "01234567890" }
-                    );
                 });
 
             modelBuilder.Entity("Backend.Models.Role", b =>
@@ -157,10 +147,6 @@ namespace Backend.Migrations
                         .IsUnique();
 
                     b.ToTable("Role");
-
-                    b.HasData(
-                        new { RoleId = 1, CreatedAt = new DateTime(2018, 12, 26, 14, 13, 9, 840, DateTimeKind.Local), DeletedAt = new DateTime(2018, 12, 26, 14, 13, 9, 840, DateTimeKind.Local), Name = "Admin", RoleStatus = 1, UpdatedAt = new DateTime(2018, 12, 26, 14, 13, 9, 840, DateTimeKind.Local) }
-                    );
                 });
 
             modelBuilder.Entity("Backend.Models.StudentClass", b =>

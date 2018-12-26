@@ -10,8 +10,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Backend.Migrations
 {
     [DbContext(typeof(BackendContext))]
-    [Migration("20181225125238_initialize")]
-    partial class initialize
+    [Migration("20181226071310_SeederAdmin")]
+    partial class SeederAdmin
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -36,7 +36,8 @@ namespace Backend.Migrations
                         .IsRequired();
 
                     b.Property<string>("Password")
-                        .IsRequired();
+                        .IsRequired()
+                        .HasMaxLength(14);
 
                     b.Property<string>("Salt");
 
@@ -56,7 +57,7 @@ namespace Backend.Migrations
                     b.ToTable("Account");
 
                     b.HasData(
-                        new { AccountId = "ADMIN", AccountStatus = 1, CreatedAt = new DateTime(2018, 12, 25, 19, 52, 37, 894, DateTimeKind.Local), DeletedAt = new DateTime(2018, 12, 25, 19, 52, 37, 895, DateTimeKind.Local), Email = "admin@admin.com", Password = "xFibEz32G9f7mfMF3YDP2dHeLlOiSVodL+LD9eSHsks=", Salt = "UsbuqtyJbmlCTki5UjOh9Q==", UpdatedAt = new DateTime(2018, 12, 25, 19, 52, 37, 895, DateTimeKind.Local), Username = "ADMIN" }
+                        new { AccountId = "ADMIN", AccountStatus = 1, CreatedAt = new DateTime(2018, 12, 26, 14, 13, 9, 824, DateTimeKind.Local), DeletedAt = new DateTime(2018, 12, 26, 14, 13, 9, 825, DateTimeKind.Local), Email = "admin@admin.com", Password = "99HskOE6DozfKApuZx05xssL3teWKh3F/gI6LDdO+I0=", Salt = "nG9F6wUwm2unLajdOp2lOw==", UpdatedAt = new DateTime(2018, 12, 26, 14, 13, 9, 825, DateTimeKind.Local), Username = "ADMIN" }
                     );
                 });
 
@@ -68,9 +69,13 @@ namespace Backend.Migrations
 
                     b.HasKey("RoleId", "AccountId");
 
-                    b.HasIndex("AccountId");
+                    b.HasAlternateKey("AccountId", "RoleId");
 
-                    b.ToTable("AccountRole");
+                    b.ToTable("AccountRoles");
+
+                    b.HasData(
+                        new { RoleId = 1, AccountId = "Admin" }
+                    );
                 });
 
             modelBuilder.Entity("Backend.Models.Credential", b =>
@@ -104,15 +109,18 @@ namespace Backend.Migrations
                     b.Property<DateTime>("Birthday");
 
                     b.Property<string>("FirstName")
-                        .IsRequired();
+                        .IsRequired()
+                        .HasMaxLength(10);
 
                     b.Property<int>("Gender");
 
                     b.Property<string>("LastName")
-                        .IsRequired();
+                        .IsRequired()
+                        .HasMaxLength(10);
 
                     b.Property<string>("Phone")
-                        .IsRequired();
+                        .IsRequired()
+                        .HasMaxLength(12);
 
                     b.HasKey("AccountId");
 
@@ -122,7 +130,7 @@ namespace Backend.Migrations
                     b.ToTable("PersonalInformation");
 
                     b.HasData(
-                        new { AccountId = "ADMIN", Birthday = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), FirstName = "ADMIN", Gender = 2, LastName = "ADMIN", Phone = "0" }
+                        new { AccountId = "ADMIN", Birthday = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), FirstName = "ADMIN", Gender = 2, LastName = "ADMIN", Phone = "01234567890" }
                     );
                 });
 
@@ -151,6 +159,10 @@ namespace Backend.Migrations
                         .IsUnique();
 
                     b.ToTable("Role");
+
+                    b.HasData(
+                        new { RoleId = 1, CreatedAt = new DateTime(2018, 12, 26, 14, 13, 9, 840, DateTimeKind.Local), DeletedAt = new DateTime(2018, 12, 26, 14, 13, 9, 840, DateTimeKind.Local), Name = "Admin", RoleStatus = 1, UpdatedAt = new DateTime(2018, 12, 26, 14, 13, 9, 840, DateTimeKind.Local) }
+                    );
                 });
 
             modelBuilder.Entity("Backend.Models.StudentClass", b =>
@@ -160,8 +172,7 @@ namespace Backend.Migrations
 
                     b.Property<int>("CurrentSubjectId");
 
-                    b.Property<string>("Session")
-                        .IsRequired();
+                    b.Property<int>("Session");
 
                     b.Property<DateTime>("StartDate");
 
