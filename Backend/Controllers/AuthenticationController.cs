@@ -40,7 +40,9 @@ namespace Backend.Controllers
                     if (PasswordHandle.GetInstance().EncryptPassword(ac.Password, ac.Salt) == PasswordHandle.GetInstance().EncryptPassword(password, ac.Salt))
                     {
                         // save token
-                        return Ok(TokenHandle.GetInstance().GenerateToken());
+                        var accessToken = TokenHandle.GetInstance().GenerateToken();
+                        cr.AccessToken = accessToken;
+                        return Ok(accessToken);
                     }
                 }
             }
