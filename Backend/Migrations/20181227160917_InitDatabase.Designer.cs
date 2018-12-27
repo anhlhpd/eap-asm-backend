@@ -10,7 +10,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Backend.Migrations
 {
     [DbContext(typeof(BackendContext))]
-    [Migration("20181227120241_InitDatabase")]
+    [Migration("20181227160917_InitDatabase")]
     partial class InitDatabase
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -55,7 +55,7 @@ namespace Backend.Migrations
                     b.ToTable("Account");
 
                     b.HasData(
-                        new { AccountId = "ADMIN", AccountStatus = 1, CreatedAt = new DateTime(2018, 12, 27, 19, 2, 40, 963, DateTimeKind.Local), DeletedAt = new DateTime(2018, 12, 27, 19, 2, 40, 965, DateTimeKind.Local), Email = "admin@admin.com", Password = "X4qagf71TdKwmOMtE9cnFDqp9oRy2cpMv3t+Lzt6vTI=", Salt = "ULloT5GpI0tcug2jRRmRBA==", UpdatedAt = new DateTime(2018, 12, 27, 19, 2, 40, 965, DateTimeKind.Local), Username = "ADMIN" }
+                        new { AccountId = "ADMIN", AccountStatus = 1, CreatedAt = new DateTime(2018, 12, 27, 23, 9, 16, 886, DateTimeKind.Local), Email = "admin@admin.com", Password = "piHAzScrbuKb63ug/W0JpNu7kuFO3ATgiVLFu2riJps=", Salt = "9yclEFF5SWqVvj4RgM2hNQ==", UpdatedAt = new DateTime(2018, 12, 27, 23, 9, 16, 888, DateTimeKind.Local), Username = "ADMIN" }
                     );
                 });
 
@@ -160,7 +160,7 @@ namespace Backend.Migrations
                     b.ToTable("Role");
 
                     b.HasData(
-                        new { RoleId = 1, CreatedAt = new DateTime(2018, 12, 27, 19, 2, 40, 982, DateTimeKind.Local), DeletedAt = new DateTime(2018, 12, 27, 19, 2, 40, 982, DateTimeKind.Local), Name = "Admin", RoleStatus = 1, UpdatedAt = new DateTime(2018, 12, 27, 19, 2, 40, 982, DateTimeKind.Local) }
+                        new { RoleId = 1, CreatedAt = new DateTime(2018, 12, 27, 23, 9, 16, 903, DateTimeKind.Local), DeletedAt = new DateTime(2018, 12, 27, 23, 9, 16, 903, DateTimeKind.Local), Name = "Admin", RoleStatus = 1, UpdatedAt = new DateTime(2018, 12, 27, 23, 9, 16, 903, DateTimeKind.Local) }
                     );
                 });
 
