@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Backend.Models;
+using SecurityHandle;
 
 namespace Backend.Controllers
 {
@@ -18,6 +19,32 @@ namespace Backend.Controllers
         public AuthenticationController(BackendContext context)
         {
             _context = context;
+        }
+        // POST: api/Login
+        [HttpPost]
+        public async Task<IActionResult> Login([FromBody] string username, string password, string clientId)
+        {
+            // find 1 account with matching username in Account
+            var ac = await _context.Account.SingleOrDefaultAsync(a =>
+                    a.Username == username);
+            // verify clientId to be either STU or TCH first
+            var isCorrectClient = ac.AccountId.StartsWith(clientId);
+            if (ac != null && isCorrectClient == true)
+            {
+                // check if account is logged in elsewhere
+                var cr = await _context.Credential.SingleOrDefaultAsync(c =>
+                    c.AccountId == ac.AccountId);
+                if(cr != null)
+                {
+                    // check matching password
+                    if (PasswordHandle.GetInstance().EncryptPassword(ac.Password, ac.Salt) == PasswordHandle.GetInstance().EncryptPassword(password, ac.Salt))
+                    {
+                        // save token
+                        return Ok(TokenHandle.GetInstance().GenerateToken());
+                    }
+                }
+            }
+            return NotFound();
         }
 
         // GET: api/Authentication
