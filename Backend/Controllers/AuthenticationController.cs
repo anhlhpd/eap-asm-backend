@@ -49,6 +49,32 @@ namespace Backend.Controllers
             return NotFound();
         }
 
+        // POST: api/Logout
+        [HttpPost]
+        public async Task<IActionResult> Logout()
+        {
+            if (HttpContext.Request.Query.ContainsKey("AccessToken"))
+            {
+                var cr = await _context.Credential.SingleOrDefaultAsync(c =>
+                    c.AccessToken == HttpContext.Request.Query["AccessToken"].ToString());
+                if (cr != null)
+                {
+                    // just delete accessToken from credential
+                    try
+                    {
+                        cr.AccessToken = null;
+                    }
+                    catch (Exception)
+                    {
+
+                        throw;
+                    }
+                    return Ok();
+                }
+            }
+            return BadRequest("You're already logged out!");
+        }
+
         // GET: api/Authentication
         [HttpGet]
         public async Task<IActionResult> GetCredential()
