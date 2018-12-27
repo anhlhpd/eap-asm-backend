@@ -135,7 +135,7 @@ namespace Backend.Controllers
         }
 
         [HttpPost("Student")]
-        public async Task<IActionResult> PostStudentPersonalInformation([FromBody] PersonalInformation personalInformation, [FromForm] string studentClassId)
+        public async Task<IActionResult> PostStudentPersonalInformation([FromBody] PersonalInformation personalInformation)
         {
             if (!ModelState.IsValid)
             {
@@ -161,19 +161,16 @@ namespace Backend.Controllers
 
             var name = personalInformation.FirstName;
             var accountUsername = personalInformation.FirstName + personalInformation.LastName[0] + personalInformation.AccountId;
+            var salt = SecurityHandle.PasswordHandle.GetInstance().GenerateSalt();
             Account account = new Account()
             {
                 AccountId = personalInformation.AccountId,
                 Username = accountUsername.ToLower(),
                 Email = accountUsername.ToLower() + "@gmail.com",
-                Password = accountUsername.ToLower()
+                Salt = salt,
+                Password = SecurityHandle.PasswordHandle.GetInstance().EncryptPassword(accountUsername.ToLower(), salt)                
             };
             _context.Account.Add(account);
-            _context.StudentClassAccount.Add(new StudentClassAccount()
-            {
-                AccountId = personalInformation.AccountId,
-                StudentClassId = studentClassId
-            });
             _context.SaveChanges();
 
             return CreatedAtAction("GetPersonalInformation", new { id = personalInformation.AccountId }, personalInformation);
