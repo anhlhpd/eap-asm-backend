@@ -34,7 +34,24 @@ namespace Backend.Controllers
                 // check if account is logged in elsewhere
                 var cr = await _context.Credential.SingleOrDefaultAsync(c =>
                     c.AccountId == ac.AccountId);
-                if(cr != null)
+                if(cr == null) // if account has never logged in
+                {
+                    // check matching password
+                    if (PasswordHandle.GetInstance().EncryptPassword(ac.Password, ac.Salt) == PasswordHandle.GetInstance().EncryptPassword(password, ac.Salt))
+                    {
+                        // create new credential with AccountId
+                        var firstCredential = new Credential {
+                            AccountId = ac.AccountId,
+                            AccessToken = TokenHandle.GetInstance().GenerateToken()
+                        };
+
+                        _context.Credential.Add(firstCredential);
+                        await _context.SaveChangesAsync();
+                        // save token
+                        return Ok(TokenHandle.GetInstance().GenerateToken());
+                    }
+                }
+                else if(cr.AccessToken == null) // if 1 credential exists and accessToken was deleted
                 {
                     // check matching password
                     if (PasswordHandle.GetInstance().EncryptPassword(ac.Password, ac.Salt) == PasswordHandle.GetInstance().EncryptPassword(password, ac.Salt))
