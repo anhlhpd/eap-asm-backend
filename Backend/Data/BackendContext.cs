@@ -81,6 +81,101 @@ namespace Backend.Models
                 AccountId = "Admin",
                 RoleId = 1,
             });
+
+            //Seeder for 2 teachers and 2 students
+            // Teachers
+            modelBuilder.Entity<Account>().HasData(new Account()
+            {
+                AccountId = "TCH0001",
+                Username = "xuanhung24",
+                Salt = PasswordHandle.GetInstance().GenerateSalt(),
+                Password = PasswordHandle.GetInstance().EncryptPassword("A123@a123", PasswordHandle.GetInstance().GenerateSalt()),
+                Email = "xuanhung2401@gmail.com",
+            });
+            modelBuilder.Entity<PersonalInformation>().HasData(new PersonalInformation()
+            {
+                AccountId = "TCH0001",
+                FirstName = "Hung",
+                LastName = "Dao",
+                Phone = "013237416",
+            });
+            modelBuilder.Entity<Account>().HasData(new Account()
+            {
+                AccountId = "TCH0002",
+                Username = "hongluyen",
+                Salt = PasswordHandle.GetInstance().GenerateSalt(),
+                Password = PasswordHandle.GetInstance().EncryptPassword("A123@a123", PasswordHandle.GetInstance().GenerateSalt()),
+                Email = "hongluyen@gmail.com",
+            });
+            modelBuilder.Entity<PersonalInformation>().HasData(new PersonalInformation()
+            {
+                AccountId = "TCH0002",
+                FirstName = "Luyen",
+                LastName = "Dao",
+                Phone = "013257416",
+            });
+            modelBuilder.Entity<Role>().HasData(new Role()
+            {
+                RoleId = 2,
+                Name = "Teacher"
+            });
+            modelBuilder.Entity<AccountRole>().HasData(new AccountRole()
+            {
+                AccountId = "TCH0001",
+                RoleId = 2,
+            });
+            modelBuilder.Entity<AccountRole>().HasData(new AccountRole()
+            {
+                AccountId = "TCH0002",
+                RoleId = 2,
+            });
+            // Students
+            modelBuilder.Entity<Account>().HasData(new Account()
+            {
+                AccountId = "STU0001",
+                Username = "thuthao541998",
+                Salt = PasswordHandle.GetInstance().GenerateSalt(),
+                Password = PasswordHandle.GetInstance().EncryptPassword("A123@a123", PasswordHandle.GetInstance().GenerateSalt()),
+                Email = "thuthao541998@gmail.com",
+            });
+            modelBuilder.Entity<PersonalInformation>().HasData(new PersonalInformation()
+            {
+                AccountId = "STU0001",
+                FirstName = "Thao",
+                LastName = "Nguyen",
+                Phone = "013257983",
+            });
+            modelBuilder.Entity<Account>().HasData(new Account()
+            {
+                AccountId = "STU0002",
+                Username = "anhnhpd00579",
+                Salt = PasswordHandle.GetInstance().GenerateSalt(),
+                Password = PasswordHandle.GetInstance().EncryptPassword("A123@a123", PasswordHandle.GetInstance().GenerateSalt()),
+                Email = "anhnhpd00579@fpt.edu.vn",
+            });
+            modelBuilder.Entity<PersonalInformation>().HasData(new PersonalInformation()
+            {
+                AccountId = "STU0002",
+                FirstName = "Anh",
+                LastName = "Nguyen",
+                Phone = "0130387983",
+            });
+
+            modelBuilder.Entity<Role>().HasData(new Role()
+            {
+                RoleId = 3,
+                Name = "Student"
+            });
+            modelBuilder.Entity<AccountRole>().HasData(new AccountRole()
+            {
+                AccountId = "STU0002",
+                RoleId = 3,
+            });
+            modelBuilder.Entity<AccountRole>().HasData(new AccountRole()
+            {
+                AccountId = "STU0001",
+                RoleId = 3,
+            });
         }
 
     }
