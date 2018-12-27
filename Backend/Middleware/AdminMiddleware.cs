@@ -33,18 +33,30 @@ namespace Backend.Middleware
 
         public async Task InvokeAsync(HttpContext context)
         {
-            StreamReader reader = new StreamReader(context.Request.Body,Encoding.UTF8);
-            string datastring = await reader.ReadToEndAsync();
-            Credential cr = JsonConvert.DeserializeObject<Credential>(datastring);
-
+            //StreamReader reader = new StreamReader(context.Request.Body,Encoding.UTF8);
+            //string datastring = await reader.ReadToEndAsync();
+            //Credential cr = JsonConvert.DeserializeObject<Credential>(datastring);
+            
+            
+            
             bool isValid = false;
-            if (!String.IsNullOrEmpty(cr.AccessToken))
+            if (context.Request.Headers.ContainsKey("Authorization"))
             {
+                
+                string tokenHeader = context.Request.Headers["Authorization"];
+                var token = tokenHeader.Replace("Basic ", "");
+                
                 HttpClient client = new HttpClient();
-                var responseResult = client.GetAsync("https://localhost:44314/api/Credentials?AccessToken=" + cr.AccessToken).Result;
+                var responseResult = client.GetAsync("https://localhost:44314/api/Authentication?AccessToken=" + token).Result;
                 if (responseResult.StatusCode == HttpStatusCode.OK)
                 {
-                    isValid = true;
+                    Role role = JsonConvert.DeserializeObject<Role>(responseResult.Content.ReadAsStringAsync().Result);
+                    //await context.Response.WriteAsync(role.ToString());
+                    //return;
+                    if (role.Name == "Admin")
+                    {
+                        isValid = true;
+                    }
                 }
             }
             
