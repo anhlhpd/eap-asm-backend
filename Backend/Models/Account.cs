@@ -15,8 +15,8 @@ namespace Backend.Models
             this.UpdatedAt = DateTime.Now;
             this.AccountStatus = AccountStatus.Active;
         }
-        [Key]
         [Required]
+        [ForeignKey("PersonalInformation")]
         public string AccountId { get; set; }
         [Required]
         public string Email { get; set; }

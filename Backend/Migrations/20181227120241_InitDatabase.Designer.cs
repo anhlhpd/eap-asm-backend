@@ -4,14 +4,16 @@ using Backend.Models;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace Backend.Migrations
 {
     [DbContext(typeof(BackendContext))]
-    partial class BackendContextModelSnapshot : ModelSnapshot
+    [Migration("20181227120241_InitDatabase")]
+    partial class InitDatabase
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -33,8 +35,7 @@ namespace Backend.Migrations
                         .IsRequired();
 
                     b.Property<string>("Password")
-                        .IsRequired()
-                        .HasMaxLength(14);
+                        .IsRequired();
 
                     b.Property<string>("Salt");
 
@@ -54,7 +55,7 @@ namespace Backend.Migrations
                     b.ToTable("Account");
 
                     b.HasData(
-                        new { AccountId = "ADMIN", AccountStatus = 1, CreatedAt = new DateTime(2018, 12, 26, 14, 13, 9, 824, DateTimeKind.Local), DeletedAt = new DateTime(2018, 12, 26, 14, 13, 9, 825, DateTimeKind.Local), Email = "admin@admin.com", Password = "99HskOE6DozfKApuZx05xssL3teWKh3F/gI6LDdO+I0=", Salt = "nG9F6wUwm2unLajdOp2lOw==", UpdatedAt = new DateTime(2018, 12, 26, 14, 13, 9, 825, DateTimeKind.Local), Username = "ADMIN" }
+                        new { AccountId = "ADMIN", AccountStatus = 1, CreatedAt = new DateTime(2018, 12, 27, 19, 2, 40, 963, DateTimeKind.Local), DeletedAt = new DateTime(2018, 12, 27, 19, 2, 40, 965, DateTimeKind.Local), Email = "admin@admin.com", Password = "X4qagf71TdKwmOMtE9cnFDqp9oRy2cpMv3t+Lzt6vTI=", Salt = "ULloT5GpI0tcug2jRRmRBA==", UpdatedAt = new DateTime(2018, 12, 27, 19, 2, 40, 965, DateTimeKind.Local), Username = "ADMIN" }
                     );
                 });
 
@@ -69,7 +70,7 @@ namespace Backend.Migrations
                     b.HasAlternateKey("AccountId", "RoleId");
 
                     b.ToTable("AccountRoles");
-                    
+
                     b.HasData(
                         new { RoleId = 1, AccountId = "Admin" }
                     );
@@ -159,7 +160,7 @@ namespace Backend.Migrations
                     b.ToTable("Role");
 
                     b.HasData(
-                        new { RoleId = 1, CreatedAt = new DateTime(2018, 12, 26, 14, 13, 9, 840, DateTimeKind.Local), DeletedAt = new DateTime(2018, 12, 26, 14, 13, 9, 840, DateTimeKind.Local), Name = "Admin", RoleStatus = 1, UpdatedAt = new DateTime(2018, 12, 26, 14, 13, 9, 840, DateTimeKind.Local) }
+                        new { RoleId = 1, CreatedAt = new DateTime(2018, 12, 27, 19, 2, 40, 982, DateTimeKind.Local), DeletedAt = new DateTime(2018, 12, 27, 19, 2, 40, 982, DateTimeKind.Local), Name = "Admin", RoleStatus = 1, UpdatedAt = new DateTime(2018, 12, 27, 19, 2, 40, 982, DateTimeKind.Local) }
                     );
                 });
 
