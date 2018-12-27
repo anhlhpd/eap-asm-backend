@@ -177,6 +177,5 @@ namespace Backend.Models
                 RoleId = 3,
             });
         }
-
     }
 }

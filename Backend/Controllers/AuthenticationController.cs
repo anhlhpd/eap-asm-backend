@@ -20,53 +20,65 @@ namespace Backend.Controllers
         {
             _context = context;
         }
-        // POST: api/Login
+
+        // POST: api/Authentication/Login
+        [Route("Login")]
         [HttpPost]
-        public async Task<IActionResult> Login([FromBody] string username, string password, string clientId)
+        public async Task<IActionResult> Login(string username, string password, string clientId)
         {
             // find 1 account with matching username in Account
             var ac = await _context.Account.SingleOrDefaultAsync(a =>
                     a.Username == username);
-            // verify clientId to be either STU or TCH first
-            var isCorrectClient = ac.AccountId.StartsWith(clientId);
-            if (ac != null && isCorrectClient == true)
+            if (ac != null)
             {
-                // check if account is logged in elsewhere
-                var cr = await _context.Credential.SingleOrDefaultAsync(c =>
-                    c.AccountId == ac.AccountId);
-                if(cr == null) // if account has never logged in
+                // verify clientId to be either STU or TCH first
+                var isCorrectClient = ac.AccountId.StartsWith(clientId);
+                if (isCorrectClient == true)
                 {
-                    // check matching password
-                    if (PasswordHandle.GetInstance().EncryptPassword(ac.Password, ac.Salt) == PasswordHandle.GetInstance().EncryptPassword(password, ac.Salt))
+                    // check if account is logged in elsewhere
+                    var cr = await _context.Credential.SingleOrDefaultAsync(c =>
+                        c.AccountId == ac.AccountId);
+                    if (cr == null) // if account has never logged in
                     {
-                        // create new credential with AccountId
-                        var firstCredential = new Credential {
-                            AccountId = ac.AccountId,
-                            AccessToken = TokenHandle.GetInstance().GenerateToken()
-                        };
+                        // check matching password
+                        if (PasswordHandle.GetInstance().EncryptPassword(ac.Password, ac.Salt) == PasswordHandle.GetInstance().EncryptPassword(password, ac.Salt))
+                        {
+                            // create new credential with AccountId
+                            var firstCredential = new Credential
+                            {
+                                AccountId = ac.AccountId,
+                                AccessToken = TokenHandle.GetInstance().GenerateToken()
+                            };
 
-                        _context.Credential.Add(firstCredential);
-                        await _context.SaveChangesAsync();
-                        // save token
-                        return Ok(TokenHandle.GetInstance().GenerateToken());
+                            _context.Credential.Add(firstCredential);
+                            await _context.SaveChangesAsync();
+                            // save token
+                            return Ok(TokenHandle.GetInstance().GenerateToken());
+                        }
                     }
-                }
-                else if(cr.AccessToken == null) // if 1 credential exists and accessToken was deleted
-                {
-                    // check matching password
-                    if (PasswordHandle.GetInstance().EncryptPassword(ac.Password, ac.Salt) == PasswordHandle.GetInstance().EncryptPassword(password, ac.Salt))
+                    else if (cr.AccessToken == null) // if 1 credential exists and accessToken was deleted
                     {
-                        // save token
-                        var accessToken = TokenHandle.GetInstance().GenerateToken();
-                        cr.AccessToken = accessToken;
-                        return Ok(accessToken);
+                        // check matching password
+                        if (PasswordHandle.GetInstance().EncryptPassword(ac.Password, ac.Salt) == PasswordHandle.GetInstance().EncryptPassword(password, ac.Salt))
+                        {
+                            // save token
+                            var accessToken = TokenHandle.GetInstance().GenerateToken();
+                            cr.AccessToken = accessToken;
+                            return Ok(accessToken);
+                        }
+                    }
+                    else
+                    {
+                        return BadRequest("You're logged in!");
                     }
                 }
+                return BadRequest("Client wrong");
             }
-            return NotFound();
+            return NotFound("Account wrong" + username);
         }
 
-        // POST: api/Logout
+        // POST: api/Authentication/Logout
+        [Route("Logout")]
         [HttpPost]
         public async Task<IActionResult> Logout()
         {
