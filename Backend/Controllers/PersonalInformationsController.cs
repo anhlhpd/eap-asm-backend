@@ -135,7 +135,7 @@ namespace Backend.Controllers
         }
 
         [HttpPost("Student")]
-        public async Task<IActionResult> PostStudentPersonalInformation([FromBody] PersonalInformation personalInformation)
+        public async Task<IActionResult> PostStudentPersonalInformation([FromBody] PersonalInformation personalInformation, [FromForm] string studentClassId)
         {
             if (!ModelState.IsValid)
             {
@@ -160,15 +160,20 @@ namespace Backend.Controllers
             }
 
             var name = personalInformation.FirstName;
-            var accountUsername = personalInformation.FirstName + personalInformation.LastName[0];
+            var accountUsername = personalInformation.FirstName + personalInformation.LastName[0] + personalInformation.AccountId;
             Account account = new Account()
             {
-                AccountId = new { id = personalInformation.AccountId},
-                Username = accountUsername,
-                Email = accountUsername + "@gmail.com",
-                Password = accountUsername
+                AccountId = personalInformation.AccountId,
+                Username = accountUsername.ToLower(),
+                Email = accountUsername.ToLower() + "@gmail.com",
+                Password = accountUsername.ToLower()
             };
             _context.Account.Add(account);
+            _context.StudentClassAccount.Add(new StudentClassAccount()
+            {
+                AccountId = personalInformation.AccountId,
+                StudentClassId = studentClassId
+            });
             _context.SaveChanges();
 
             return CreatedAtAction("GetPersonalInformation", new { id = personalInformation.AccountId }, personalInformation);

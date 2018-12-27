@@ -16,19 +16,19 @@ namespace Backend.Models
             this.DeletedAt = DateTime.Now;
             this.AccountStatus = AccountStatus.Active;
         }
-        [Key]
         [Required]
+        [ForeignKey("PersonalInformation")]
         public string AccountId { get; set; }
         [Required]
         public string Email { get; set; }
         [Required]
         public string Username { get; set; }
-        [Required(ErrorMessage = "Please enter password"), MinLength(6), MaxLength(14)]
+        [Required(ErrorMessage = "Please enter password")]
         public string Password { get; set; }
         public string Salt { get; set; }
         public DateTime CreatedAt { get; set; }
         public DateTime UpdatedAt { get; set; }
-        public DateTime DeletedAt { get; set; }
+        public DateTime? DeletedAt { get; set; }
         public AccountStatus AccountStatus { get; set; }
         public PersonalInformation PersonalInformation { get; set; }
     }
