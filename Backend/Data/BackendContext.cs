@@ -22,6 +22,7 @@ namespace Backend.Models
 
         public DbSet<Backend.Models.Credential> Credential { get; set; }
         public DbSet<Backend.Models.AccountRole> AccountRoles { get; set; }
+        public DbSet<Backend.Models.StudentClassAccount> StudentClassAccount { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -64,7 +65,7 @@ namespace Backend.Models
                 LastName = "ADMIN",
                 Phone = "01234567890",
             });
-
+            
             modelBuilder.Entity<Account>().HasData(new Account()
             {
                 AccountId = "ADMIN",
@@ -86,9 +87,5 @@ namespace Backend.Models
                 RoleId = 1,
             });
         }
-
-        public DbSet<Backend.Models.StudentClassAccount> StudentClassAccount { get; set; }
-
     }
-
 }

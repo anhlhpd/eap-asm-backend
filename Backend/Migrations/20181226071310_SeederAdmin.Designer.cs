@@ -4,14 +4,16 @@ using Backend.Models;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace Backend.Migrations
 {
     [DbContext(typeof(BackendContext))]
-    partial class BackendContextModelSnapshot : ModelSnapshot
+    [Migration("20181226071310_SeederAdmin")]
+    partial class SeederAdmin
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -21,13 +23,14 @@ namespace Backend.Migrations
 
             modelBuilder.Entity("Backend.Models.Account", b =>
                 {
-                    b.Property<string>("AccountId");
+                    b.Property<string>("AccountId")
+                        .ValueGeneratedOnAdd();
 
                     b.Property<int>("AccountStatus");
 
                     b.Property<DateTime>("CreatedAt");
 
-                    b.Property<DateTime?>("DeletedAt");
+                    b.Property<DateTime>("DeletedAt");
 
                     b.Property<string>("Email")
                         .IsRequired();
@@ -69,7 +72,7 @@ namespace Backend.Migrations
                     b.HasAlternateKey("AccountId", "RoleId");
 
                     b.ToTable("AccountRoles");
-                    
+
                     b.HasData(
                         new { RoleId = 1, AccountId = "Admin" }
                     );
@@ -101,8 +104,7 @@ namespace Backend.Migrations
 
             modelBuilder.Entity("Backend.Models.PersonalInformation", b =>
                 {
-                    b.Property<string>("AccountId")
-                        .ValueGeneratedOnAdd();
+                    b.Property<string>("AccountId");
 
                     b.Property<DateTime>("Birthday");
 
@@ -222,14 +224,6 @@ namespace Backend.Migrations
                     b.ToTable("Subject");
                 });
 
-            modelBuilder.Entity("Backend.Models.Account", b =>
-                {
-                    b.HasOne("Backend.Models.PersonalInformation", "PersonalInformation")
-                        .WithOne("Account")
-                        .HasForeignKey("Backend.Models.Account", "AccountId")
-                        .OnDelete(DeleteBehavior.Cascade);
-                });
-
             modelBuilder.Entity("Backend.Models.AccountRole", b =>
                 {
                     b.HasOne("Backend.Models.Account", "Account")
@@ -248,6 +242,14 @@ namespace Backend.Migrations
                     b.HasOne("Backend.Models.Account", "Account")
                         .WithMany()
                         .HasForeignKey("AccountId1");
+                });
+
+            modelBuilder.Entity("Backend.Models.PersonalInformation", b =>
+                {
+                    b.HasOne("Backend.Models.Account", "Account")
+                        .WithOne("PersonalInformation")
+                        .HasForeignKey("Backend.Models.PersonalInformation", "AccountId")
+                        .OnDelete(DeleteBehavior.Cascade);
                 });
 
             modelBuilder.Entity("Backend.Models.StudentClass", b =>

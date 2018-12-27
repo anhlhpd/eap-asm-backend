@@ -13,7 +13,6 @@ namespace Backend.Models
         {
             this.CreatedAt = DateTime.Now;
             this.UpdatedAt = DateTime.Now;
-            this.DeletedAt = DateTime.Now;
             this.AccountStatus = AccountStatus.Active;
         }
         [Required]
