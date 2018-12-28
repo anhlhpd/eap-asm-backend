@@ -84,12 +84,13 @@ namespace Backend.Models
 
             //Seeder for 2 teachers and 2 students
             // Teachers
+            salt = PasswordHandle.GetInstance().GenerateSalt();
             modelBuilder.Entity<Account>().HasData(new Account()
             {
                 AccountId = "TCH0001",
                 Username = "xuanhung24",
-                Salt = PasswordHandle.GetInstance().GenerateSalt(),
-                Password = PasswordHandle.GetInstance().EncryptPassword("A123@a123", PasswordHandle.GetInstance().GenerateSalt()),
+                Salt = salt,
+                Password = PasswordHandle.GetInstance().EncryptPassword("A123@a123", salt),
                 Email = "xuanhung2401@gmail.com",
             });
             modelBuilder.Entity<PersonalInformation>().HasData(new PersonalInformation()
@@ -99,12 +100,13 @@ namespace Backend.Models
                 LastName = "Dao",
                 Phone = "013237416",
             });
+            salt = PasswordHandle.GetInstance().GenerateSalt();
             modelBuilder.Entity<Account>().HasData(new Account()
             {
                 AccountId = "TCH0002",
                 Username = "hongluyen",
-                Salt = PasswordHandle.GetInstance().GenerateSalt(),
-                Password = PasswordHandle.GetInstance().EncryptPassword("A123@a123", PasswordHandle.GetInstance().GenerateSalt()),
+                Salt = salt,
+                Password = PasswordHandle.GetInstance().EncryptPassword("A123@a123", salt),
                 Email = "hongluyen@gmail.com",
             });
             modelBuilder.Entity<PersonalInformation>().HasData(new PersonalInformation()
@@ -130,12 +132,13 @@ namespace Backend.Models
                 RoleId = 2,
             });
             // Students
+            salt = PasswordHandle.GetInstance().GenerateSalt();
             modelBuilder.Entity<Account>().HasData(new Account()
             {
                 AccountId = "STU0001",
                 Username = "thuthao541998",
-                Salt = PasswordHandle.GetInstance().GenerateSalt(),
-                Password = PasswordHandle.GetInstance().EncryptPassword("A123@a123", PasswordHandle.GetInstance().GenerateSalt()),
+                Salt = salt,
+                Password = PasswordHandle.GetInstance().EncryptPassword("A123@a123", salt),
                 Email = "thuthao541998@gmail.com",
             });
             modelBuilder.Entity<PersonalInformation>().HasData(new PersonalInformation()
@@ -145,12 +148,13 @@ namespace Backend.Models
                 LastName = "Nguyen",
                 Phone = "013257983",
             });
+            salt = PasswordHandle.GetInstance().GenerateSalt();
             modelBuilder.Entity<Account>().HasData(new Account()
             {
                 AccountId = "STU0002",
                 Username = "anhnhpd00579",
-                Salt = PasswordHandle.GetInstance().GenerateSalt(),
-                Password = PasswordHandle.GetInstance().EncryptPassword("A123@a123", PasswordHandle.GetInstance().GenerateSalt()),
+                Salt = salt,
+                Password = PasswordHandle.GetInstance().EncryptPassword("A123@a123", salt),
                 Email = "anhnhpd00579@fpt.edu.vn",
             });
             modelBuilder.Entity<PersonalInformation>().HasData(new PersonalInformation()

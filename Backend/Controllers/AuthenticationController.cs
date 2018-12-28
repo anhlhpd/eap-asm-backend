@@ -7,6 +7,12 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Backend.Models;
 using SecurityHandle;
+using Newtonsoft.Json;
+using System.IO;
+using System.Text;
+using Newtonsoft.Json.Linq;
+using Microsoft.EntityFrameworkCore.Internal;
+using System.Globalization;
 
 namespace Backend.Controllers
 {
@@ -24,24 +30,31 @@ namespace Backend.Controllers
         // POST: api/Authentication/Login
         [Route("Login")]
         [HttpPost]
-        public async Task<IActionResult> Login(string username, string password, string clientId)
+        public async Task<IActionResult> Login(LoginInformation loginInformation)
         {
             // find 1 account with matching username in Account
             var ac = await _context.Account.SingleOrDefaultAsync(a =>
-                    a.Username == username);
+                    a.Username == loginInformation.Username);
             if (ac != null)
             {
                 // verify clientId to be either STU or TCH first
-                var isCorrectClient = ac.AccountId.StartsWith(clientId);
-                if (isCorrectClient == true)
+                var isCorrectClient = ac.AccountId.StartsWith(loginInformation.ClientId, true, new CultureInfo("en-US"));
+                if (isCorrectClient)
                 {
-                    // check if account is logged in elsewhere
-                    var cr = await _context.Credential.SingleOrDefaultAsync(c =>
-                        c.AccountId == ac.AccountId);
-                    if (cr == null) // if account has never logged in
+                    // check matching password
+                    if (ac.Password == PasswordHandle.GetInstance().EncryptPassword(loginInformation.Password, ac.Salt))
                     {
-                        // check matching password
-                        if (PasswordHandle.GetInstance().EncryptPassword(ac.Password, ac.Salt) == PasswordHandle.GetInstance().EncryptPassword(password, ac.Salt))
+                        // check if account is logged in elsewhere
+                        var cr = await _context.Credential.SingleOrDefaultAsync(c =>
+                            c.AccountId == ac.AccountId);
+                        if (cr != null) // if account has never logged in
+                        {
+                            // save token
+                            var accessToken = TokenHandle.GetInstance().GenerateToken();
+                            cr.AccessToken = accessToken;
+                            return Ok(accessToken);
+                        }
+                        else
                         {
                             // create new credential with AccountId
                             var firstCredential = new Credential
@@ -49,32 +62,20 @@ namespace Backend.Controllers
                                 AccountId = ac.AccountId,
                                 AccessToken = TokenHandle.GetInstance().GenerateToken()
                             };
-
                             _context.Credential.Add(firstCredential);
                             await _context.SaveChangesAsync();
                             // save token
                             return Ok(TokenHandle.GetInstance().GenerateToken());
                         }
                     }
-                    else if (cr.AccessToken == null) // if 1 credential exists and accessToken was deleted
-                    {
-                        // check matching password
-                        if (PasswordHandle.GetInstance().EncryptPassword(ac.Password, ac.Salt) == PasswordHandle.GetInstance().EncryptPassword(password, ac.Salt))
-                        {
-                            // save token
-                            var accessToken = TokenHandle.GetInstance().GenerateToken();
-                            cr.AccessToken = accessToken;
-                            return Ok(accessToken);
-                        }
-                    }
-                    else
-                    {
-                        return BadRequest("You're logged in!");
-                    }
+                    return NotFound("Password wrong; ogpw: " + ac.Password 
+                        + " - newpw: " + PasswordHandle.GetInstance().EncryptPassword(loginInformation.Password, ac.Salt) 
+                        + " - salt: " + ac.Salt
+                        + " - inputpw: " + loginInformation.Password);
                 }
-                return BadRequest("Client wrong");
+                return BadRequest("Client wrong: " + loginInformation.ClientId + " og id: " + ac.AccountId);
             }
-            return NotFound("Account wrong" + username);
+            return NotFound("Username wrong: " + loginInformation.Username);
         }
 
         // POST: api/Authentication/Logout
