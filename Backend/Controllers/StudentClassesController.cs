@@ -128,5 +128,28 @@ namespace Backend.Controllers
             var studentClass = await _context.StudentClass.FindAsync(id);
             return new JsonResult(studentClass);
         }
+
+        [HttpGet("{id}/Students")]
+        public async Task<IActionResult> GetStudentByClazz([FromRoute] string id)
+        {
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+            
+            var listClassStudent = _context.StudentClassAccount.Where(sc => sc.StudentClassId == id).ToArray();
+            List<Account> listAccount = new List<Account>();
+            foreach (var studentClassAcc in listClassStudent)
+            {
+                var account = _context.Account.Where(a => a.AccountId == studentClassAcc.AccountId).FirstOrDefault();
+                listAccount.Add(account);
+            }
+
+            if (listClassStudent == null)
+            {
+                return NotFound();
+            }
+            return new JsonResult(listAccount);
+        }
     }
 }

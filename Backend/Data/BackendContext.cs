@@ -87,5 +87,7 @@ namespace Backend.Models
                 RoleId = 1,
             });
         }
+
+        public DbSet<Backend.Models.Subject> Subject { get; set; }
     }
 }
