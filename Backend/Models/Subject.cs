@@ -10,7 +10,7 @@ namespace Backend.Models
     {
         public Subject()
         {
-            this.SubjectStatus = SubjectStatus.Active;
+            this.Status = SubjectStatus.Active;
         }
         [Key]
         [Required]
@@ -18,8 +18,8 @@ namespace Backend.Models
         [Required(ErrorMessage = "Please enter subject name")]
         public string Name { get; set; }
         public string Description { get; set; }
-        public SubjectStatus SubjectStatus { get; set; }
-        public List<StudentClass> StudentClasses { get; set; }
+        public SubjectStatus Status { get; set; }
+        public List<Clazz> Clazzes { get; set; }
     }
 
     public enum SubjectStatus

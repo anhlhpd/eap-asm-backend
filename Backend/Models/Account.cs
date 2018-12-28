@@ -13,23 +13,19 @@ namespace Backend.Models
         {
             this.CreatedAt = DateTime.Now;
             this.UpdatedAt = DateTime.Now;
-            this.AccountStatus = AccountStatus.Active;
+            this.Status = AccountStatus.Active;
         }
         [Required]
-        [ForeignKey("PersonalInformation")]
-        public string AccountId { get; set; }
-        [Required]
+        public string Id { get; set; }
         public string Email { get; set; }
-        [Required]
         public string Username { get; set; }
-        [Required(ErrorMessage = "Please enter password")]
         public string Password { get; set; }
         public string Salt { get; set; }
         public DateTime CreatedAt { get; set; }
         public DateTime UpdatedAt { get; set; }
         public DateTime? DeletedAt { get; set; }
-        public AccountStatus AccountStatus { get; set; }
-        public PersonalInformation PersonalInformation { get; set; }
+        public AccountStatus Status { get; set; }
+        public GeneralInformation GeneralInformation { get; set; }
     }
 
     public enum AccountStatus

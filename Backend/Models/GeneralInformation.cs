@@ -7,14 +7,13 @@ using System.Threading.Tasks;
 
 namespace Backend.Models
 {
-    public class PersonalInformation
+    public class GeneralInformation
     {
-        public PersonalInformation()
+        public GeneralInformation()
         {
             this.Gender = Gender.Other;
         }
         [Key]
-        [Required]
         public string AccountId { get; set; }
         [Required(ErrorMessage = "Please enter first name"), 
             MaxLength(10, ErrorMessage = "Please enter first name under 11 characters")]

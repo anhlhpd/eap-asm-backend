@@ -14,7 +14,7 @@ namespace Backend.Models
         }
         [Key]
         [Required]
-        public long MarkId { get; set; }
+        public long Id { get; set; }
         [Required(ErrorMessage = "Please input account")]
         public string AccountId { get; set; }
         [Required(ErrorMessage = "Please input subject")]
@@ -25,7 +25,7 @@ namespace Backend.Models
         [Required(ErrorMessage = "Please input mark type")]
         public MarkType MarkType { get; set; }
         public DateTime CreatedAt { get; set; }
-        public MarkStatus MarkStatus { get; set; }
+        public MarkStatus Status { get; set; }
         public Account Account { get; set; }
         public Subject Subject { get; set; }
     }

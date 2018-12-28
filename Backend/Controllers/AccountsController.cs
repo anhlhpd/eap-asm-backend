@@ -56,7 +56,7 @@ namespace Backend.Controllers
                 return BadRequest(ModelState);
             }
 
-            if (id != account.AccountId)
+            if (id != account.Id)
             {
                 return BadRequest();
             }
@@ -98,7 +98,7 @@ namespace Backend.Controllers
             _context.Account.Add(account);
             await _context.SaveChangesAsync();
 
-            return CreatedAtAction("GetAccount", new { id = account.AccountId }, account);
+            return CreatedAtAction("GetAccount", new { id = account.Id }, account);
         }
 
         // DELETE: api/Accounts/5
@@ -124,7 +124,7 @@ namespace Backend.Controllers
 
         private bool AccountExists(string id)
         {
-            return _context.Account.Any(e => e.AccountId == id);
+            return _context.Account.Any(e => e.Id == id);
         }
     }
 }

@@ -11,56 +11,56 @@ namespace Backend.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class StudentClassAccountsController : ControllerBase
+    public class ClazzAccountsController : ControllerBase
     {
         private readonly BackendContext _context;
 
-        public StudentClassAccountsController(BackendContext context)
+        public ClazzAccountsController(BackendContext context)
         {
             _context = context;
         }
 
-        // GET: api/StudentClassAccounts
+        // GET: api/ClazzAccounts
         [HttpGet]
-        public IEnumerable<StudentClassAccount> GetStudentClassAccount()
+        public IEnumerable<ClazzAccount> GetClazzAccount()
         {
-            return _context.StudentClassAccount;
+            return _context.ClazzAccount;
         }
 
-        // GET: api/StudentClassAccounts/5
+        // GET: api/ClazzAccounts/5
         [HttpGet("{id}")]
-        public async Task<IActionResult> GetStudentClassAccount([FromRoute] string id)
+        public async Task<IActionResult> GetClazzAccount([FromRoute] string id)
         {
             if (!ModelState.IsValid)
             {
                 return BadRequest(ModelState);
             }
 
-            var studentClassAccount = await _context.StudentClassAccount.FindAsync(id);
+            var ClazzAccount = await _context.ClazzAccount.FindAsync(id);
 
-            if (studentClassAccount == null)
+            if (ClazzAccount == null)
             {
                 return NotFound();
             }
 
-            return Ok(studentClassAccount);
+            return Ok(ClazzAccount);
         }
 
-        // PUT: api/StudentClassAccounts/5
+        // PUT: api/ClazzAccounts/5
         [HttpPut("{id}")]
-        public async Task<IActionResult> PutStudentClassAccount([FromRoute] string id, [FromBody] StudentClassAccount studentClassAccount)
+        public async Task<IActionResult> PutClazzAccount([FromRoute] string id, [FromBody] ClazzAccount clazzAccount)
         {
             if (!ModelState.IsValid)
             {
                 return BadRequest(ModelState);
             }
 
-            if (id != studentClassAccount.StudentClassId)
+            if (id != clazzAccount.ClazzId)
             {
                 return BadRequest();
             }
 
-            _context.Entry(studentClassAccount).State = EntityState.Modified;
+            _context.Entry(clazzAccount).State = EntityState.Modified;
 
             try
             {
@@ -68,7 +68,7 @@ namespace Backend.Controllers
             }
             catch (DbUpdateConcurrencyException)
             {
-                if (!StudentClassAccountExists(id))
+                if (!ClazzAccountExists(id))
                 {
                     return NotFound();
                 }
@@ -81,23 +81,23 @@ namespace Backend.Controllers
             return NoContent();
         }
 
-        // POST: api/StudentClassAccounts
+        // POST: api/ClazzAccounts
         [HttpPost]
-        public async Task<IActionResult> PostStudentClassAccount([FromBody] StudentClassAccount studentClassAccount)
+        public async Task<IActionResult> PostClazzAccount([FromBody] ClazzAccount clazzAccount)
         {
             if (!ModelState.IsValid)
             {
                 return BadRequest(ModelState);
             }
 
-            _context.StudentClassAccount.Add(studentClassAccount);
+            _context.ClazzAccount.Add(clazzAccount);
             try
             {
                 await _context.SaveChangesAsync();
             }
             catch (DbUpdateException)
             {
-                if (StudentClassAccountExists(studentClassAccount.StudentClassId))
+                if (ClazzAccountExists(clazzAccount.ClazzId))
                 {
                     return new StatusCodeResult(StatusCodes.Status409Conflict);
                 }
@@ -107,33 +107,33 @@ namespace Backend.Controllers
                 }
             }
 
-            return CreatedAtAction("GetStudentClassAccount", new { id = studentClassAccount.StudentClassId }, studentClassAccount);
+            return CreatedAtAction("GetClazzAccount", new { id = clazzAccount.ClazzId }, clazzAccount);
         }
 
-        // DELETE: api/StudentClassAccounts/5
+        // DELETE: api/ClazzAccounts/5
         [HttpDelete("{id}")]
-        public async Task<IActionResult> DeleteStudentClassAccount([FromRoute] string id)
+        public async Task<IActionResult> DeleteClazzAccount([FromRoute] string id)
         {
             if (!ModelState.IsValid)
             {
                 return BadRequest(ModelState);
             }
 
-            var studentClassAccount = await _context.StudentClassAccount.FindAsync(id);
-            if (studentClassAccount == null)
+            var ClazzAccount = await _context.ClazzAccount.FindAsync(id);
+            if (ClazzAccount == null)
             {
                 return NotFound();
             }
 
-            _context.StudentClassAccount.Remove(studentClassAccount);
+            _context.ClazzAccount.Remove(ClazzAccount);
             await _context.SaveChangesAsync();
 
-            return Ok(studentClassAccount);
+            return Ok(ClazzAccount);
         }
 
-        private bool StudentClassAccountExists(string id)
+        private bool ClazzAccountExists(string id)
         {
-            return _context.StudentClassAccount.Any(e => e.StudentClassId == id);
+            return _context.ClazzAccount.Any(e => e.ClazzId == id);
         }
     }
 }
