@@ -105,7 +105,6 @@ namespace Backend.Controllers
                     throw;
                 }
             }
-
             return CreatedAtAction("GetPersonalInformation", new { id = personalInformation.AccountId }, personalInformation);
         }
 
@@ -133,6 +132,48 @@ namespace Backend.Controllers
         private bool PersonalInformationExists(string id)
         {
             return _context.PersonalInformation.Any(e => e.AccountId == id);
+        }
+
+        [HttpPost("Student")]
+        public async Task<IActionResult> PostStudentPersonalInformation([FromBody] PersonalInformation personalInformation)
+        {
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+
+            _context.PersonalInformation.Add(personalInformation);
+            try
+            {
+                await _context.SaveChangesAsync();
+            }
+            catch (DbUpdateException)
+            {
+                if (PersonalInformationExists(personalInformation.AccountId))
+                {
+                    return new StatusCodeResult(StatusCodes.Status409Conflict);
+                }
+                else
+                {
+                    throw;
+                }
+            }
+
+            var name = personalInformation.FirstName;
+            var accountUsername = personalInformation.FirstName + personalInformation.LastName[0] + personalInformation.AccountId;
+            var salt = SecurityHandle.PasswordHandle.GetInstance().GenerateSalt();
+            Account account = new Account()
+            {
+                AccountId = personalInformation.AccountId,
+                Username = accountUsername.ToLower(),
+                Email = accountUsername.ToLower() + "@gmail.com",
+                Salt = salt,
+                Password = SecurityHandle.PasswordHandle.GetInstance().EncryptPassword(accountUsername.ToLower(), salt)                
+            };
+            _context.Account.Add(account);
+            _context.SaveChanges();
+
+            return CreatedAtAction("GetPersonalInformation", new { id = personalInformation.AccountId }, personalInformation);
         }
     }
 }

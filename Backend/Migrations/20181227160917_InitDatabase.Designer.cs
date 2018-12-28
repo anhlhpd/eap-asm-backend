@@ -10,8 +10,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Backend.Migrations
 {
     [DbContext(typeof(BackendContext))]
-    [Migration("20181226071310_SeederAdmin")]
-    partial class SeederAdmin
+    [Migration("20181227160917_InitDatabase")]
+    partial class InitDatabase
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -23,21 +23,19 @@ namespace Backend.Migrations
 
             modelBuilder.Entity("Backend.Models.Account", b =>
                 {
-                    b.Property<string>("AccountId")
-                        .ValueGeneratedOnAdd();
+                    b.Property<string>("AccountId");
 
                     b.Property<int>("AccountStatus");
 
                     b.Property<DateTime>("CreatedAt");
 
-                    b.Property<DateTime>("DeletedAt");
+                    b.Property<DateTime?>("DeletedAt");
 
                     b.Property<string>("Email")
                         .IsRequired();
 
                     b.Property<string>("Password")
-                        .IsRequired()
-                        .HasMaxLength(14);
+                        .IsRequired();
 
                     b.Property<string>("Salt");
 
@@ -57,7 +55,7 @@ namespace Backend.Migrations
                     b.ToTable("Account");
 
                     b.HasData(
-                        new { AccountId = "ADMIN", AccountStatus = 1, CreatedAt = new DateTime(2018, 12, 26, 14, 13, 9, 824, DateTimeKind.Local), DeletedAt = new DateTime(2018, 12, 26, 14, 13, 9, 825, DateTimeKind.Local), Email = "admin@admin.com", Password = "99HskOE6DozfKApuZx05xssL3teWKh3F/gI6LDdO+I0=", Salt = "nG9F6wUwm2unLajdOp2lOw==", UpdatedAt = new DateTime(2018, 12, 26, 14, 13, 9, 825, DateTimeKind.Local), Username = "ADMIN" }
+                        new { AccountId = "ADMIN", AccountStatus = 1, CreatedAt = new DateTime(2018, 12, 27, 23, 9, 16, 886, DateTimeKind.Local), Email = "admin@admin.com", Password = "piHAzScrbuKb63ug/W0JpNu7kuFO3ATgiVLFu2riJps=", Salt = "9yclEFF5SWqVvj4RgM2hNQ==", UpdatedAt = new DateTime(2018, 12, 27, 23, 9, 16, 888, DateTimeKind.Local), Username = "ADMIN" }
                     );
                 });
 
@@ -104,7 +102,8 @@ namespace Backend.Migrations
 
             modelBuilder.Entity("Backend.Models.PersonalInformation", b =>
                 {
-                    b.Property<string>("AccountId");
+                    b.Property<string>("AccountId")
+                        .ValueGeneratedOnAdd();
 
                     b.Property<DateTime>("Birthday");
 
@@ -161,7 +160,7 @@ namespace Backend.Migrations
                     b.ToTable("Role");
 
                     b.HasData(
-                        new { RoleId = 1, CreatedAt = new DateTime(2018, 12, 26, 14, 13, 9, 840, DateTimeKind.Local), DeletedAt = new DateTime(2018, 12, 26, 14, 13, 9, 840, DateTimeKind.Local), Name = "Admin", RoleStatus = 1, UpdatedAt = new DateTime(2018, 12, 26, 14, 13, 9, 840, DateTimeKind.Local) }
+                        new { RoleId = 1, CreatedAt = new DateTime(2018, 12, 27, 23, 9, 16, 903, DateTimeKind.Local), DeletedAt = new DateTime(2018, 12, 27, 23, 9, 16, 903, DateTimeKind.Local), Name = "Admin", RoleStatus = 1, UpdatedAt = new DateTime(2018, 12, 27, 23, 9, 16, 903, DateTimeKind.Local) }
                     );
                 });
 
@@ -224,6 +223,14 @@ namespace Backend.Migrations
                     b.ToTable("Subject");
                 });
 
+            modelBuilder.Entity("Backend.Models.Account", b =>
+                {
+                    b.HasOne("Backend.Models.PersonalInformation", "PersonalInformation")
+                        .WithOne("Account")
+                        .HasForeignKey("Backend.Models.Account", "AccountId")
+                        .OnDelete(DeleteBehavior.Cascade);
+                });
+
             modelBuilder.Entity("Backend.Models.AccountRole", b =>
                 {
                     b.HasOne("Backend.Models.Account", "Account")
@@ -242,14 +249,6 @@ namespace Backend.Migrations
                     b.HasOne("Backend.Models.Account", "Account")
                         .WithMany()
                         .HasForeignKey("AccountId1");
-                });
-
-            modelBuilder.Entity("Backend.Models.PersonalInformation", b =>
-                {
-                    b.HasOne("Backend.Models.Account", "Account")
-                        .WithOne("PersonalInformation")
-                        .HasForeignKey("Backend.Models.PersonalInformation", "AccountId")
-                        .OnDelete(DeleteBehavior.Cascade);
                 });
 
             modelBuilder.Entity("Backend.Models.StudentClass", b =>

@@ -116,7 +116,8 @@ namespace Backend.Controllers
                     c.AccessToken == HttpContext.Request.Query["AccessToken"].ToString());
                 if (cr != null)
                 {
-                    return Ok(cr);
+                    var currentRole = _context.Role.Find(_context.AccountRoles.SingleOrDefault(ar=>ar.AccountId == cr.AccountId).RoleId);
+                    return Ok(currentRole);
                 }
             }
             return NotFound();

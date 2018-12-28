@@ -4,27 +4,24 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 namespace Backend.Migrations
 {
-    public partial class initialize : Migration
+    public partial class InitDatabase : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.CreateTable(
-                name: "Account",
+                name: "PersonalInformation",
                 columns: table => new
                 {
                     AccountId = table.Column<string>(nullable: false),
-                    Email = table.Column<string>(nullable: false),
-                    Username = table.Column<string>(nullable: false),
-                    Password = table.Column<string>(nullable: false),
-                    Salt = table.Column<string>(nullable: true),
-                    CreatedAt = table.Column<DateTime>(nullable: false),
-                    UpdatedAt = table.Column<DateTime>(nullable: false),
-                    DeletedAt = table.Column<DateTime>(nullable: false),
-                    AccountStatus = table.Column<int>(nullable: false)
+                    FirstName = table.Column<string>(maxLength: 10, nullable: false),
+                    LastName = table.Column<string>(maxLength: 10, nullable: false),
+                    Birthday = table.Column<DateTime>(nullable: false),
+                    Gender = table.Column<int>(nullable: false),
+                    Phone = table.Column<string>(maxLength: 12, nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Account", x => x.AccountId);
+                    table.PrimaryKey("PK_PersonalInformation", x => x.AccountId);
                 });
 
             migrationBuilder.CreateTable(
@@ -61,46 +58,50 @@ namespace Backend.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "Credential",
+                name: "Account",
                 columns: table => new
                 {
                     AccountId = table.Column<string>(nullable: false),
-                    AccessToken = table.Column<string>(nullable: true),
+                    Email = table.Column<string>(nullable: false),
+                    Username = table.Column<string>(nullable: false),
+                    Password = table.Column<string>(nullable: false),
+                    Salt = table.Column<string>(nullable: true),
                     CreatedAt = table.Column<DateTime>(nullable: false),
                     UpdatedAt = table.Column<DateTime>(nullable: false),
-                    AccountId1 = table.Column<string>(nullable: true)
+                    DeletedAt = table.Column<DateTime>(nullable: true),
+                    AccountStatus = table.Column<int>(nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Credential", x => x.AccountId);
+                    table.PrimaryKey("PK_Account", x => x.AccountId);
                     table.ForeignKey(
-                        name: "FK_Credential_Account_AccountId1",
-                        column: x => x.AccountId1,
-                        principalTable: "Account",
+                        name: "FK_Account_PersonalInformation_AccountId",
+                        column: x => x.AccountId,
+                        principalTable: "PersonalInformation",
                         principalColumn: "AccountId",
-                        onDelete: ReferentialAction.Restrict);
+                        onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateTable(
-                name: "PersonalInformation",
+                name: "StudentClass",
                 columns: table => new
                 {
-                    AccountId = table.Column<string>(nullable: false),
-                    FirstName = table.Column<string>(maxLength: 10, nullable: false),
-                    LastName = table.Column<string>(maxLength: 10, nullable: false),
-                    Birthday = table.Column<DateTime>(nullable: false),
-                    Gender = table.Column<int>(nullable: false),
-                    Phone = table.Column<string>(maxLength: 12, nullable: false)
+                    StudentClassId = table.Column<string>(nullable: false),
+                    StartDate = table.Column<DateTime>(nullable: false),
+                    Session = table.Column<int>(nullable: false),
+                    StudentClassStatus = table.Column<int>(nullable: false),
+                    CurrentSubjectId = table.Column<int>(nullable: false),
+                    SubjectId = table.Column<int>(nullable: true)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_PersonalInformation", x => x.AccountId);
+                    table.PrimaryKey("PK_StudentClass", x => x.StudentClassId);
                     table.ForeignKey(
-                        name: "FK_PersonalInformation_Account_AccountId",
-                        column: x => x.AccountId,
-                        principalTable: "Account",
-                        principalColumn: "AccountId",
-                        onDelete: ReferentialAction.Cascade);
+                        name: "FK_StudentClass_Subject_SubjectId",
+                        column: x => x.SubjectId,
+                        principalTable: "Subject",
+                        principalColumn: "SubjectId",
+                        onDelete: ReferentialAction.Restrict);
                 });
 
             migrationBuilder.CreateTable(
@@ -129,24 +130,23 @@ namespace Backend.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "StudentClass",
+                name: "Credential",
                 columns: table => new
                 {
-                    StudentClassId = table.Column<string>(nullable: false),
-                    StartDate = table.Column<DateTime>(nullable: false),
-                    Session = table.Column<int>(nullable: false),
-                    StudentClassStatus = table.Column<int>(nullable: false),
-                    CurrentSubjectId = table.Column<int>(nullable: false),
-                    SubjectId = table.Column<int>(nullable: true)
+                    AccountId = table.Column<string>(nullable: false),
+                    AccessToken = table.Column<string>(nullable: true),
+                    CreatedAt = table.Column<DateTime>(nullable: false),
+                    UpdatedAt = table.Column<DateTime>(nullable: false),
+                    AccountId1 = table.Column<string>(nullable: true)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_StudentClass", x => x.StudentClassId);
+                    table.PrimaryKey("PK_Credential", x => x.AccountId);
                     table.ForeignKey(
-                        name: "FK_StudentClass_Subject_SubjectId",
-                        column: x => x.SubjectId,
-                        principalTable: "Subject",
-                        principalColumn: "SubjectId",
+                        name: "FK_Credential_Account_AccountId1",
+                        column: x => x.AccountId1,
+                        principalTable: "Account",
+                        principalColumn: "AccountId",
                         onDelete: ReferentialAction.Restrict);
                 });
 
@@ -173,6 +173,26 @@ namespace Backend.Migrations
                         principalColumn: "StudentClassId",
                         onDelete: ReferentialAction.Cascade);
                 });
+
+            migrationBuilder.InsertData(
+                table: "PersonalInformation",
+                columns: new[] { "AccountId", "Birthday", "FirstName", "Gender", "LastName", "Phone" },
+                values: new object[] { "ADMIN", new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), "ADMIN", 2, "ADMIN", "01234567890" });
+
+            migrationBuilder.InsertData(
+                table: "Role",
+                columns: new[] { "RoleId", "CreatedAt", "DeletedAt", "Description", "Name", "RoleStatus", "UpdatedAt" },
+                values: new object[] { 1, new DateTime(2018, 12, 27, 23, 9, 16, 903, DateTimeKind.Local), new DateTime(2018, 12, 27, 23, 9, 16, 903, DateTimeKind.Local), null, "Admin", 1, new DateTime(2018, 12, 27, 23, 9, 16, 903, DateTimeKind.Local) });
+
+            migrationBuilder.InsertData(
+                table: "Account",
+                columns: new[] { "AccountId", "AccountStatus", "CreatedAt", "DeletedAt", "Email", "Password", "Salt", "UpdatedAt", "Username" },
+                values: new object[] { "ADMIN", 1, new DateTime(2018, 12, 27, 23, 9, 16, 886, DateTimeKind.Local), null, "admin@admin.com", "piHAzScrbuKb63ug/W0JpNu7kuFO3ATgiVLFu2riJps=", "9yclEFF5SWqVvj4RgM2hNQ==", new DateTime(2018, 12, 27, 23, 9, 16, 888, DateTimeKind.Local), "ADMIN" });
+
+            migrationBuilder.InsertData(
+                table: "AccountRoles",
+                columns: new[] { "RoleId", "AccountId" },
+                values: new object[] { 1, "Admin" });
 
             migrationBuilder.CreateIndex(
                 name: "IX_Account_Email",
@@ -242,9 +262,6 @@ namespace Backend.Migrations
                 name: "Credential");
 
             migrationBuilder.DropTable(
-                name: "PersonalInformation");
-
-            migrationBuilder.DropTable(
                 name: "StudentClassAccount");
 
             migrationBuilder.DropTable(
@@ -255,6 +272,9 @@ namespace Backend.Migrations
 
             migrationBuilder.DropTable(
                 name: "StudentClass");
+
+            migrationBuilder.DropTable(
+                name: "PersonalInformation");
 
             migrationBuilder.DropTable(
                 name: "Subject");
