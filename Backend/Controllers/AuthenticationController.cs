@@ -6,6 +6,13 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Backend.Models;
+using SecurityHandle;
+using Newtonsoft.Json;
+using System.IO;
+using System.Text;
+using Newtonsoft.Json.Linq;
+using Microsoft.EntityFrameworkCore.Internal;
+using System.Globalization;
 
 namespace Backend.Controllers
 {
@@ -18,6 +25,84 @@ namespace Backend.Controllers
         public AuthenticationController(BackendContext context)
         {
             _context = context;
+        }
+
+        // POST: api/Authentication/Login
+        [Route("Login")]
+        [HttpPost]
+        public async Task<IActionResult> Login(LoginInformation loginInformation)
+        {
+            // find 1 account with matching username in Account
+            var ac = await _context.Account.SingleOrDefaultAsync(a =>
+                    a.Username == loginInformation.Username);
+            if (ac != null)
+            {
+                // verify clientId to be either STU or TCH first
+                var isCorrectClient = ac.AccountId.StartsWith(loginInformation.ClientId, true, new CultureInfo("en-US"));
+                if (isCorrectClient)
+                {
+                    // check matching password
+                    if (ac.Password == PasswordHandle.GetInstance().EncryptPassword(loginInformation.Password, ac.Salt))
+                    {
+                        // check if account is logged in elsewhere
+                        var cr = await _context.Credential.SingleOrDefaultAsync(c =>
+                            c.AccountId == ac.AccountId);
+                        if (cr != null) // if account has never logged in
+                        {
+                            // save token
+                            var accessToken = TokenHandle.GetInstance().GenerateToken();
+                            cr.AccessToken = accessToken;
+                            return Ok(accessToken);
+                        }
+                        else
+                        {
+                            // create new credential with AccountId
+                            var firstCredential = new Credential
+                            {
+                                AccountId = ac.AccountId,
+                                AccessToken = TokenHandle.GetInstance().GenerateToken()
+                            };
+                            _context.Credential.Add(firstCredential);
+                            await _context.SaveChangesAsync();
+                            // save token
+                            return Ok(TokenHandle.GetInstance().GenerateToken());
+                        }
+                    }
+                    return NotFound("Password wrong; ogpw: " + ac.Password 
+                        + " - newpw: " + PasswordHandle.GetInstance().EncryptPassword(loginInformation.Password, ac.Salt) 
+                        + " - salt: " + ac.Salt
+                        + " - inputpw: " + loginInformation.Password);
+                }
+                return BadRequest("Client wrong: " + loginInformation.ClientId + " og id: " + ac.AccountId);
+            }
+            return NotFound("Username wrong: " + loginInformation.Username);
+        }
+
+        // POST: api/Authentication/Logout
+        [Route("Logout")]
+        [HttpPost]
+        public async Task<IActionResult> Logout()
+        {
+            if (HttpContext.Request.Query.ContainsKey("AccessToken"))
+            {
+                var cr = await _context.Credential.SingleOrDefaultAsync(c =>
+                    c.AccessToken == HttpContext.Request.Query["AccessToken"].ToString());
+                if (cr != null)
+                {
+                    // just delete accessToken from credential
+                    try
+                    {
+                        cr.AccessToken = null;
+                    }
+                    catch (Exception)
+                    {
+
+                        throw;
+                    }
+                    return Ok();
+                }
+            }
+            return BadRequest("You're already logged out!");
         }
 
         // GET: api/Authentication
