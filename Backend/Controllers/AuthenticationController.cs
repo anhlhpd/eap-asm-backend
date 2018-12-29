@@ -38,7 +38,7 @@ namespace Backend.Controllers
             if (ac != null)
             {
                 // verify clientId to be either STU or TCH first
-                var isCorrectClient = ac.AccountId.StartsWith(loginInformation.ClientId, true, new CultureInfo("en-US"));
+                var isCorrectClient = ac.Id.StartsWith(loginInformation.ClientId, true, new CultureInfo("en-US"));
                 if (isCorrectClient)
                 {
                     // check matching password
@@ -46,7 +46,7 @@ namespace Backend.Controllers
                     {
                         // check if account is logged in elsewhere
                         var cr = await _context.Credential.SingleOrDefaultAsync(c =>
-                            c.AccountId == ac.AccountId);
+                            c.OwnerId == ac.Id);
                         if (cr != null) // if account has never logged in
                         {
                             // save token
@@ -59,7 +59,7 @@ namespace Backend.Controllers
                             // create new credential with AccountId
                             var firstCredential = new Credential
                             {
-                                AccountId = ac.AccountId,
+                                OwnerId = ac.Id,
                                 AccessToken = TokenHandle.GetInstance().GenerateToken()
                             };
                             _context.Credential.Add(firstCredential);
@@ -73,7 +73,7 @@ namespace Backend.Controllers
                         + " - salt: " + ac.Salt
                         + " - inputpw: " + loginInformation.Password);
                 }
-                return BadRequest("Client wrong: " + loginInformation.ClientId + " og id: " + ac.AccountId);
+                return BadRequest("Client wrong: " + loginInformation.ClientId + " og id: " + ac.Id);
             }
             return NotFound("Username wrong: " + loginInformation.Username);
         }
