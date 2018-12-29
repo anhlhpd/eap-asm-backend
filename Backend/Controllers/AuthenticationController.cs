@@ -69,11 +69,11 @@ namespace Backend.Controllers
                             return Ok(TokenHandle.GetInstance().GenerateToken());
                         }
                     }
-                    return Forbid("Password wrong");
+                    return Forbid("Username or password wrong");
                 }
-                return BadRequest("Client wrong: " + loginInformation.ClientId);
+                return Forbid("Client wrong");
             }
-            return Forbid("Username wrong");
+            return Forbid("Username or password wrong");
         }
 
         [Route("StaffLogin")]
@@ -119,11 +119,11 @@ namespace Backend.Controllers
                             return Ok(TokenHandle.GetInstance().GenerateToken());
                         }
                     }
-                    return Forbid("Password wrong");
+                    return Forbid("Username or password wrong");
                 }
-                return BadRequest("Client wrong: You are " + loginInformation.ClientId);
+                return Forbid("Client wrong");
             }
-            return Forbid("Username wrong");
+            return Forbid("Username or password wrong");
         }
 
         // POST: api/Authentication/Logout
