@@ -15,14 +15,14 @@ namespace Backend.Models
         {
         }
 
-        public DbSet<Backend.Models.StudentClass> StudentClass { get; set; }
-        public DbSet<Backend.Models.PersonalInformation> PersonalInformation { get; set; }
+        public DbSet<Backend.Models.Clazz> Clazz { get; set; }
+        public DbSet<Backend.Models.GeneralInformation> GeneralInformation { get; set; }
         public DbSet<Backend.Models.Account> Account { get; set; }
         public DbSet<Backend.Models.Role> Role { get; set; }
 
         public DbSet<Backend.Models.Credential> Credential { get; set; }
         public DbSet<Backend.Models.AccountRole> AccountRoles { get; set; }
-        public DbSet<Backend.Models.StudentClassAccount> StudentClassAccount { get; set; }
+        public DbSet<Backend.Models.ClazzAccount> ClazzAccount { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -36,7 +36,7 @@ namespace Backend.Models
             modelBuilder.Entity<Role>(entity => {
                 entity.HasIndex(e => e.Name).IsUnique();
             });
-            modelBuilder.Entity<StudentClass>(entity => {
+            modelBuilder.Entity<Clazz>(entity => {
                 entity.HasIndex(e => new { e.Session, e.StartDate }).IsUnique();
             });
             modelBuilder.Entity<Subject>(entity => {
@@ -45,20 +45,20 @@ namespace Backend.Models
             modelBuilder.Entity<Credential>(entity => {
                 entity.HasIndex(e => e.AccessToken).IsUnique();
             });
-            modelBuilder.Entity<PersonalInformation>(entity => {
+            modelBuilder.Entity<GeneralInformation>(entity => {
                 entity.HasIndex(e => e.Phone).IsUnique();
             });
             modelBuilder.Entity<AccountRole>(entity => {
                 entity.HasKey(e => new { e.RoleId, e.AccountId });
             });
-            modelBuilder.Entity<StudentClassAccount>(entity => {
-                entity.HasKey(e => new { e.StudentClassId, e.AccountId });
+            modelBuilder.Entity<ClazzAccount>(entity => {
+                entity.HasKey(e => new { e.ClazzId, e.AccountId });
             });
 
             //Seeder for First Admin
             var salt = PasswordHandle.GetInstance().GenerateSalt();
             
-            modelBuilder.Entity<PersonalInformation>().HasData(new PersonalInformation()
+            modelBuilder.Entity<GeneralInformation>().HasData(new GeneralInformation()
             {
                 AccountId = "ADMIN",
                 FirstName = "ADMIN",
@@ -68,7 +68,7 @@ namespace Backend.Models
             
             modelBuilder.Entity<Account>().HasData(new Account()
             {
-                AccountId = "ADMIN",
+                Id = "ADMIN",
                 Username = "ADMIN",
                 Salt = salt,
                 Password = PasswordHandle.GetInstance().EncryptPassword("Amin@123", salt),

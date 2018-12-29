@@ -37,12 +37,9 @@ namespace Backend.Middleware
             //string datastring = await reader.ReadToEndAsync();
             //Credential cr = JsonConvert.DeserializeObject<Credential>(datastring);
             
-            
-            
             bool isValid = false;
             if (context.Request.Headers.ContainsKey("Authorization"))
             {
-                
                 string tokenHeader = context.Request.Headers["Authorization"];
                 var token = tokenHeader.Replace("Basic ", "");
                 
