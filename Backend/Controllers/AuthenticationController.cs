@@ -37,7 +37,7 @@ namespace Backend.Controllers
                     a.Username == loginInformation.Username);
             if (ac != null)
             {
-                var isCorrectClient = ac.AccountId.StartsWith("STU");
+                var isCorrectClient = ac.Id.StartsWith("STU");
                 if (isCorrectClient)
                 {
                     // check matching password
@@ -45,7 +45,7 @@ namespace Backend.Controllers
                     {
                         // check if account is logged in elsewhere
                         var cr = await _context.Credential.SingleOrDefaultAsync(c =>
-                            c.AccountId == ac.AccountId);
+                            c.AccountId == ac.Id);
                         if (cr != null) // if account has never logged in
                         {
                             var accessToken = TokenHandle.GetInstance().GenerateToken();
@@ -60,7 +60,7 @@ namespace Backend.Controllers
                             // create new credential with AccountId
                             var firstCredential = new Credential
                             {
-                                AccountId = ac.AccountId,
+                                AccountId = ac.Id,
                                 AccessToken = TokenHandle.GetInstance().GenerateToken()
                             };
                             _context.Credential.Add(firstCredential);
@@ -74,7 +74,7 @@ namespace Backend.Controllers
                         + " - salt: " + ac.Salt
                         + " - inputpw: " + loginInformation.Password);
                 }
-                return BadRequest("Client wrong: " + loginInformation.ClientId + " og id: " + ac.AccountId);
+                return BadRequest("Client wrong: " + loginInformation.ClientId + " og id: " + ac.Id);
             }
             return NotFound("Username wrong: " + loginInformation.Username);
         }
@@ -88,17 +88,17 @@ namespace Backend.Controllers
                     a.Username == loginInformation.Username);
             if (ac != null)
             {
-                var isManager = ac.AccountId.StartsWith("MNG");
-                var isAdmin = ac.AccountId.StartsWith("ADM");
+                var isManager = ac.Id.StartsWith("MNG");
+                var isAdmin = ac.Id.StartsWith("ADM");
                 if (isManager || isAdmin)
                 {
-                    var roles = _context.AccountRoles.Where(acr => acr.AccountId == ac.AccountId);
+                    var roles = _context.AccountRoles.Where(acr => acr.AccountId == ac.Id);
                     // check matching password
                     if (ac.Password == PasswordHandle.GetInstance().EncryptPassword(loginInformation.Password, ac.Salt))
                     {
                         // check if account is logged in elsewhere
                         var cr = await _context.Credential.SingleOrDefaultAsync(c =>
-                            c.AccountId == ac.AccountId);
+                            c.AccountId == ac.Id);
                         if (cr != null) // if account has never logged in
                         {
                             var accessToken = TokenHandle.GetInstance().GenerateToken();
@@ -113,7 +113,7 @@ namespace Backend.Controllers
                             // create new credential with AccountId
                             var firstCredential = new Credential
                             {
-                                AccountId = ac.AccountId,
+                                AccountId = ac.Id,
                                 AccessToken = TokenHandle.GetInstance().GenerateToken()
                             };
                             _context.Credential.Add(firstCredential);
@@ -122,14 +122,11 @@ namespace Backend.Controllers
                             return Ok(TokenHandle.GetInstance().GenerateToken());
                         }
                     }
-                    return NotFound("Password wrong; ogpw: " + ac.Password
-                        + " - newpw: " + PasswordHandle.GetInstance().EncryptPassword(loginInformation.Password, ac.Salt)
-                        + " - salt: " + ac.Salt
-                        + " - inputpw: " + loginInformation.Password);
+                    return NotFound("Password wrong");
                 }
-                return BadRequest("Client wrong: " + loginInformation.ClientId + " og id: " + ac.AccountId);
+                return BadRequest("Client wrong: You are " + loginInformation.ClientId);
             }
-            return NotFound("Username wrong: " + loginInformation.Username);
+            return NotFound("Username wrong");
         }
 
         // POST: api/Authentication/Logout
