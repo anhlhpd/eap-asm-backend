@@ -122,11 +122,11 @@ namespace Backend.Controllers
                             return Ok(TokenHandle.GetInstance().GenerateToken());
                         }
                     }
-                    return NotFound("Password wrong");
+                    return Forbid("Password wrong");
                 }
                 return BadRequest("Client wrong: You are " + loginInformation.ClientId);
             }
-            return NotFound("Username wrong");
+            return Forbid("Username wrong");
         }
 
         // POST: api/Authentication/Logout
