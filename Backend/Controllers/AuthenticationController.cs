@@ -158,7 +158,7 @@ namespace Backend.Controllers
                     c.AccessToken == HttpContext.Request.Query["AccessToken"].ToString());
                 if (cr != null)
                 {
-                    var currentRole = _context.Role.Find(_context.AccountRoles.SingleOrDefault(ar=>ar.AccountId == cr.AccountId).RoleId);
+                    var currentRole = _context.Role.Find(_context.AccountRoles.SingleOrDefault(ar=>ar.AccountId == cr.OwnerId).RoleId);
                     return Ok(currentRole);
                 }
             }
@@ -174,9 +174,9 @@ namespace Backend.Controllers
                     c.AccessToken == HttpContext.Request.Query["AccessToken"].ToString());
                 if (cr != null)
                 {
-                    if (_context.AccountRoles.SingleOrDefault(ar => ar.AccountId == cr.AccountId) != null)
+                    if (_context.AccountRoles.SingleOrDefault(ar => ar.AccountId == cr.OwnerId) != null)
                     {
-                        if (_context.Role.SingleOrDefault(r => r.RoleId == _context.AccountRoles.SingleOrDefault(ar => ar.AccountId == cr.AccountId).RoleId).Name == "Admin")
+                        if (_context.Role.SingleOrDefault(r => r.RoleId == _context.AccountRoles.SingleOrDefault(ar => ar.AccountId == cr.OwnerId).RoleId).Name == "Admin")
                         {
                             return Ok();
                         }
@@ -195,7 +195,7 @@ namespace Backend.Controllers
                 return BadRequest(ModelState);
             }
 
-            if (id != credential.AccountId)
+            if (id != credential.OwnerId)
             {
                 return BadRequest();
             }
@@ -233,7 +233,7 @@ namespace Backend.Controllers
             _context.Credential.Add(credential);
             await _context.SaveChangesAsync();
 
-            return CreatedAtAction("GetCredential", new { id = credential.AccountId }, credential);
+            return CreatedAtAction("GetCredential", new { id = credential.OwnerId }, credential);
         }
 
         // DELETE: api/Authentication/5
@@ -259,7 +259,7 @@ namespace Backend.Controllers
 
         private bool CredentialExists(string id)
         {
-            return _context.Credential.Any(e => e.AccountId == id);
+            return _context.Credential.Any(e => e.OwnerId == id);
         }
     }
 }
