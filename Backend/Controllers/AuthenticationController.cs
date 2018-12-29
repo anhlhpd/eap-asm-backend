@@ -13,6 +13,7 @@ using System.Text;
 using Newtonsoft.Json.Linq;
 using Microsoft.EntityFrameworkCore.Internal;
 using System.Globalization;
+using System.Net;
 
 namespace Backend.Controllers
 {
@@ -32,9 +33,11 @@ namespace Backend.Controllers
         [HttpPost]
         public async Task<IActionResult> StudentLogin(LoginInformation loginInformation)
         {
+            
             // find 1 account with matching username in Account
             var ac = await _context.Account.SingleOrDefaultAsync(a =>
                     a.Username == loginInformation.Username);
+            
             if (ac != null)
             {
                 var isCorrectClient = ac.Id.StartsWith("STU");
@@ -45,7 +48,7 @@ namespace Backend.Controllers
                     {
                         // check if account is logged in elsewhere
                         var cr = await _context.Credential.SingleOrDefaultAsync(c =>
-                            c.AccountId == ac.Id);
+                            c.OwnerId == ac.Id);
                         var accessToken = TokenHandle.GetInstance().GenerateToken();
                         if (cr != null) // if account has logged in
                         {
@@ -58,7 +61,7 @@ namespace Backend.Controllers
                         // create new credential with AccountId
                         var firstCredential = new Credential
                         {
-                            AccountId = ac.Id,
+                            OwnerId = ac.Id,
                             AccessToken = accessToken
                         };
                         _context.Credential.Add(firstCredential);
@@ -66,11 +69,18 @@ namespace Backend.Controllers
                         // save token
                         return Ok(accessToken);
                     }
-                    return Forbid("Username or password wrong");
+
+                    
+                    Response.StatusCode = (int)HttpStatusCode.Forbidden;
+                    return new JsonResult(new ResponseError("UserName or Password is incorrect", (int)HttpStatusCode.Forbidden));
                 }
-                return Forbid("Client wrong");
+                
+                Response.StatusCode = (int)HttpStatusCode.Forbidden;
+                return new JsonResult(new ResponseError("Client is Wrong", (int)HttpStatusCode.Forbidden));
+                
             }
-            return Forbid("Username or password wrong");
+            Response.StatusCode = (int)HttpStatusCode.Forbidden;
+            return new JsonResult(new ResponseError("UserName or Password is incorrect", (int)HttpStatusCode.Forbidden));
         }
 
         [Route("StaffLogin")]
@@ -92,7 +102,7 @@ namespace Backend.Controllers
                     {
                         // check if account is logged in elsewhere
                         var cr = await _context.Credential.SingleOrDefaultAsync(c =>
-                            c.AccountId == ac.Id);
+                            c.OwnerId == ac.Id);
                         var accessToken = TokenHandle.GetInstance().GenerateToken();
                         if (cr != null) // if account has logged in
                         {
@@ -105,7 +115,7 @@ namespace Backend.Controllers
                         // create new credential with AccountId
                         var firstCredential = new Credential
                         {
-                            AccountId = ac.Id,
+                            OwnerId = ac.Id,
                             AccessToken = accessToken
                         };
                         _context.Credential.Add(firstCredential);
@@ -113,11 +123,14 @@ namespace Backend.Controllers
                         // save token
                         return Ok(accessToken);
                     }
-                    return Forbid("Username or password wrong");
+                    Response.StatusCode = (int)HttpStatusCode.Forbidden;
+                    return new JsonResult(new ResponseError("UserName or Password is incorrect", (int)HttpStatusCode.Forbidden));
                 }
-                return Forbid("Client wrong");
+                Response.StatusCode = (int)HttpStatusCode.Forbidden;
+                return new JsonResult(new ResponseError("Client Wrong", (int)HttpStatusCode.Forbidden));
             }
-            return Forbid("Username or password wrong");
+            Response.StatusCode = (int)HttpStatusCode.Forbidden;
+            return new JsonResult(new ResponseError("UserName or Password is incorrect", (int)HttpStatusCode.Forbidden));
         }
 
         // POST: api/Authentication/Logout
