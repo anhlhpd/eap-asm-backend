@@ -13,6 +13,8 @@ using System.Text;
 using Newtonsoft.Json.Linq;
 using Microsoft.EntityFrameworkCore.Internal;
 using System.Globalization;
+using System.Net;
+
 
 namespace Backend.Controllers
 {
@@ -27,18 +29,19 @@ namespace Backend.Controllers
             _context = context;
         }
 
-        // POST: api/Authentication/Login
-        [Route("Login")]
+        // POST: api/Authentication/StudentLogin
+        [Route("StudentLogin")]
         [HttpPost]
-        public async Task<IActionResult> Login(LoginInformation loginInformation)
+        public async Task<IActionResult> StudentLogin(LoginInformation loginInformation)
         {
+            
             // find 1 account with matching username in Account
             var ac = await _context.Account.SingleOrDefaultAsync(a =>
                     a.Username == loginInformation.Username);
+            
             if (ac != null)
             {
-                // verify clientId to be either STU or TCH first
-                var isCorrectClient = ac.Id.StartsWith(loginInformation.ClientId, true, new CultureInfo("en-US"));
+                var isCorrectClient = ac.Id.StartsWith("STU");
                 if (isCorrectClient)
                 {
                     // check matching password
@@ -47,35 +50,88 @@ namespace Backend.Controllers
                         // check if account is logged in elsewhere
                         var cr = await _context.Credential.SingleOrDefaultAsync(c =>
                             c.OwnerId == ac.Id);
-                        if (cr != null) // if account has never logged in
+                        var accessToken = TokenHandle.GetInstance().GenerateToken();
+                        if (cr != null) // if account has logged in
                         {
-                            // save token
-                            var accessToken = TokenHandle.GetInstance().GenerateToken();
                             cr.AccessToken = accessToken;
+                            // save token
+                            _context.Credential.Update(cr);
+                            await _context.SaveChangesAsync();
                             return Ok(accessToken);
                         }
-                        else
+                        // create new credential with AccountId
+                        var firstCredential = new Credential
                         {
-                            // create new credential with AccountId
-                            var firstCredential = new Credential
-                            {
-                                OwnerId = ac.Id,
-                                AccessToken = TokenHandle.GetInstance().GenerateToken()
-                            };
-                            _context.Credential.Add(firstCredential);
-                            await _context.SaveChangesAsync();
-                            // save token
-                            return Ok(TokenHandle.GetInstance().GenerateToken());
-                        }
+                            OwnerId = ac.Id,
+                            AccessToken = accessToken
+                        };
+                        _context.Credential.Add(firstCredential);
+                        await _context.SaveChangesAsync();
+                        // save token
+                        return Ok(accessToken);
                     }
-                    return NotFound("Password wrong; ogpw: " + ac.Password 
-                        + " - newpw: " + PasswordHandle.GetInstance().EncryptPassword(loginInformation.Password, ac.Salt) 
-                        + " - salt: " + ac.Salt
-                        + " - inputpw: " + loginInformation.Password);
+
+                    
+                    Response.StatusCode = (int)HttpStatusCode.Forbidden;
+                    return new JsonResult(new ResponseError("UserName or Password is incorrect", (int)HttpStatusCode.Forbidden));
                 }
-                return BadRequest("Client wrong: " + loginInformation.ClientId + " og id: " + ac.Id);
+                
+                Response.StatusCode = (int)HttpStatusCode.Forbidden;
+                return new JsonResult(new ResponseError("Client is Wrong", (int)HttpStatusCode.Forbidden));
+                
             }
-            return NotFound("Username wrong: " + loginInformation.Username);
+            Response.StatusCode = (int)HttpStatusCode.Forbidden;
+            return new JsonResult(new ResponseError("UserName or Password is incorrect", (int)HttpStatusCode.Forbidden));
+        }
+
+        [Route("StaffLogin")]
+        [HttpPost]
+        public async Task<IActionResult> StaffLogin(LoginInformation loginInformation)
+        {
+            // find 1 account with matching username in Account
+            var ac = await _context.Account.SingleOrDefaultAsync(a =>
+                    a.Username == loginInformation.Username);
+            if (ac != null)
+            {
+                var isManager = ac.Id.StartsWith("MNG");
+                var isAdmin = ac.Id.StartsWith("ADM");
+                if (isManager || isAdmin)
+                {
+                    var roles = _context.AccountRoles.Where(acr => acr.AccountId == ac.Id);
+                    // check matching password
+                    if (ac.Password == PasswordHandle.GetInstance().EncryptPassword(loginInformation.Password, ac.Salt))
+                    {
+                        // check if account is logged in elsewhere
+                        var cr = await _context.Credential.SingleOrDefaultAsync(c =>
+                            c.OwnerId == ac.Id);
+                        var accessToken = TokenHandle.GetInstance().GenerateToken();
+                        if (cr != null) // if account has logged in
+                        {
+                            cr.AccessToken = accessToken;
+                            // save token
+                            _context.Credential.Update(cr);
+                            await _context.SaveChangesAsync();
+                            return Ok(accessToken);
+                        }
+                        // create new credential with AccountId
+                        var firstCredential = new Credential
+                        {
+                            OwnerId = ac.Id,
+                            AccessToken = accessToken
+                        };
+                        _context.Credential.Add(firstCredential);
+                        await _context.SaveChangesAsync();
+                        // save token
+                        return Ok(accessToken);
+                    }
+                    Response.StatusCode = (int)HttpStatusCode.Forbidden;
+                    return new JsonResult(new ResponseError("UserName or Password is incorrect", (int)HttpStatusCode.Forbidden));
+                }
+                Response.StatusCode = (int)HttpStatusCode.Forbidden;
+                return new JsonResult(new ResponseError("Client Wrong", (int)HttpStatusCode.Forbidden));
+            }
+            Response.StatusCode = (int)HttpStatusCode.Forbidden;
+            return new JsonResult(new ResponseError("UserName or Password is incorrect", (int)HttpStatusCode.Forbidden));
         }
 
         // POST: api/Authentication/Logout

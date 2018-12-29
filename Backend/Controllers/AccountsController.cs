@@ -83,22 +83,25 @@ namespace Backend.Controllers
         }
 
         // POST: api/Accounts
+        [Route("Create")]
         [HttpPost]
-        public async Task<IActionResult> PostAccount(Account account)
+        public async Task<IActionResult> PostAccount(GeneralInformation generalInformation)
         {
             
             if (!ModelState.IsValid)
             {
                 return BadRequest(ModelState);
             }
-            var salt = PasswordHandle.GetInstance().GenerateSalt();
-            account.Salt = salt;
-            var password = PasswordHandle.GetInstance().EncryptPassword(account.Password, account.Salt);
-            account.Password = password;
-            _context.Account.Add(account);
-            await _context.SaveChangesAsync();
 
-            return CreatedAtAction("GetAccount", new { id = account.Id }, account);
+            return new JsonResult(generalInformation);
+            //var salt = PasswordHandle.GetInstance().GenerateSalt();
+            //account.Salt = salt;
+            //var password = PasswordHandle.GetInstance().EncryptPassword(account.Password, account.Salt);
+            //account.Password = password;
+            //_context.Account.Add(account);
+            //await _context.SaveChangesAsync();
+
+            //return CreatedAtAction("GetAccount", new { id = account.Id }, account);
         }
 
         // DELETE: api/Accounts/5

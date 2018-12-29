@@ -14,6 +14,7 @@ namespace Backend.Models
             this.UpdatedAt = DateTime.Now;
             this.Status = ClazzSubjectStatus.Studying;
         }
+
         [Key]
         public int Id { get; set; }
         public string ClazzId { get; set; }

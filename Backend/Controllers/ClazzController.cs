@@ -128,51 +128,5 @@ namespace Backend.Controllers
             var clazz = await _context.Clazz.FindAsync(id);
             return new JsonResult(clazz);
         }
-
-        [HttpGet("{id}/Students")]
-        public async Task<IActionResult> GetStudentsByClazz([FromRoute] string id)
-        {
-            if (!ModelState.IsValid)
-            {
-                return BadRequest(ModelState);
-            }
-            
-            var listClassStudent = _context.ClazzAccount.Where(sc => sc.ClazzId == id).ToArray();
-            List<Account> listAccount = new List<Account>();
-            foreach (var studentClassAcc in listClassStudent)
-            {
-                var account = _context.Account.Where(a => a.Id == studentClassAcc.AccountId).FirstOrDefault();
-                listAccount.Add(account);
-            }
-
-            if (listClassStudent == null)
-            {
-                return NotFound();
-            }
-            return new JsonResult(listAccount);
-        }
-
-        [HttpGet("{id}/Subjects")]
-        public async Task<IActionResult> GetSubjectsByClazz([FromRoute] string id)
-        {
-            if (!ModelState.IsValid)
-            {
-                return BadRequest(ModelState);
-            }
-
-            var listClazzSubjects = _context.ClazzSubject.Where(cs => cs.ClazzId == id).ToArray();
-            List<Subject> listSubject = new List<Subject>();
-            foreach (var clazzSubject in listClazzSubjects)
-            {
-                var subject = _context.Subject.Where(s => s.Id == clazzSubject.SubjectId).FirstOrDefault();
-                listSubject.Add(subject);
-            }
-
-            if (listSubject == null)
-            {
-                return NotFound();
-            }
-            return new JsonResult(listSubject);
-        }
     }
 }
