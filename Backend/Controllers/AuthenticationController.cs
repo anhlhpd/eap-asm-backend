@@ -69,14 +69,11 @@ namespace Backend.Controllers
                             return Ok(TokenHandle.GetInstance().GenerateToken());
                         }
                     }
-                    return NotFound("Password wrong; ogpw: " + ac.Password 
-                        + " - newpw: " + PasswordHandle.GetInstance().EncryptPassword(loginInformation.Password, ac.Salt) 
-                        + " - salt: " + ac.Salt
-                        + " - inputpw: " + loginInformation.Password);
+                    return Forbid("Password wrong");
                 }
-                return BadRequest("Client wrong: " + loginInformation.ClientId + " og id: " + ac.Id);
+                return BadRequest("Client wrong: " + loginInformation.ClientId);
             }
-            return NotFound("Username wrong: " + loginInformation.Username);
+            return Forbid("Username wrong");
         }
 
         [Route("StaffLogin")]
