@@ -37,7 +37,7 @@ namespace Backend.Controllers
                 return BadRequest(ModelState);
             }
 
-            var generalInformation = await _context.GeneralInformation.FindAsync(id);
+            var generalInformation = _context.GeneralInformation.Include(gI=>gI.Account).SingleOrDefault(gI=>gI.AccountId == id);
 
             if (generalInformation == null)
             {
