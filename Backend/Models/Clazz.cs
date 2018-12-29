@@ -6,34 +6,33 @@ using System.Threading.Tasks;
 
 namespace Backend.Models
 {
-    public class StudentClass
+    public class Clazz
     {
-        public StudentClass()
+        public Clazz()
         {
-            this.StartDate = DateTime.Now;
-            this.StudentClassStatus = StudentClassStatus.Active;
+            this.Status = ClazzStatus.Active;
         }
         [Key]
         [Required]
-        public string StudentClassId { get; set; }
+        public string Id { get; set; }
         [Required(ErrorMessage = "Please input class start date")]
         public DateTime StartDate { get; set; }
         [Required(ErrorMessage = "Please input the class session (Morning, Afternoon or Evening)")]
-        public StudentClassSession Session { get; set; }
-        public StudentClassStatus StudentClassStatus { get; set; }
+        public ClazzSession Session { get; set; }
+        public ClazzStatus Status { get; set; }
         [Required(ErrorMessage = "Please input the current subject of the class")]
-        public int CurrentSubjectId { get; set; }
+        public string CurrentSubjectId { get; set; }
         public Subject Subject { get; set; }
     }
 
-    public enum StudentClassSession
+    public enum ClazzSession
     {
         Morning = 0,
         Afternoon = 1,
         Evening = 2
     }
 
-    public enum StudentClassStatus
+    public enum ClazzStatus
     {
         Active = 1,
         Deactive = 0

@@ -6,62 +6,61 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Backend.Models;
-using SecurityHandle;
 
 namespace Backend.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class AccountsController : ControllerBase
+    public class ClazzSubjectsController : ControllerBase
     {
         private readonly BackendContext _context;
 
-        public AccountsController(BackendContext context)
+        public ClazzSubjectsController(BackendContext context)
         {
             _context = context;
         }
 
-        // GET: api/Accounts
+        // GET: api/ClazzSubjects
         [HttpGet]
-        public IEnumerable<Account> GetAccount()
+        public IEnumerable<ClazzSubject> GetClazzSubject()
         {
-            return _context.Account;
+            return _context.ClazzSubject;
         }
 
-        // GET: api/Accounts/5
+        // GET: api/ClazzSubjects/5
         [HttpGet("{id}")]
-        public async Task<IActionResult> GetAccount([FromRoute] string id)
+        public async Task<IActionResult> GetClazzSubject([FromRoute] int id)
         {
             if (!ModelState.IsValid)
             {
                 return BadRequest(ModelState);
             }
 
-            var account = await _context.Account.FindAsync(id);
+            var clazzSubject = await _context.ClazzSubject.FindAsync(id);
 
-            if (account == null)
+            if (clazzSubject == null)
             {
                 return NotFound();
             }
 
-            return Ok(account);
+            return Ok(clazzSubject);
         }
 
-        // PUT: api/Accounts/5
+        // PUT: api/ClazzSubjects/5
         [HttpPut("{id}")]
-        public async Task<IActionResult> PutAccount([FromRoute] string id, [FromBody] Account account)
+        public async Task<IActionResult> PutClazzSubject([FromRoute] int id, [FromBody] ClazzSubject clazzSubject)
         {
             if (!ModelState.IsValid)
             {
                 return BadRequest(ModelState);
             }
 
-            if (id != account.Id)
+            if (id != clazzSubject.Id)
             {
                 return BadRequest();
             }
 
-            _context.Entry(account).State = EntityState.Modified;
+            _context.Entry(clazzSubject).State = EntityState.Modified;
 
             try
             {
@@ -69,7 +68,7 @@ namespace Backend.Controllers
             }
             catch (DbUpdateConcurrencyException)
             {
-                if (!AccountExists(id))
+                if (!ClazzSubjectExists(id))
                 {
                     return NotFound();
                 }
@@ -82,49 +81,45 @@ namespace Backend.Controllers
             return NoContent();
         }
 
-        // POST: api/Accounts
+        // POST: api/ClazzSubjects
         [HttpPost]
-        public async Task<IActionResult> PostAccount(Account account)
+        public async Task<IActionResult> PostClazzSubject([FromBody] ClazzSubject clazzSubject)
         {
-            
             if (!ModelState.IsValid)
             {
                 return BadRequest(ModelState);
             }
-            var salt = PasswordHandle.GetInstance().GenerateSalt();
-            account.Salt = salt;
-            var password = PasswordHandle.GetInstance().EncryptPassword(account.Password, account.Salt);
-            account.Password = password;
-            _context.Account.Add(account);
+
+            _context.ClazzSubject.Add(clazzSubject);
             await _context.SaveChangesAsync();
 
-            return CreatedAtAction("GetAccount", new { id = account.Id }, account);
+            return CreatedAtAction("GetClazzSubject", new { id = clazzSubject.Id }, clazzSubject);
         }
 
-        // DELETE: api/Accounts/5
+        // DELETE: api/ClazzSubjects/5
         [HttpDelete("{id}")]
-        public async Task<IActionResult> DeleteAccount([FromRoute] string id)
+        public async Task<IActionResult> DeleteClazzSubject([FromRoute] int id)
         {
             if (!ModelState.IsValid)
             {
                 return BadRequest(ModelState);
             }
 
-            var account = await _context.Account.FindAsync(id);
-            if (account == null)
+            var clazzSubject = await _context.ClazzSubject.FindAsync(id);
+            if (clazzSubject == null)
             {
                 return NotFound();
             }
 
-            _context.Account.Remove(account);
+            _context.ClazzSubject.Remove(clazzSubject);
             await _context.SaveChangesAsync();
 
-            return Ok(account);
+            return Ok(clazzSubject);
         }
 
-        private bool AccountExists(string id)
+        private bool ClazzSubjectExists(int id)
         {
-            return _context.Account.Any(e => e.Id == id);
+            return _context.ClazzSubject.Any(e => e.Id == id);
         }
     }
 }

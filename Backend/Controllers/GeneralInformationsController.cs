@@ -10,56 +10,56 @@ namespace Backend.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class PersonalInformationsController : ControllerBase
+    public class GeneralInformationsController : ControllerBase
     {
         private readonly BackendContext _context;
 
-        public PersonalInformationsController(BackendContext context)
+        public GeneralInformationsController(BackendContext context)
         {
             _context = context;
         }
 
-        // GET: api/PersonalInformations
+        // GET: api/GeneralInformations
         [HttpGet]
-        public IEnumerable<PersonalInformation> GetPersonalInformation()
+        public IEnumerable<GeneralInformation> GetGeneralInformation()
         {
-            return _context.PersonalInformation;
+            return _context.GeneralInformation;
         }
 
-        // GET: api/PersonalInformations/5
+        // GET: api/GeneralInformations/5
         [HttpGet("{id}")]
-        public async Task<IActionResult> GetPersonalInformation([FromRoute] string id)
+        public async Task<IActionResult> GetGeneralInformation([FromRoute] string id)
         {
             if (!ModelState.IsValid)
             {
                 return BadRequest(ModelState);
             }
 
-            var personalInformation = await _context.PersonalInformation.FindAsync(id);
+            var generalInformation = await _context.GeneralInformation.FindAsync(id);
 
-            if (personalInformation == null)
+            if (generalInformation == null)
             {
                 return NotFound();
             }
 
-            return Ok(personalInformation);
+            return Ok(generalInformation);
         }
 
-        // PUT: api/PersonalInformations/5
+        // PUT: api/GeneralInformations/5
         [HttpPut("{id}")]
-        public async Task<IActionResult> PutPersonalInformation([FromRoute] string id, [FromBody] PersonalInformation personalInformation)
+        public async Task<IActionResult> PutGeneralInformation([FromRoute] string id, [FromBody] GeneralInformation generalInformation)
         {
             if (!ModelState.IsValid)
             {
                 return BadRequest(ModelState);
             }
 
-            if (id != personalInformation.AccountId)
+            if (id != generalInformation.AccountId)
             {
                 return BadRequest();
             }
 
-            _context.Entry(personalInformation).State = EntityState.Modified;
+            _context.Entry(generalInformation).State = EntityState.Modified;
 
             try
             {
@@ -67,7 +67,7 @@ namespace Backend.Controllers
             }
             catch (DbUpdateConcurrencyException)
             {
-                if (!PersonalInformationExists(id))
+                if (!GeneralInformationExists(id))
                 {
                     return NotFound();
                 }
@@ -80,23 +80,23 @@ namespace Backend.Controllers
             return NoContent();
         }
 
-        // POST: api/PersonalInformations
+        // POST: api/GeneralInformations
         [HttpPost]
-        public async Task<IActionResult> PostPersonalInformation([FromBody] PersonalInformation personalInformation)
+        public async Task<IActionResult> PostGeneralInformation([FromBody] GeneralInformation generalInformation)
         {
             if (!ModelState.IsValid)
             {
                 return BadRequest(ModelState);
             }
 
-            _context.PersonalInformation.Add(personalInformation);
+            _context.GeneralInformation.Add(generalInformation);
             try
             {
                 await _context.SaveChangesAsync();
             }
             catch (DbUpdateException)
             {
-                if (PersonalInformationExists(personalInformation.AccountId))
+                if (GeneralInformationExists(generalInformation.AccountId))
                 {
                     return new StatusCodeResult(StatusCodes.Status409Conflict);
                 }
@@ -105,51 +105,51 @@ namespace Backend.Controllers
                     throw;
                 }
             }
-            return CreatedAtAction("GetPersonalInformation", new { id = personalInformation.AccountId }, personalInformation);
+            return CreatedAtAction("GetGeneralInformation", new { id = generalInformation.AccountId }, generalInformation);
         }
 
-        // DELETE: api/PersonalInformations/5
+        // DELETE: api/GeneralInformations/5
         [HttpDelete("{id}")]
-        public async Task<IActionResult> DeletePersonalInformation([FromRoute] string id)
+        public async Task<IActionResult> DeleteGeneralInformation([FromRoute] string id)
         {
             if (!ModelState.IsValid)
             {
                 return BadRequest(ModelState);
             }
 
-            var personalInformation = await _context.PersonalInformation.FindAsync(id);
-            if (personalInformation == null)
+            var generalInformation = await _context.GeneralInformation.FindAsync(id);
+            if (generalInformation == null)
             {
                 return NotFound();
             }
 
-            _context.PersonalInformation.Remove(personalInformation);
+            _context.GeneralInformation.Remove(generalInformation);
             await _context.SaveChangesAsync();
 
-            return Ok(personalInformation);
+            return Ok(generalInformation);
         }
 
-        private bool PersonalInformationExists(string id)
+        private bool GeneralInformationExists(string id)
         {
-            return _context.PersonalInformation.Any(e => e.AccountId == id);
+            return _context.GeneralInformation.Any(e => e.AccountId == id);
         }
 
         [HttpPost("Student")]
-        public async Task<IActionResult> PostStudentPersonalInformation([FromBody] PersonalInformation personalInformation)
+        public async Task<IActionResult> PostGeneralInformationInformation([FromBody] GeneralInformation generalInformation)
         {
             if (!ModelState.IsValid)
             {
                 return BadRequest(ModelState);
             }
 
-            _context.PersonalInformation.Add(personalInformation);
+            _context.GeneralInformation.Add(generalInformation);
             try
             {
                 await _context.SaveChangesAsync();
             }
             catch (DbUpdateException)
             {
-                if (PersonalInformationExists(personalInformation.AccountId))
+                if (GeneralInformationExists(generalInformation.AccountId))
                 {
                     return new StatusCodeResult(StatusCodes.Status409Conflict);
                 }
@@ -159,12 +159,12 @@ namespace Backend.Controllers
                 }
             }
 
-            var name = personalInformation.FirstName;
-            var accountUsername = personalInformation.FirstName + personalInformation.LastName[0] + personalInformation.AccountId;
+            var name = generalInformation.FirstName;
+            var accountUsername = generalInformation.FirstName + generalInformation.LastName[0] + generalInformation.AccountId;
             var salt = SecurityHandle.PasswordHandle.GetInstance().GenerateSalt();
             Account account = new Account()
             {
-                AccountId = personalInformation.AccountId,
+                Id = generalInformation.AccountId,
                 Username = accountUsername.ToLower(),
                 Email = accountUsername.ToLower() + "@gmail.com",
                 Salt = salt,
@@ -173,7 +173,7 @@ namespace Backend.Controllers
             _context.Account.Add(account);
             _context.SaveChanges();
 
-            return CreatedAtAction("GetPersonalInformation", new { id = personalInformation.AccountId }, personalInformation);
+            return CreatedAtAction("GetGeneralInformation", new { id = generalInformation.AccountId }, generalInformation);
         }
     }
 }

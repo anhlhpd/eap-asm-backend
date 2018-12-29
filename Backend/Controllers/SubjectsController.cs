@@ -29,7 +29,7 @@ namespace Backend.Controllers
 
         // GET: api/Subjects/5
         [HttpGet("{id}")]
-        public async Task<IActionResult> GetSubject([FromRoute] int id)
+        public async Task<IActionResult> GetSubject([FromRoute] string id)
         {
             if (!ModelState.IsValid)
             {
@@ -48,14 +48,14 @@ namespace Backend.Controllers
 
         // PUT: api/Subjects/5
         [HttpPut("{id}")]
-        public async Task<IActionResult> PutSubject([FromRoute] int id, [FromBody] Subject subject)
+        public async Task<IActionResult> PutSubject([FromRoute] string id, [FromBody] Subject subject)
         {
             if (!ModelState.IsValid)
             {
                 return BadRequest(ModelState);
             }
 
-            if (id != subject.SubjectId)
+            if (id != subject.Id)
             {
                 return BadRequest();
             }
@@ -93,12 +93,12 @@ namespace Backend.Controllers
             _context.Subject.Add(subject);
             await _context.SaveChangesAsync();
 
-            return CreatedAtAction("GetSubject", new { id = subject.SubjectId }, subject);
+            return CreatedAtAction("GetSubject", new { id = subject.Id }, subject);
         }
 
         // DELETE: api/Subjects/5
         [HttpDelete("{id}")]
-        public async Task<IActionResult> DeleteSubject([FromRoute] int id)
+        public async Task<IActionResult> DeleteSubject([FromRoute] string id)
         {
             if (!ModelState.IsValid)
             {
@@ -117,27 +117,9 @@ namespace Backend.Controllers
             return Ok(subject);
         }
 
-        private bool SubjectExists(int id)
+        private bool SubjectExists(string id)
         {
-            return _context.Subject.Any(e => e.SubjectId == id);
-        }
-
-        [HttpGet("{id}")]
-        public async Task<IActionResult> GetSubjectByClass([FromRoute] int id)
-        {
-            if (!ModelState.IsValid)
-            {
-                return BadRequest(ModelState);
-            }
-
-            var subject = await _context.Subject.FindAsync(id);
-
-            if (subject == null)
-            {
-                return NotFound();
-            }
-
-            return Ok(subject);
+            return _context.Subject.Any(e => e.Id == id);
         }
     }
 }
