@@ -147,7 +147,7 @@ namespace Backend.Controllers
             }
             
 
-            var numb = await _context.Account.CountAsync(a => a.Id.Contains(accountType)) ;
+            var numb = await _context.Account.CountAsync(a => a.Id.Contains(accountType)) + 1;
             string taging;
             
             if (numb < 10)

@@ -49,7 +49,8 @@ namespace Backend
             }
 
             app.UseHttpsRedirection();
-            app.UseACheckAdmin();
+            app.UseCheckAdmin();
+            app.UseCheckLogin();
             app.UseMvc();
         }
     }
