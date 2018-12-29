@@ -60,8 +60,8 @@ namespace Backend.Middleware
                 //context.Response.StatusCode = (int)HttpStatusCode.Forbidden;
                 //await context.Response.WriteAsync("");
                 //await context.Response.WriteAsync("Invalid token" + context.Request.Headers.ContainsKey("Authorization"));
-                context.Response.StatusCode = (int)HttpStatusCode.Forbidden;
-                await context.Response.WriteAsync(HttpStatusCode.Forbidden.ToString());
+                context.Response.StatusCode = (int)HttpStatusCode.Unauthorized;
+                await context.Response.WriteAsync(HttpStatusCode.Unauthorized.ToString() + ": Access Denied");
             }
 
 

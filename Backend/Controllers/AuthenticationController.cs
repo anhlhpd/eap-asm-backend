@@ -117,7 +117,7 @@ namespace Backend.Controllers
                 if (cr != null)
                 {
                     var currentRole = _context.Role.Find(_context.AccountRoles.SingleOrDefault(ar=>ar.AccountId == cr.OwnerId).RoleId);
-                    return Ok(currentRole);
+                    return Ok(cr);
                 }
             }
             return NotFound();
