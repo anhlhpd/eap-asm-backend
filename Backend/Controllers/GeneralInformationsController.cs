@@ -178,6 +178,8 @@ namespace Backend.Controllers
                     userName += item[0] ;
                 }
             }
+
+            userName += taging;
             //return new JsonResult(userN.ToLower());
 
             //_context.GeneralInformation.Add(generalInformation);
