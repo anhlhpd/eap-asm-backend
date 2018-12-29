@@ -46,28 +46,25 @@ namespace Backend.Controllers
                         // check if account is logged in elsewhere
                         var cr = await _context.Credential.SingleOrDefaultAsync(c =>
                             c.AccountId == ac.Id);
-                        if (cr != null) // if account has never logged in
+                        var accessToken = TokenHandle.GetInstance().GenerateToken();
+                        if (cr != null) // if account has logged in
                         {
-                            var accessToken = TokenHandle.GetInstance().GenerateToken();
                             cr.AccessToken = accessToken;
                             // save token
                             _context.Credential.Update(cr);
                             await _context.SaveChangesAsync();
                             return Ok(accessToken);
                         }
-                        else
+                        // create new credential with AccountId
+                        var firstCredential = new Credential
                         {
-                            // create new credential with AccountId
-                            var firstCredential = new Credential
-                            {
-                                AccountId = ac.Id,
-                                AccessToken = TokenHandle.GetInstance().GenerateToken()
-                            };
-                            _context.Credential.Add(firstCredential);
-                            await _context.SaveChangesAsync();
-                            // save token
-                            return Ok(TokenHandle.GetInstance().GenerateToken());
-                        }
+                            AccountId = ac.Id,
+                            AccessToken = accessToken
+                        };
+                        _context.Credential.Add(firstCredential);
+                        await _context.SaveChangesAsync();
+                        // save token
+                        return Ok(accessToken);
                     }
                     return Forbid("Username or password wrong");
                 }
@@ -96,28 +93,25 @@ namespace Backend.Controllers
                         // check if account is logged in elsewhere
                         var cr = await _context.Credential.SingleOrDefaultAsync(c =>
                             c.AccountId == ac.Id);
-                        if (cr != null) // if account has never logged in
+                        var accessToken = TokenHandle.GetInstance().GenerateToken();
+                        if (cr != null) // if account has logged in
                         {
-                            var accessToken = TokenHandle.GetInstance().GenerateToken();
                             cr.AccessToken = accessToken;
                             // save token
                             _context.Credential.Update(cr);
                             await _context.SaveChangesAsync();
                             return Ok(accessToken);
                         }
-                        else
+                        // create new credential with AccountId
+                        var firstCredential = new Credential
                         {
-                            // create new credential with AccountId
-                            var firstCredential = new Credential
-                            {
-                                AccountId = ac.Id,
-                                AccessToken = TokenHandle.GetInstance().GenerateToken()
-                            };
-                            _context.Credential.Add(firstCredential);
-                            await _context.SaveChangesAsync();
-                            // save token
-                            return Ok(TokenHandle.GetInstance().GenerateToken());
-                        }
+                            AccountId = ac.Id,
+                            AccessToken = accessToken
+                        };
+                        _context.Credential.Add(firstCredential);
+                        await _context.SaveChangesAsync();
+                        // save token
+                        return Ok(accessToken);
                     }
                     return Forbid("Username or password wrong");
                 }
