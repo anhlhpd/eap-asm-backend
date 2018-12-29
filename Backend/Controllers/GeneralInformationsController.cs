@@ -1,10 +1,12 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Backend.Models;
+using Microsoft.AspNetCore.Routing;
 
 namespace Backend.Controllers
 {
@@ -133,21 +135,91 @@ namespace Backend.Controllers
         {
             return _context.GeneralInformation.Any(e => e.AccountId == id);
         }
-
-        [HttpPost("Student")]
-        public async Task<IActionResult> PostGeneralInformationInformation([FromBody] GeneralInformation generalInformation)
+        //
+        
+        [HttpPost("{accountType}")]
+        public async Task<IActionResult> PostGeneralInformationInformation([FromRoute] string accountType, [FromBody] GeneralInformation generalInformation)
         {
-            if (!ModelState.IsValid)
+            string[] allType = {"STU","MNG","ADM"};
+            if (!allType.Contains(accountType))
             {
-                return BadRequest(ModelState);
+                return BadRequest();
+            }
+            
+
+            var numb = await _context.Account.CountAsync(a => a.Id.Contains(accountType)) ;
+            string taging;
+            
+            if (numb < 10)
+            {
+                taging = "000" + numb;
+            }
+            else if(numb < 100)
+            {
+                taging = "00" + numb;
+            }
+            else if (numb < 1000)
+            {
+                taging="0" + numb;
+            }
+            else
+            {
+                taging = numb.ToString();
             }
 
+            generalInformation.AccountId = accountType + taging;
+            //Create userName
+            var str = generalInformation.LastName.Split(" ");
+            string userName = generalInformation.FirstName;
+            foreach (var item in str)
+            {
+                if (item.Any())
+                {
+                    userName += item[0] ;
+                }
+            }
+            //return new JsonResult(userN.ToLower());
+
+            //_context.GeneralInformation.Add(generalInformation);
+
+            //var name = generalInformation.FirstName;
+           
+            var salt = SecurityHandle.PasswordHandle.GetInstance().GenerateSalt();
+            // Create PW
+            //private static Random random = new Random();
+            string RandomString(int length)
+            {
+                Random random = new Random();
+                const string chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
+                return new string(Enumerable.Repeat(chars, length)
+                    .Select(s => s[random.Next(s.Length)]).ToArray());
+            }
+
+            var password = RandomString(8);
+            
+        
+            Account account = new Account()
+            {
+                Id = generalInformation.AccountId,
+                Username = userName.ToLower(),
+                Email = userName.ToLower() + generalInformation.AccountId.ToLower() + "@gmail.com",
+                Salt = salt,
+                Password = SecurityHandle.PasswordHandle.GetInstance().EncryptPassword(password, salt)                
+            };
+            _context.Account.Add(account);
             _context.GeneralInformation.Add(generalInformation);
+            LoginInformation responceInformation = new LoginInformation()
+            {
+                Username = account.Username,
+                Password = password,
+                ClientId = accountType
+            };
             try
             {
                 await _context.SaveChangesAsync();
+                
             }
-            catch (DbUpdateException)
+            catch (DbUpdateException e)
             {
                 if (GeneralInformationExists(generalInformation.AccountId))
                 {
@@ -155,25 +227,17 @@ namespace Backend.Controllers
                 }
                 else
                 {
-                    throw;
+                    if (e.InnerException.Message.Contains("Phone"))
+                    {
+                        return BadRequest("Số điện thoại không hợp lệ hoặc đã tồn tại.");
+                    }
+
+                    return BadRequest(e.InnerException.Message);
                 }
             }
 
-            var name = generalInformation.FirstName;
-            var accountUsername = generalInformation.FirstName + generalInformation.LastName[0] + generalInformation.AccountId;
-            var salt = SecurityHandle.PasswordHandle.GetInstance().GenerateSalt();
-            Account account = new Account()
-            {
-                Id = generalInformation.AccountId,
-                Username = accountUsername.ToLower(),
-                Email = accountUsername.ToLower() + "@gmail.com",
-                Salt = salt,
-                Password = SecurityHandle.PasswordHandle.GetInstance().EncryptPassword(accountUsername.ToLower(), salt)                
-            };
-            _context.Account.Add(account);
-            _context.SaveChanges();
 
-            return CreatedAtAction("GetGeneralInformation", new { id = generalInformation.AccountId }, generalInformation);
+            return Created("", responceInformation);
         }
     }
 }
