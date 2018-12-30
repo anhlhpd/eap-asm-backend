@@ -28,29 +28,37 @@ namespace Backend.Controllers
         }
 
         // GET: api/AccountRoles/5
-        [HttpGet("{id}")]
+        [HttpGet("{roleId}")]
         public async Task<IActionResult> GetAccountRole([FromRoute] int roleId)
         {
-
+            
             if (!ModelState.IsValid)
             {
                 return BadRequest(ModelState);
             }
 
-            List<AccountRole> accountRoles = _context.AccountRoles.Where(ar => ar.RoleId == roleId).ToList();
+            var accountRoles = _context.AccountRoles.Where(ar => ar.RoleId == roleId);
 
             if (accountRoles == null)
             {
                 return NotFound();
             }
-            var accounts = new List<Account>();
+            var listStudents = new List<GeneralInformation>();
             foreach (var ar in accountRoles)
             {
                 var acId = ar.AccountId;
-                Account account = _context.Account.SingleOrDefault(ac => ac.Id == acId);
-                accounts.Add(account);
+                GeneralInformation listStudent = _context.GeneralInformation.SingleOrDefault(st => st.AccountId == acId);
+                if (listStudent == null)
+                {
+                    return NotFound();
+                }
+                listStudents.Add(listStudent);
             }
-            return Ok(accounts);
+            if(listStudents == null)
+            {
+                return NotFound();
+            }
+            return Ok(listStudents);
         }
 
         // PUT: api/AccountRoles/5
