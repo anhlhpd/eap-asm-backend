@@ -141,17 +141,18 @@ namespace Backend.Controllers
                 return BadRequest(ModelState);
             }
 
-            var listClazzStudent = _context.ClazzAccount.Where(sc => sc.ClazzId == id).ToArray();
+            var listClazzStudent = _context.ClazzAccount.Where(cs => cs.ClazzId == id).ToArray();
             List<Account> listAccount = new List<Account>();
-            foreach (var studentClassAcc in listClazzStudent)
+            foreach (var clazzStudent in listClazzStudent)
             {
-                var account = _context.Account.Where(a => a.Id == studentClassAcc.AccountId).FirstOrDefault();
+                var account = _context.Account.Where(a => a.Id == clazzStudent.AccountId).FirstOrDefault();
                 listAccount.Add(account);
             }
 
             if (listClazzStudent == null)
             {
-                return NotFound("There're no students in this class.");
+                //return NotFound();
+                return new JsonResult(listAccount);
             }
             return new JsonResult(listAccount);
         }

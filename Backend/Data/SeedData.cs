@@ -227,7 +227,7 @@ namespace Backend.Data
                         },
                         new Clazz
                         {
-                            Id = "T1707M",
+                            Id = "T1708M",
                             StartDate = DateTime.Now,
                             Session = ClazzSession.Morning,
                             Status = ClazzStatus.Active,
@@ -235,7 +235,7 @@ namespace Backend.Data
                         },
                         new Clazz
                         {
-                            Id = "T1707E",
+                            Id = "T1708E",
                             StartDate = DateTime.Now,
                             Session = ClazzSession.Evening,
                             Status = ClazzStatus.Active,
