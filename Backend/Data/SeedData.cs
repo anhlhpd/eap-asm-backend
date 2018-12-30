@@ -53,34 +53,34 @@ namespace Backend.Data
                         new Account
                         {
                             Id = "MNG0001",
-                            Username = "xuanhung24",
+                            Username = "hungdmng0001",
                             Salt = salt2,
                             Password = PasswordHandle.GetInstance().EncryptPassword("A123@a123", salt2),
-                            Email = "xuanhung2401@gmail.com",
+                            Email = "hungdmng0001@gmail.com",
                         },
                         new Account
                         {
                             Id = "MNG0002",
-                            Username = "hongluyen",
+                            Username = "luyendmng0002",
                             Salt = salt3,
                             Password = PasswordHandle.GetInstance().EncryptPassword("A123@a123", salt3),
-                            Email = "hongluyen@gmail.com",
+                            Email = "luyendmng0002@gmail.com",
                         },
                         new Account
                         {
                             Id = "STU0001",
-                            Username = "thao541998",
+                            Username = "thaonstu0001",
                             Salt = salt4,
                             Password = PasswordHandle.GetInstance().EncryptPassword("A123@a123", salt4),
-                            Email = "thao541998@gmail.com",
+                            Email = "thaonstu0001@gmail.com",
                         },
                         new Account
                         {
                             Id = "STU0002",
-                            Username = "phuonganh",
+                            Username = "anhnstu0002",
                             Salt = salt5,
                             Password = PasswordHandle.GetInstance().EncryptPassword("A123@a123", salt5),
-                            Email = "phuonganh@gmail.com",
+                            Email = "anhnstu0002@gmail.com",
                         }
                     );
                 context.SaveChanges();
