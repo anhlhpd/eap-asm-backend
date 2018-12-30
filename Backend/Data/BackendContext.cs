@@ -190,5 +190,9 @@ namespace Backend.Models
                 RoleId = 3,
             });
         }
+
+        public DbSet<Backend.Models.Mark> Mark { get; set; }
+
+        public DbSet<Backend.Models.Subject> Subject { get; set; }
     }
 }

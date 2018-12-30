@@ -18,7 +18,7 @@ namespace Backend.Models
         [Required(ErrorMessage = "Please input account")]
         public string AccountId { get; set; }
         [Required(ErrorMessage = "Please input subject")]
-        public int SubjectId { get; set; }
+        public string SubjectId { get; set; }
         [Required(ErrorMessage = "Please input mark value"),
             Range(0, 15, ErrorMessage = "Please input valid mark value")]
         public float Value { get; set; }
