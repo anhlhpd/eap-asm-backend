@@ -126,7 +126,57 @@ namespace Backend.Controllers
         public async Task<IActionResult> Search([FromQuery] string id)
         {
             var clazz = await _context.Clazz.FindAsync(id);
+            if(clazz == null)
+            {
+                return NotFound("There're no class matched the search.");
+            }
             return new JsonResult(clazz);
+        }
+
+        [HttpGet("{id}/Students")]
+        public async Task<IActionResult> GetStudentsByClazz([FromRoute] string id)
+        {
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+
+            var listClazzStudent = _context.ClazzAccount.Where(sc => sc.ClazzId == id).ToArray();
+            List<Account> listAccount = new List<Account>();
+            foreach (var studentClassAcc in listClazzStudent)
+            {
+                var account = _context.Account.Where(a => a.Id == studentClassAcc.AccountId).FirstOrDefault();
+                listAccount.Add(account);
+            }
+
+            if (listClazzStudent == null)
+            {
+                return NotFound("There're no students in this class.");
+            }
+            return new JsonResult(listAccount);
+        }
+
+        [HttpGet("{id}/Subjects")]
+        public async Task<IActionResult> GetSubjectsByClazz([FromRoute] string id)
+        {
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+
+            var listClazzSubjects = _context.ClazzSubject.Where(cs => cs.ClazzId == id).ToArray();
+            List<Subject> listSubject = new List<Subject>();
+            foreach (var clazzSubject in listClazzSubjects)
+            {
+                var subject = _context.Subject.Include(s=>s.Clazzes).Where(s => s.Id == clazzSubject.SubjectId).FirstOrDefault();
+                listSubject.Add(subject);
+            }
+
+            if (listSubject == null)
+            {
+                return NotFound("There're no subjects in this class.");
+            }
+            return new JsonResult(listSubject);
         }
     }
 }

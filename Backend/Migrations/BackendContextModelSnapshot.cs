@@ -51,14 +51,6 @@ namespace Backend.Migrations
                         .HasFilter("[Username] IS NOT NULL");
 
                     b.ToTable("Account");
-
-                    b.HasData(
-                        new { Id = "ADMIN", CreatedAt = new DateTime(2018, 12, 29, 11, 9, 32, 526, DateTimeKind.Local), Email = "admin@admin.com", Password = "2H8lp+baHG0SXIRZZM5135rqp29eB8YvMXfYtTeEx4A=", Salt = "W0j9N8yjoBOW50O1swZ32w==", Status = 1, UpdatedAt = new DateTime(2018, 12, 29, 11, 9, 32, 526, DateTimeKind.Local), Username = "ADMIN" },
-                        new { Id = "MNG0001", CreatedAt = new DateTime(2018, 12, 29, 11, 9, 32, 542, DateTimeKind.Local), Email = "xuanhung2401@gmail.com", Password = "RFi0m78QqNt/d75Yhmoxc7zY/p0PkV4Z4ysQ4HXFbIw=", Salt = "s0fvk3vhV3ZTHXmJ4AsoiA==", Status = 1, UpdatedAt = new DateTime(2018, 12, 29, 11, 9, 32, 542, DateTimeKind.Local), Username = "xuanhung24" },
-                        new { Id = "MNG0002", CreatedAt = new DateTime(2018, 12, 29, 11, 9, 32, 553, DateTimeKind.Local), Email = "hongluyen@gmail.com", Password = "jy6T7QOqLzawvBwF9RRN4XNe+AMjyL+ykDHolrr6Vvw=", Salt = "PbFmJtQuisi/PBHxwXAUaQ==", Status = 1, UpdatedAt = new DateTime(2018, 12, 29, 11, 9, 32, 553, DateTimeKind.Local), Username = "hongluyen" },
-                        new { Id = "STU0001", CreatedAt = new DateTime(2018, 12, 29, 11, 9, 32, 564, DateTimeKind.Local), Email = "thuthao541998@gmail.com", Password = "ZYPOlDKhfrehLheeciVDfFA1yJy8hh4Em1dTJT+0kBc=", Salt = "B0xkN1xyjJEplGtHpseynw==", Status = 1, UpdatedAt = new DateTime(2018, 12, 29, 11, 9, 32, 564, DateTimeKind.Local), Username = "thuthao541998" },
-                        new { Id = "STU0002", CreatedAt = new DateTime(2018, 12, 29, 11, 9, 32, 576, DateTimeKind.Local), Email = "anhnhpd00579@fpt.edu.vn", Password = "6lB1xhARb41H8QWhRuwDDZ956LPVpIujWUOKFyr4p0c=", Salt = "INxZuId19JjR7zIddVowVw==", Status = 1, UpdatedAt = new DateTime(2018, 12, 29, 11, 9, 32, 576, DateTimeKind.Local), Username = "anhnhpd00579" }
-                    );
                 });
 
             modelBuilder.Entity("Backend.Models.AccountRole", b =>
@@ -72,14 +64,6 @@ namespace Backend.Migrations
                     b.HasAlternateKey("AccountId", "RoleId");
 
                     b.ToTable("AccountRoles");
-
-                    b.HasData(
-                        new { RoleId = 1, AccountId = "Admin" },
-                        new { RoleId = 2, AccountId = "MNG0001" },
-                        new { RoleId = 2, AccountId = "MNG0002" },
-                        new { RoleId = 3, AccountId = "STU0002" },
-                        new { RoleId = 3, AccountId = "STU0001" }
-                    );
                 });
 
             modelBuilder.Entity("Backend.Models.Clazz", b =>
@@ -87,7 +71,8 @@ namespace Backend.Migrations
                     b.Property<string>("Id")
                         .ValueGeneratedOnAdd();
 
-                    b.Property<int>("CurrentSubjectId");
+                    b.Property<string>("CurrentSubjectId")
+                        .IsRequired();
 
                     b.Property<int>("Session");
 
@@ -95,7 +80,7 @@ namespace Backend.Migrations
 
                     b.Property<int>("Status");
 
-                    b.Property<int?>("SubjectId");
+                    b.Property<string>("SubjectId");
 
                     b.HasKey("Id");
 
@@ -118,6 +103,37 @@ namespace Backend.Migrations
                     b.HasIndex("AccountId");
 
                     b.ToTable("ClazzAccount");
+                });
+
+            modelBuilder.Entity("Backend.Models.ClazzSubject", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<string>("ClazzId");
+
+                    b.Property<DateTime>("CreatedAt");
+
+                    b.Property<DateTime>("DeletedAt");
+
+                    b.Property<DateTime>("EndDate");
+
+                    b.Property<DateTime>("StartDate");
+
+                    b.Property<int>("Status");
+
+                    b.Property<string>("SubjectId");
+
+                    b.Property<DateTime>("UpdatedAt");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("ClazzId");
+
+                    b.HasIndex("SubjectId");
+
+                    b.ToTable("ClazzSubject");
                 });
 
             modelBuilder.Entity("Backend.Models.Credential", b =>
@@ -170,14 +186,37 @@ namespace Backend.Migrations
                         .IsUnique();
 
                     b.ToTable("GeneralInformation");
+                });
 
-                    b.HasData(
-                        new { AccountId = "ADMIN", Birthday = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), FirstName = "ADMIN", Gender = 2, LastName = "ADMIN", Phone = "01234567890" },
-                        new { AccountId = "MNG0001", Birthday = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), FirstName = "Hung", Gender = 2, LastName = "Dao", Phone = "013237416" },
-                        new { AccountId = "MNG0002", Birthday = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), FirstName = "Luyen", Gender = 2, LastName = "Dao", Phone = "013257416" },
-                        new { AccountId = "STU0001", Birthday = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), FirstName = "Thao", Gender = 2, LastName = "Nguyen", Phone = "013257983" },
-                        new { AccountId = "STU0002", Birthday = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), FirstName = "Anh", Gender = 2, LastName = "Nguyen", Phone = "0130387983" }
-                    );
+            modelBuilder.Entity("Backend.Models.Mark", b =>
+                {
+                    b.Property<long>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<string>("AccountId")
+                        .IsRequired();
+
+                    b.Property<DateTime>("CreatedAt");
+
+                    b.Property<int>("MarkType");
+
+                    b.Property<int>("Status");
+
+                    b.Property<string>("SubjectId")
+                        .IsRequired();
+
+                    b.Property<DateTime>("UpdatedAt");
+
+                    b.Property<float>("Value");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("AccountId");
+
+                    b.HasIndex("SubjectId");
+
+                    b.ToTable("Mark");
                 });
 
             modelBuilder.Entity("Backend.Models.Role", b =>
@@ -205,19 +244,12 @@ namespace Backend.Migrations
                         .IsUnique();
 
                     b.ToTable("Role");
-
-                    b.HasData(
-                        new { RoleId = 1, CreatedAt = new DateTime(2018, 12, 29, 11, 9, 32, 520, DateTimeKind.Local), DeletedAt = new DateTime(2018, 12, 29, 11, 9, 32, 522, DateTimeKind.Local), Description = "Set role for Admin User", Name = "Admin", Status = 1, UpdatedAt = new DateTime(2018, 12, 29, 11, 9, 32, 522, DateTimeKind.Local) },
-                        new { RoleId = 2, CreatedAt = new DateTime(2018, 12, 29, 11, 9, 32, 523, DateTimeKind.Local), DeletedAt = new DateTime(2018, 12, 29, 11, 9, 32, 523, DateTimeKind.Local), Description = "Set role for Manage User", Name = "Manage", Status = 1, UpdatedAt = new DateTime(2018, 12, 29, 11, 9, 32, 523, DateTimeKind.Local) },
-                        new { RoleId = 3, CreatedAt = new DateTime(2018, 12, 29, 11, 9, 32, 523, DateTimeKind.Local), DeletedAt = new DateTime(2018, 12, 29, 11, 9, 32, 523, DateTimeKind.Local), Description = "Set role for Student User", Name = "Student", Status = 1, UpdatedAt = new DateTime(2018, 12, 29, 11, 9, 32, 523, DateTimeKind.Local) }
-                    );
                 });
 
             modelBuilder.Entity("Backend.Models.Subject", b =>
                 {
-                    b.Property<int>("SubjectId")
-                        .ValueGeneratedOnAdd()
-                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+                    b.Property<string>("Id")
+                        .ValueGeneratedOnAdd();
 
                     b.Property<string>("Description");
 
@@ -226,7 +258,7 @@ namespace Backend.Migrations
 
                     b.Property<int>("Status");
 
-                    b.HasKey("SubjectId");
+                    b.HasKey("Id");
 
                     b.HasIndex("Name")
                         .IsUnique();
@@ -267,6 +299,17 @@ namespace Backend.Migrations
                         .OnDelete(DeleteBehavior.Cascade);
                 });
 
+            modelBuilder.Entity("Backend.Models.ClazzSubject", b =>
+                {
+                    b.HasOne("Backend.Models.Clazz", "Clazz")
+                        .WithMany()
+                        .HasForeignKey("ClazzId");
+
+                    b.HasOne("Backend.Models.Subject", "Subject")
+                        .WithMany()
+                        .HasForeignKey("SubjectId");
+                });
+
             modelBuilder.Entity("Backend.Models.Credential", b =>
                 {
                     b.HasOne("Backend.Models.Account", "Account")
@@ -279,6 +322,19 @@ namespace Backend.Migrations
                     b.HasOne("Backend.Models.Account", "Account")
                         .WithOne("GeneralInformation")
                         .HasForeignKey("Backend.Models.GeneralInformation", "AccountId")
+                        .OnDelete(DeleteBehavior.Cascade);
+                });
+
+            modelBuilder.Entity("Backend.Models.Mark", b =>
+                {
+                    b.HasOne("Backend.Models.Account", "Account")
+                        .WithMany()
+                        .HasForeignKey("AccountId")
+                        .OnDelete(DeleteBehavior.Cascade);
+
+                    b.HasOne("Backend.Models.Subject", "Subject")
+                        .WithMany()
+                        .HasForeignKey("SubjectId")
                         .OnDelete(DeleteBehavior.Cascade);
                 });
 #pragma warning restore 612, 618

@@ -13,6 +13,8 @@ namespace Backend.Models
         private static readonly int MaxAssignment = 10;
         private static readonly int PercentToPass = 40;
 
+        public Mark() { }
+
         public Mark(MarkType type, int value)
         {
             this.MarkType = type;
@@ -22,7 +24,7 @@ namespace Backend.Models
             this.UpdatedAt = DateTime.Now;
         }
 
-        public Mark(MarkType type, int value, int subjectId, string accountId)
+        public Mark(MarkType type, int value, string subjectId, string accountId)
         {
             this.SubjectId = subjectId;
             this.AccountId = accountId;
@@ -56,7 +58,7 @@ namespace Backend.Models
         [Required(ErrorMessage = "Please input account")]
         public string AccountId { get; set; }
         [Required(ErrorMessage = "Please input subject")]
-        public int SubjectId { get; set; }
+        public string SubjectId { get; set; }
         [Required(ErrorMessage = "Please input mark value"),
             Range(0, 15, ErrorMessage = "Please input valid mark value")]
         public float Value { get; set; }
