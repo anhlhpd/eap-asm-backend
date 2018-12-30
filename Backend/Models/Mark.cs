@@ -8,7 +8,7 @@ namespace Backend.Models
 {
     public class Mark
     {
-        private static readonly int MaxTheory = 100; // 100%.
+        private static readonly int MaxTheory = 10; // 100%.
         private static readonly int MaxPratice = 15;
         private static readonly int MaxAssignment = 10;
         private static readonly int PercentToPass = 40;
