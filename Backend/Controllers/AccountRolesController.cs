@@ -29,7 +29,7 @@ namespace Backend.Controllers
 
         // GET: api/AccountRoles/5
         [HttpGet("{roleId}")]
-        public async Task<IActionResult> GetAccountRole([FromRoute] int roleId)
+        public async Task<IActionResult> GetListStudent([FromRoute] int roleId)
         {
             
             if (!ModelState.IsValid)
@@ -39,7 +39,7 @@ namespace Backend.Controllers
 
             var accountRoles = _context.AccountRoles.Where(ar => ar.RoleId == roleId);
 
-            if (accountRoles == null)
+            if (accountRoles == null || accountRoles.Count() == 0)
             {
                 return NotFound();
             }
@@ -54,9 +54,9 @@ namespace Backend.Controllers
                 }
                 listStudents.Add(listStudent);
             }
-            if(listStudents == null)
+            if(listStudents == null || listStudents.Count() == 0)
             {
-                return NotFound();
+                return NotFound("yes");
             }
             return Ok(listStudents);
         }
