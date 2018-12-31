@@ -51,17 +51,40 @@ namespace Backend.Controllers
         [HttpPut("{id}")]
         public async Task<IActionResult> PutAccount([FromRoute] string id, [FromBody] Account account)
         {
-            if (!ModelState.IsValid)
+           if (!ModelState.IsValid)
             {
                 return BadRequest(ModelState);
             }
-
+            
             if (id != account.Id)
             {
                 return BadRequest();
             }
+            
+            if (_context.Account.SingleOrDefault(a=>a.Id == account.Id) != null) // Kiem tra account update co ton tai khong
+            {
+                
+                var currentAccount = await _context.Account.SingleOrDefaultAsync(a => a.Id == account.Id);
+                string tokenHeader = Request.Headers["Authorization"];
+                var token = tokenHeader.Replace("Basic ", "");
+                var tokenUser = _context.Credential.SingleOrDefault(c => c.AccessToken == token);
+                if (tokenUser.OwnerId == currentAccount.Id ||
+                    _context.AccountRoles.SingleOrDefault(ar=>ar.AccountId == tokenUser.OwnerId).RoleId > _context.AccountRoles.SingleOrDefault(ar => ar.AccountId == currentAccount.Id).RoleId)
+                {
+                    _context.Entry(account).State = EntityState.Modified;
+                    return new JsonResult(account);
+                    //account.CreatedAt = currentAccount.CreatedAt;
+                    currentAccount = account;
+                    currentAccount.GeneralInformation = account.GeneralInformation;
+                    _context.Account.Update(account);
+                    return new JsonResult(account);
 
-            _context.Entry(account).State = EntityState.Modified;
+                }
+            }
+            return BadRequest();
+            
+
+            
 
             try
             {
