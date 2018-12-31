@@ -71,7 +71,7 @@ namespace Backend.Controllers
                 var tokenUser = await _context.Credential.SingleOrDefaultAsync(c => c.AccessToken == token);
                 if (tokenUser.OwnerId == currentAccount.Id 
                     ||
-                    (await _context.AccountRoles.SingleOrDefaultAsync(ar=>ar.AccountId == tokenUser.OwnerId)).RoleId > (await _context.AccountRoles.SingleOrDefaultAsync(ar => ar.AccountId == currentAccount.Id)).RoleId 
+                    (await _context.AccountRoles.SingleOrDefaultAsync(ar=>ar.AccountId == tokenUser.OwnerId)).RoleId < (await _context.AccountRoles.SingleOrDefaultAsync(ar => ar.AccountId == currentAccount.Id)).RoleId 
                     ||
                     tokenUser.OwnerId == "ADMIN"
                     )
