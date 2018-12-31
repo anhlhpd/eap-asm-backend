@@ -124,7 +124,7 @@ namespace Backend.Controllers
                 // người dùng cần quyền để xóa
                 // fix ý nghĩa id càng to thì xóa được bịn id nhỏ 
                
-                if ((await _context.AccountRoles.SingleOrDefaultAsync(ar => ar.AccountId == tokenUser.OwnerId)).RoleId > (await _context.AccountRoles.SingleOrDefaultAsync(ar => ar.AccountId == account.Id)).RoleId ||
+                if ((await _context.AccountRoles.SingleOrDefaultAsync(ar => ar.AccountId == tokenUser.OwnerId)).RoleId < (await _context.AccountRoles.SingleOrDefaultAsync(ar => ar.AccountId == account.Id)).RoleId ||
                     tokenUser.OwnerId == "ADMIN"
                     )
                 {
@@ -132,9 +132,9 @@ namespace Backend.Controllers
                     account.UpdatedAt = DateTime.Now;
                     account.Status = AccountStatus.Deactive;
                     _context.Entry(account).State = EntityState.Modified;
-                    return new JsonResult(account);
+                    //return new JsonResult(account);
                     await _context.SaveChangesAsync();
-                    return Ok();
+                    return Ok(account);
                 }
             }
             return NotFound();
