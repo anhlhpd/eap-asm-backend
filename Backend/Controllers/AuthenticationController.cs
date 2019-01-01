@@ -13,6 +13,8 @@ using System.Text;
 using Newtonsoft.Json.Linq;
 using Microsoft.EntityFrameworkCore.Internal;
 using System.Globalization;
+using System.Net;
+
 
 namespace Backend.Controllers
 {
@@ -32,9 +34,11 @@ namespace Backend.Controllers
         [HttpPost]
         public async Task<IActionResult> StudentLogin(LoginInformation loginInformation)
         {
+            
             // find 1 account with matching username in Account
             var ac = await _context.Account.SingleOrDefaultAsync(a =>
                     a.Username == loginInformation.Username);
+            
             if (ac != null)
             {
                 var isCorrectClient = ac.Id.StartsWith("STU");
@@ -45,6 +49,7 @@ namespace Backend.Controllers
                     {
                         // check if account is deactivated
                         if (ac.Status != AccountStatus.Deactive)
+
                         {
                             // check if account is logged in elsewhere
                             var cr = await _context.Credential.SingleOrDefaultAsync(c =>
@@ -70,12 +75,20 @@ namespace Backend.Controllers
                             return Ok(accessToken);
                         }
                         return Forbid("Your account is deactivated. Contact managers for more information.");
+
                     }
-                    return Forbid("Username or password wrong");
+
+                    
+                    Response.StatusCode = (int)HttpStatusCode.Forbidden;
+                    return new JsonResult(new ResponseError("UserName or Password is incorrect", (int)HttpStatusCode.Forbidden));
                 }
-                return Forbid("Client wrong");
+                
+                Response.StatusCode = (int)HttpStatusCode.Forbidden;
+                return new JsonResult(new ResponseError("Client is Wrong", (int)HttpStatusCode.Forbidden));
+                
             }
-            return Forbid("Username or password wrong");
+            Response.StatusCode = (int)HttpStatusCode.Forbidden;
+            return new JsonResult(new ResponseError("UserName or Password is incorrect", (int)HttpStatusCode.Forbidden));
         }
 
         [Route("StaffLogin")]
@@ -97,6 +110,7 @@ namespace Backend.Controllers
                     {
                         // check if account is deactivated
                         if (ac.Status != AccountStatus.Deactive)
+
                         {
                             // check if account is logged in elsewhere
                             var cr = await _context.Credential.SingleOrDefaultAsync(c =>
@@ -122,12 +136,16 @@ namespace Backend.Controllers
                             return Ok(accessToken);
                         }
                         return Forbid("Your account is deactivated. Contact managers for more information.");
+
                     }
-                    return Forbid("Username or password wrong");
+                    Response.StatusCode = (int)HttpStatusCode.Forbidden;
+                    return new JsonResult(new ResponseError("UserName or Password is incorrect", (int)HttpStatusCode.Forbidden));
                 }
-                return Forbid("Client wrong");
+                Response.StatusCode = (int)HttpStatusCode.Forbidden;
+                return new JsonResult(new ResponseError("Client Wrong", (int)HttpStatusCode.Forbidden));
             }
-            return Forbid("Username or password wrong");
+            Response.StatusCode = (int)HttpStatusCode.Forbidden;
+            return new JsonResult(new ResponseError("UserName or Password is incorrect", (int)HttpStatusCode.Forbidden));
         }
 
         // POST: api/Authentication/Logout
@@ -175,7 +193,7 @@ namespace Backend.Controllers
             return NotFound();
         }
         // GET: api/Authentication/5
-        [HttpGet("{CheckAdmin}")]
+        [HttpGet("{CheckAdmin}")] 
         public async Task<IActionResult> CheckAdmin([FromRoute] string CheckAdmin)
         {
            if (HttpContext.Request.Query.ContainsKey("AccessToken"))
@@ -195,7 +213,6 @@ namespace Backend.Controllers
             }
             return NotFound();
         }
-
         // PUT: api/Authentication/5
         [HttpPut("{id}")]
         public async Task<IActionResult> PutCredential([FromRoute] string id, [FromBody] Credential credential)

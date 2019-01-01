@@ -30,7 +30,7 @@ namespace Backend.Models
         public ClazzStatus Status { get; set; }
 >>>>>>> a8a634cef5637871d0e89db869da0bbcff2fe170:Backend/Models/Clazz.cs
         [Required(ErrorMessage = "Please input the current subject of the class")]
-        public int CurrentSubjectId { get; set; }
+        public string CurrentSubjectId { get; set; }
         public Subject Subject { get; set; }
     }
 

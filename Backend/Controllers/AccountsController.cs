@@ -92,6 +92,7 @@ namespace Backend.Controllers
             {
                 return BadRequest(ModelState);
             }
+
             return new JsonResult(generalInformation);
             //var salt = PasswordHandle.GetInstance().GenerateSalt();
             //account.Salt = salt;

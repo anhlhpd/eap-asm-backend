@@ -23,6 +23,7 @@ namespace Backend.Models
         public DbSet<Backend.Models.Credential> Credential { get; set; }
         public DbSet<Backend.Models.AccountRole> AccountRoles { get; set; }
         public DbSet<Backend.Models.ClazzAccount> ClazzAccount { get; set; }
+        public DbSet<Backend.Models.ClazzSubject> ClazzSubject { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -55,140 +56,9 @@ namespace Backend.Models
                 entity.HasKey(e => new { e.ClazzId, e.AccountId });
             });
 
-            //Seeder for Roles
-            modelBuilder.Entity<Role>().HasData(new Role()
-            {
-                Id = 1,
-                Name = "Admin",
-                Description = "Set role for Admin User"
-            });
-            modelBuilder.Entity<Role>().HasData(new Role()
-            {
-                Id = 2,
-                Name = "Manager",
-                Description = "Set role for Manager User"
-            });
-            modelBuilder.Entity<Role>().HasData(new Role()
-            {
-                Id = 3,
-                Name = "Student",
-                Description = "Set role for Student User"
-            });
-            //Seeder for First Admin
-            var salt = PasswordHandle.GetInstance().GenerateSalt();
-            
-            modelBuilder.Entity<GeneralInformation>().HasData(new GeneralInformation()
-            {
-                AccountId = "ADMIN",
-                FirstName = "ADMIN",
-                LastName = "ADMIN",
-                Phone = "01234567890",
-            });
-            
-            modelBuilder.Entity<Account>().HasData(new Account()
-            {
-                Id = "ADMIN",
-                Username = "ADMIN",
-                Salt = salt,
-                Password = PasswordHandle.GetInstance().EncryptPassword("Amin@123", salt),
-                Email = "admin@admin.com",
-            });
 
-            modelBuilder.Entity<AccountRole>().HasData(new AccountRole()
-            {
-                AccountId = "Admin",
-                RoleId = 1,
-            });
+        public DbSet<Backend.Models.Mark> Mark { get; set; }
 
-            //Seeder for 2 teachers and 2 students
-            // Teachers
-            salt = PasswordHandle.GetInstance().GenerateSalt();
-            modelBuilder.Entity<Account>().HasData(new Account()
-            {
-                Id = "MNG0001",
-                Username = "xuanhung24",
-                Salt = salt,
-                Password = PasswordHandle.GetInstance().EncryptPassword("A123@a123", salt),
-                Email = "xuanhung2401@gmail.com",
-            });
-            modelBuilder.Entity<GeneralInformation>().HasData(new GeneralInformation()
-            {
-                AccountId = "MNG0001",
-                FirstName = "Hung",
-                LastName = "Dao",
-                Phone = "013237416",
-            });
-            salt = PasswordHandle.GetInstance().GenerateSalt();
-            modelBuilder.Entity<Account>().HasData(new Account()
-            {
-                Id = "MNG0002",
-                Username = "hongluyen",
-                Salt = salt,
-                Password = PasswordHandle.GetInstance().EncryptPassword("A123@a123", salt),
-                Email = "hongluyen@gmail.com",
-            });
-            modelBuilder.Entity<GeneralInformation>().HasData(new GeneralInformation()
-            {
-                AccountId = "MNG0002",
-                FirstName = "Luyen",
-                LastName = "Dao",
-                Phone = "013257416",
-            });
-
-            modelBuilder.Entity<AccountRole>().HasData(new AccountRole()
-            {
-                AccountId = "MNG0001",
-                RoleId = 2,
-            });
-            modelBuilder.Entity<AccountRole>().HasData(new AccountRole()
-            {
-                AccountId = "MNG0002",
-                RoleId = 2,
-            });
-            // Students
-            salt = PasswordHandle.GetInstance().GenerateSalt();
-            modelBuilder.Entity<Account>().HasData(new Account()
-            {
-                Id = "STU0001",
-                Username = "thuthao541998",
-                Salt = salt,
-                Password = PasswordHandle.GetInstance().EncryptPassword("A123@a123", salt),
-                Email = "thuthao541998@gmail.com",
-            });
-            modelBuilder.Entity<GeneralInformation>().HasData(new GeneralInformation()
-            {
-                AccountId = "STU0001",
-                FirstName = "Thao",
-                LastName = "Nguyen",
-                Phone = "013257983",
-            });
-            salt = PasswordHandle.GetInstance().GenerateSalt();
-            modelBuilder.Entity<Account>().HasData(new Account()
-            {
-                Id = "STU0002",
-                Username = "anhnhpd00579",
-                Salt = salt,
-                Password = PasswordHandle.GetInstance().EncryptPassword("A123@a123", salt),
-                Email = "anhnhpd00579@fpt.edu.vn",
-            });
-            modelBuilder.Entity<GeneralInformation>().HasData(new GeneralInformation()
-            {
-                AccountId = "STU0002",
-                FirstName = "Anh",
-                LastName = "Nguyen",
-                Phone = "0130387983",
-            });
-
-            modelBuilder.Entity<AccountRole>().HasData(new AccountRole()
-            {
-                AccountId = "STU0002",
-                RoleId = 3,
-            });
-            modelBuilder.Entity<AccountRole>().HasData(new AccountRole()
-            {
-                AccountId = "STU0001",
-                RoleId = 3,
-            });
-        }
+        public DbSet<Backend.Models.Subject> Subject { get; set; }
     }
 }
