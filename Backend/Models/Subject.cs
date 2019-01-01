@@ -14,12 +14,12 @@ namespace Backend.Models
         }
         [Key]
         [Required]
-        public int SubjectId { get; set; }
+        public int Id { get; set; }
         [Required(ErrorMessage = "Please enter subject name")]
         public string Name { get; set; }
         public string Description { get; set; }
         public SubjectStatus SubjectStatus { get; set; }
-        public List<StudentClass> StudentClasses { get; set; }
+        public List<Clazz> Clazzes { get; set; }
     }
 
     public enum SubjectStatus

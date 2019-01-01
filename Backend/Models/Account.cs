@@ -13,11 +13,11 @@ namespace Backend.Models
         {
             this.CreatedAt = DateTime.Now;
             this.UpdatedAt = DateTime.Now;
-            this.AccountStatus = AccountStatus.Active;
+            this.Status = AccountStatus.Active;
         }
         [Required]
         [ForeignKey("PersonalInformation")]
-        public string AccountId { get; set; }
+        public string Id { get; set; }
         [Required]
         public string Email { get; set; }
         [Required]
@@ -28,7 +28,7 @@ namespace Backend.Models
         public DateTime CreatedAt { get; set; }
         public DateTime UpdatedAt { get; set; }
         public DateTime? DeletedAt { get; set; }
-        public AccountStatus AccountStatus { get; set; }
+        public AccountStatus Status { get; set; }
         public PersonalInformation PersonalInformation { get; set; }
     }
 

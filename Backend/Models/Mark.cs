@@ -14,7 +14,7 @@ namespace Backend.Models
         }
         [Key]
         [Required]
-        public long MarkId { get; set; }
+        public long Id { get; set; }
         [Required(ErrorMessage = "Please input account")]
         public string AccountId { get; set; }
         [Required(ErrorMessage = "Please input subject")]

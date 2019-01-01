@@ -11,56 +11,56 @@ namespace Backend.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class StudentClassesController : ControllerBase
+    public class ClazzesController : ControllerBase
     {
         private readonly BackendContext _context;
 
-        public StudentClassesController(BackendContext context)
+        public ClazzesController(BackendContext context)
         {
             _context = context;
         }
 
-        // GET: api/StudentClasses
+        // GET: api/Clazzes
         [HttpGet]
-        public IEnumerable<StudentClass> GetStudentClass()
+        public IEnumerable<Clazz> GetClazz()
         {
-            return _context.StudentClass;
+            return _context.Clazz;
         }
 
-        // GET: api/StudentClasses/5
+        // GET: api/Clazzes/5
         [HttpGet("{id}")]
-        public async Task<IActionResult> GetStudentClass([FromRoute] string id)
+        public async Task<IActionResult> GetClazz([FromRoute] string id)
         {
             if (!ModelState.IsValid)
             {
                 return BadRequest(ModelState);
             }
 
-            var studentClass = await _context.StudentClass.FindAsync(id);
+            var Clazz = await _context.Clazz.FindAsync(id);
 
-            if (studentClass == null)
+            if (Clazz == null)
             {
                 return NotFound();
             }
 
-            return Ok(studentClass);
+            return Ok(Clazz);
         }
 
-        // PUT: api/StudentClasses/5
+        // PUT: api/Clazzes/5
         [HttpPut("{id}")]
-        public async Task<IActionResult> PutStudentClass([FromRoute] string id, [FromBody] StudentClass studentClass)
+        public async Task<IActionResult> PutClazz([FromRoute] string id, [FromBody] Clazz Clazz)
         {
             if (!ModelState.IsValid)
             {
                 return BadRequest(ModelState);
             }
 
-            if (id != studentClass.StudentClassId)
+            if (id != Clazz.ClazzId)
             {
                 return BadRequest();
             }
 
-            _context.Entry(studentClass).State = EntityState.Modified;
+            _context.Entry(Clazz).State = EntityState.Modified;
 
             try
             {
@@ -68,7 +68,7 @@ namespace Backend.Controllers
             }
             catch (DbUpdateConcurrencyException)
             {
-                if (!StudentClassExists(id))
+                if (!ClazzExists(id))
                 {
                     return NotFound();
                 }
@@ -81,52 +81,52 @@ namespace Backend.Controllers
             return NoContent();
         }
 
-        // POST: api/StudentClasses
+        // POST: api/Clazzes
         [HttpPost]
-        public async Task<IActionResult> PostStudentClass([FromBody] StudentClass studentClass)
+        public async Task<IActionResult> PostClazz([FromBody] Clazz Clazz)
         {
             if (!ModelState.IsValid)
             {
                 return BadRequest(ModelState);
             }
 
-            _context.StudentClass.Add(studentClass);
+            _context.Clazz.Add(Clazz);
             await _context.SaveChangesAsync();
 
-            return CreatedAtAction("GetStudentClass", new { id = studentClass.StudentClassId }, studentClass);
+            return CreatedAtAction("GetClazz", new { id = Clazz.ClazzId }, Clazz);
         }
 
-        // DELETE: api/StudentClasses/5
+        // DELETE: api/Clazzes/5
         [HttpDelete("{id}")]
-        public async Task<IActionResult> DeleteStudentClass([FromRoute] string id)
+        public async Task<IActionResult> DeleteClazz([FromRoute] string id)
         {
             if (!ModelState.IsValid)
             {
                 return BadRequest(ModelState);
             }
 
-            var studentClass = await _context.StudentClass.FindAsync(id);
-            if (studentClass == null)
+            var Clazz = await _context.Clazz.FindAsync(id);
+            if (Clazz == null)
             {
                 return NotFound();
             }
 
-            _context.StudentClass.Remove(studentClass);
+            _context.Clazz.Remove(Clazz);
             await _context.SaveChangesAsync();
 
-            return Ok(studentClass);
+            return Ok(Clazz);
         }
 
-        private bool StudentClassExists(string id)
+        private bool ClazzExists(string id)
         {
-            return _context.StudentClass.Any(e => e.StudentClassId == id);
+            return _context.Clazz.Any(e => e.ClazzId == id);
         }
 
         [HttpGet("search")]
         public async Task<IActionResult> Search([FromQuery] string id)
         {
-            var studentClass = await _context.StudentClass.FindAsync(id);
-            return new JsonResult(studentClass);
+            var Clazz = await _context.Clazz.FindAsync(id);
+            return new JsonResult(Clazz);
         }
     }
 }
