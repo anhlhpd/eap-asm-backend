@@ -11,11 +11,11 @@ namespace Backend.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class ClazzesController : ControllerBase
+    public class ClazzController : ControllerBase
     {
         private readonly BackendContext _context;
 
-        public ClazzesController(BackendContext context)
+        public ClazzController(BackendContext context)
         {
             _context = context;
         }
@@ -35,32 +35,31 @@ namespace Backend.Controllers
             {
                 return BadRequest(ModelState);
             }
+            
+            var clazz = await _context.Clazz.FindAsync(id);
 
-            var Clazz = await _context.Clazz.FindAsync(id);
-
-            if (Clazz == null)
+            if (clazz == null)
             {
                 return NotFound();
             }
-
-            return Ok(Clazz);
+            return Ok(clazz);
         }
 
         // PUT: api/Clazzes/5
         [HttpPut("{id}")]
-        public async Task<IActionResult> PutClazz([FromRoute] string id, [FromBody] Clazz Clazz)
+        public async Task<IActionResult> PutClazz([FromRoute] string id, [FromBody] Clazz clazz)
         {
             if (!ModelState.IsValid)
             {
                 return BadRequest(ModelState);
             }
-
-            if (id != Clazz.ClazzId)
+            
+            if (id != clazz.Id)
             {
                 return BadRequest();
             }
-
-            _context.Entry(Clazz).State = EntityState.Modified;
+            
+            _context.Entry(clazz).State = EntityState.Modified;
 
             try
             {
@@ -83,17 +82,17 @@ namespace Backend.Controllers
 
         // POST: api/Clazzes
         [HttpPost]
-        public async Task<IActionResult> PostClazz([FromBody] Clazz Clazz)
+        public async Task<IActionResult> PostClazz([FromBody] Clazz clazz)
         {
             if (!ModelState.IsValid)
             {
                 return BadRequest(ModelState);
             }
-
-            _context.Clazz.Add(Clazz);
+            
+            _context.Clazz.Add(clazz);
             await _context.SaveChangesAsync();
 
-            return CreatedAtAction("GetClazz", new { id = Clazz.ClazzId }, Clazz);
+            return CreatedAtAction("GetClazz", new { id = clazz.Id }, clazz);
         }
 
         // DELETE: api/Clazzes/5
@@ -104,29 +103,29 @@ namespace Backend.Controllers
             {
                 return BadRequest(ModelState);
             }
-
-            var Clazz = await _context.Clazz.FindAsync(id);
-            if (Clazz == null)
+            
+            var clazz = await _context.Clazz.FindAsync(id);
+            if (clazz == null)
             {
                 return NotFound();
             }
-
-            _context.Clazz.Remove(Clazz);
+            
+            _context.Clazz.Remove(clazz);
             await _context.SaveChangesAsync();
 
-            return Ok(Clazz);
+            return Ok(clazz);
         }
 
         private bool ClazzExists(string id)
         {
-            return _context.Clazz.Any(e => e.ClazzId == id);
+            return _context.Clazz.Any(e => e.Id == id);
         }
 
         [HttpGet("search")]
         public async Task<IActionResult> Search([FromQuery] string id)
         {
-            var Clazz = await _context.Clazz.FindAsync(id);
-            return new JsonResult(Clazz);
+            var clazz = await _context.Clazz.FindAsync(id);
+            return new JsonResult(clazz);
         }
     }
 }

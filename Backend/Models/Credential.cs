@@ -15,7 +15,7 @@ namespace Backend.Models
         }
         [Key]
         [Required]
-        public string AccountId { get; set; }
+        public string OwnerId { get; set; }
         public string AccessToken { get; set; }
         public DateTime CreatedAt { get; set; }
         public DateTime UpdatedAt { get; set; }

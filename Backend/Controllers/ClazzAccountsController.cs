@@ -48,19 +48,18 @@ namespace Backend.Controllers
 
         // PUT: api/ClazzAccounts/5
         [HttpPut("{id}")]
-        public async Task<IActionResult> PutClazzAccount([FromRoute] string id, [FromBody] ClazzAccount ClazzAccount)
+        public async Task<IActionResult> PutClazzAccount([FromRoute] string id, [FromBody] ClazzAccount clazzAccount)
         {
             if (!ModelState.IsValid)
             {
                 return BadRequest(ModelState);
             }
-
-            if (id != ClazzAccount.ClazzId)
+            if (id != clazzAccount.ClazzId)
             {
                 return BadRequest();
             }
-
-            _context.Entry(ClazzAccount).State = EntityState.Modified;
+            
+            _context.Entry(clazzAccount).State = EntityState.Modified;
 
             try
             {
@@ -83,21 +82,21 @@ namespace Backend.Controllers
 
         // POST: api/ClazzAccounts
         [HttpPost]
-        public async Task<IActionResult> PostClazzAccount([FromBody] ClazzAccount ClazzAccount)
+        public async Task<IActionResult> PostClazzAccount([FromBody] ClazzAccount clazzAccount)
         {
             if (!ModelState.IsValid)
             {
                 return BadRequest(ModelState);
             }
-
-            _context.ClazzAccount.Add(ClazzAccount);
+            
+            _context.ClazzAccount.Add(clazzAccount);
             try
             {
                 await _context.SaveChangesAsync();
             }
             catch (DbUpdateException)
             {
-                if (ClazzAccountExists(ClazzAccount.ClazzId))
+                if (ClazzAccountExists(clazzAccount.ClazzId))
                 {
                     return new StatusCodeResult(StatusCodes.Status409Conflict);
                 }
@@ -106,8 +105,7 @@ namespace Backend.Controllers
                     throw;
                 }
             }
-
-            return CreatedAtAction("GetClazzAccount", new { id = ClazzAccount.ClazzId }, ClazzAccount);
+            return CreatedAtAction("GetClazzAccount", new { id = clazzAccount.ClazzId }, clazzAccount);
         }
 
         // DELETE: api/ClazzAccounts/5

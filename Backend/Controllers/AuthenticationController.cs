@@ -48,7 +48,7 @@ namespace Backend.Controllers
                         {
                             // check if account is logged in elsewhere
                             var cr = await _context.Credential.SingleOrDefaultAsync(c =>
-                                c.AccountId == ac.Id);
+                                c.OwnerId == ac.Id);
                             var accessToken = TokenHandle.GetInstance().GenerateToken();
                             if (cr != null) // if account has logged in
                             {
@@ -61,7 +61,7 @@ namespace Backend.Controllers
                             // create new credential with AccountId
                             var firstCredential = new Credential
                             {
-                                AccountId = ac.Id,
+                                OwnerId = ac.Id,
                                 AccessToken = accessToken
                             };
                             // save token
@@ -100,7 +100,7 @@ namespace Backend.Controllers
                         {
                             // check if account is logged in elsewhere
                             var cr = await _context.Credential.SingleOrDefaultAsync(c =>
-                                c.AccountId == ac.Id);
+                                c.OwnerId == ac.Id);
                             var accessToken = TokenHandle.GetInstance().GenerateToken();
                             if (cr != null) // if account has logged in
                             {
@@ -113,7 +113,7 @@ namespace Backend.Controllers
                             // create new credential with AccountId
                             var firstCredential = new Credential
                             {
-                                AccountId = ac.Id,
+                                OwnerId = ac.Id,
                                 AccessToken = accessToken
                             };
                             // save token
@@ -168,7 +168,7 @@ namespace Backend.Controllers
                     c.AccessToken == HttpContext.Request.Query["AccessToken"].ToString());
                 if (cr != null)
                 {
-                    var currentRole = _context.Role.Find(_context.AccountRoles.SingleOrDefault(ar=>ar.AccountId == cr.AccountId).RoleId);
+                    var currentRole = _context.Role.Find(_context.AccountRoles.SingleOrDefault(ar=>ar.AccountId == cr.OwnerId).RoleId);
                     return Ok(currentRole);
                 }
             }
@@ -184,9 +184,9 @@ namespace Backend.Controllers
                     c.AccessToken == HttpContext.Request.Query["AccessToken"].ToString());
                 if (cr != null)
                 {
-                    if (_context.AccountRoles.SingleOrDefault(ar => ar.AccountId == cr.AccountId) != null)
+                    if (_context.AccountRoles.SingleOrDefault(ar => ar.AccountId == cr.OwnerId) != null)
                     {
-                        if (_context.Role.SingleOrDefault(r => r.Id == _context.AccountRoles.SingleOrDefault(ar => ar.AccountId == cr.AccountId).RoleId).Name == "Admin")
+                        if (_context.Role.SingleOrDefault(r => r.Id == _context.AccountRoles.SingleOrDefault(ar => ar.AccountId == cr.OwnerId).RoleId).Name == "Admin")
                         {
                             return Ok();
                         }
@@ -205,7 +205,7 @@ namespace Backend.Controllers
                 return BadRequest(ModelState);
             }
 
-            if (id != credential.AccountId)
+            if (id != credential.OwnerId)
             {
                 return BadRequest();
             }
@@ -243,7 +243,7 @@ namespace Backend.Controllers
             _context.Credential.Add(credential);
             await _context.SaveChangesAsync();
 
-            return CreatedAtAction("GetCredential", new { id = credential.AccountId }, credential);
+            return CreatedAtAction("GetCredential", new { id = credential.OwnerId }, credential);
         }
 
         // DELETE: api/Authentication/5
@@ -269,7 +269,7 @@ namespace Backend.Controllers
 
         private bool CredentialExists(string id)
         {
-            return _context.Credential.Any(e => e.AccountId == id);
+            return _context.Credential.Any(e => e.OwnerId == id);
         }
     }
 }

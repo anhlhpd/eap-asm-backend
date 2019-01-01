@@ -10,15 +10,16 @@ namespace Backend.Models
     {
         public Subject()
         {
-            this.SubjectStatus = SubjectStatus.Active;
+            this.Status = SubjectStatus.Active;
         }
         [Key]
         [Required]
-        public int Id { get; set; }
+
+        public string Id { get; set; }
         [Required(ErrorMessage = "Please enter subject name")]
         public string Name { get; set; }
         public string Description { get; set; }
-        public SubjectStatus SubjectStatus { get; set; }
+        public SubjectStatus Status { get; set; }
         public List<Clazz> Clazzes { get; set; }
     }
 

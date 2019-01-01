@@ -13,7 +13,7 @@ namespace Backend.Models
             this.CreatedAt = DateTime.Now;
             this.UpdatedAt = DateTime.Now;
             this.DeletedAt = DateTime.Now;
-            this.RoleStatus = RoleStatus.Active;
+            this.Status = RoleStatus.Active;
         }
         [Key]
         [Required]
@@ -24,7 +24,7 @@ namespace Backend.Models
         public DateTime CreatedAt { get; set; }
         public DateTime UpdatedAt { get; set; }
         public DateTime DeletedAt { get; set; }
-        public RoleStatus RoleStatus { get; set; }
+        public RoleStatus Status { get; set; }
     }
     public enum RoleStatus
     {
