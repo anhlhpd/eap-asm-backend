@@ -51,7 +51,7 @@ namespace Backend.Middleware
                     {
                         foreach (var ar in ars)
                         {
-                            if (_context.Role.SingleOrDefault(r => r.RoleId == ar.RoleId).Name == "Manager") // if is manager
+                            if (_context.Role.SingleOrDefault(r => r.Id == ar.RoleId).Name == "Manager") // if is manager
                             {
                                 isValid = true;
                             }
