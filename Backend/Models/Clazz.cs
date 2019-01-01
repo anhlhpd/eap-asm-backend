@@ -10,7 +10,12 @@ namespace Backend.Models
     {
         public Clazz()
         {
+<<<<<<< HEAD:Backend/Models/Clazz.cs
+            this.StartDate = DateTime.Now;
+            this.ClazzStatus = ClazzStatus.Active;
+=======
             this.Status = ClazzStatus.Active;
+>>>>>>> a8a634cef5637871d0e89db869da0bbcff2fe170:Backend/Models/Clazz.cs
         }
         [Key]
         [Required]
@@ -19,7 +24,11 @@ namespace Backend.Models
         public DateTime StartDate { get; set; }
         [Required(ErrorMessage = "Please input the class session (Morning, Afternoon or Evening)")]
         public ClazzSession Session { get; set; }
+<<<<<<< HEAD:Backend/Models/Clazz.cs
+        public ClazzStatus ClazzStatus { get; set; }
+=======
         public ClazzStatus Status { get; set; }
+>>>>>>> a8a634cef5637871d0e89db869da0bbcff2fe170:Backend/Models/Clazz.cs
         [Required(ErrorMessage = "Please input the current subject of the class")]
         public string CurrentSubjectId { get; set; }
         public Subject Subject { get; set; }

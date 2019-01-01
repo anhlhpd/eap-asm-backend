@@ -14,6 +14,7 @@ namespace Backend.Models
         }
         [Key]
         [Required]
+
         public string Id { get; set; }
         [Required(ErrorMessage = "Please enter subject name")]
         public string Name { get; set; }

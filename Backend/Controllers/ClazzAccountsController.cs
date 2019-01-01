@@ -84,12 +84,11 @@ namespace Backend.Controllers
             {
                 return BadRequest(ModelState);
             }
-
             if (id != clazzAccount.ClazzId)
             {
                 return BadRequest();
             }
-
+            
             _context.Entry(clazzAccount).State = EntityState.Modified;
 
             try
@@ -119,7 +118,7 @@ namespace Backend.Controllers
             {
                 return BadRequest(ModelState);
             }
-
+            
             _context.ClazzAccount.Add(clazzAccount);
             try
             {
@@ -136,7 +135,6 @@ namespace Backend.Controllers
                     throw;
                 }
             }
-
             return CreatedAtAction("GetClazzAccount", new { id = clazzAccount.ClazzId }, clazzAccount);
         }
 

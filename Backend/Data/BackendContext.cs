@@ -56,6 +56,7 @@ namespace Backend.Models
                 entity.HasKey(e => new { e.ClazzId, e.AccountId });
             });
 
+
         public DbSet<Backend.Models.Mark> Mark { get; set; }
 
         public DbSet<Backend.Models.Subject> Subject { get; set; }

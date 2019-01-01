@@ -17,7 +17,7 @@ namespace Backend.Models
         }
         [Key]
         [Required]
-        public int RoleId { get; set; }
+        public int Id { get; set; }
         [Required(ErrorMessage = "Please enter Name")]
         public string Name { get; set; }
         public string Description { get; set; }

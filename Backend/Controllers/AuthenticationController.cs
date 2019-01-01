@@ -47,28 +47,35 @@ namespace Backend.Controllers
                     // check matching password
                     if (ac.Password == PasswordHandle.GetInstance().EncryptPassword(loginInformation.Password, ac.Salt))
                     {
-                        // check if account is logged in elsewhere
-                        var cr = await _context.Credential.SingleOrDefaultAsync(c =>
-                            c.OwnerId == ac.Id);
-                        var accessToken = TokenHandle.GetInstance().GenerateToken();
-                        if (cr != null) // if account has logged in
+                        // check if account is deactivated
+                        if (ac.Status != AccountStatus.Deactive)
+
                         {
-                            cr.AccessToken = accessToken;
+                            // check if account is logged in elsewhere
+                            var cr = await _context.Credential.SingleOrDefaultAsync(c =>
+                                c.OwnerId == ac.Id);
+                            var accessToken = TokenHandle.GetInstance().GenerateToken();
+                            if (cr != null) // if account has logged in
+                            {
+                                cr.AccessToken = accessToken;
+                                // update token
+                                _context.Credential.Update(cr);
+                                await _context.SaveChangesAsync();
+                                return Ok(accessToken);
+                            }
+                            // create new credential with AccountId
+                            var firstCredential = new Credential
+                            {
+                                OwnerId = ac.Id,
+                                AccessToken = accessToken
+                            };
                             // save token
-                            _context.Credential.Update(cr);
+                            _context.Credential.Add(firstCredential);
                             await _context.SaveChangesAsync();
                             return Ok(accessToken);
                         }
-                        // create new credential with AccountId
-                        var firstCredential = new Credential
-                        {
-                            OwnerId = ac.Id,
-                            AccessToken = accessToken
-                        };
-                        _context.Credential.Add(firstCredential);
-                        await _context.SaveChangesAsync();
-                        // save token
-                        return Ok(accessToken);
+                        return Forbid("Your account is deactivated. Contact managers for more information.");
+
                     }
 
                     
@@ -101,28 +108,35 @@ namespace Backend.Controllers
                     // check matching password
                     if (ac.Password == PasswordHandle.GetInstance().EncryptPassword(loginInformation.Password, ac.Salt))
                     {
-                        // check if account is logged in elsewhere
-                        var cr = await _context.Credential.SingleOrDefaultAsync(c =>
-                            c.OwnerId == ac.Id);
-                        var accessToken = TokenHandle.GetInstance().GenerateToken();
-                        if (cr != null) // if account has logged in
+                        // check if account is deactivated
+                        if (ac.Status != AccountStatus.Deactive)
+
                         {
-                            cr.AccessToken = accessToken;
+                            // check if account is logged in elsewhere
+                            var cr = await _context.Credential.SingleOrDefaultAsync(c =>
+                                c.OwnerId == ac.Id);
+                            var accessToken = TokenHandle.GetInstance().GenerateToken();
+                            if (cr != null) // if account has logged in
+                            {
+                                cr.AccessToken = accessToken;
+                                // update token
+                                _context.Credential.Update(cr);
+                                await _context.SaveChangesAsync();
+                                return Ok(accessToken);
+                            }
+                            // create new credential with AccountId
+                            var firstCredential = new Credential
+                            {
+                                OwnerId = ac.Id,
+                                AccessToken = accessToken
+                            };
                             // save token
-                            _context.Credential.Update(cr);
+                            _context.Credential.Add(firstCredential);
                             await _context.SaveChangesAsync();
                             return Ok(accessToken);
                         }
-                        // create new credential with AccountId
-                        var firstCredential = new Credential
-                        {
-                            OwnerId = ac.Id,
-                            AccessToken = accessToken
-                        };
-                        _context.Credential.Add(firstCredential);
-                        await _context.SaveChangesAsync();
-                        // save token
-                        return Ok(accessToken);
+                        return Forbid("Your account is deactivated. Contact managers for more information.");
+
                     }
                     Response.StatusCode = (int)HttpStatusCode.Forbidden;
                     return new JsonResult(new ResponseError("UserName or Password is incorrect", (int)HttpStatusCode.Forbidden));
@@ -190,7 +204,7 @@ namespace Backend.Controllers
                 {
                     if (_context.AccountRoles.SingleOrDefault(ar => ar.AccountId == cr.OwnerId) != null)
                     {
-                        if (_context.Role.SingleOrDefault(r => r.RoleId == _context.AccountRoles.SingleOrDefault(ar => ar.AccountId == cr.OwnerId).RoleId).Name == "Admin")
+                        if (_context.Role.SingleOrDefault(r => r.Id == _context.AccountRoles.SingleOrDefault(ar => ar.AccountId == cr.OwnerId).RoleId).Name == "Admin")
                         {
                             return Ok();
                         }
