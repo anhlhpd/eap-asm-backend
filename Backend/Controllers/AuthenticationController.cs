@@ -178,7 +178,7 @@ namespace Backend.Controllers
             return NotFound();
         }
         // GET: api/Authentication/5
-        [HttpGet("{CheckAdmin}")]
+        [HttpGet("{CheckAdmin}")] 
         public async Task<IActionResult> CheckAdmin([FromRoute] string CheckAdmin)
         {
            if (HttpContext.Request.Query.ContainsKey("AccessToken"))
@@ -198,7 +198,6 @@ namespace Backend.Controllers
             }
             return NotFound();
         }
-
         // PUT: api/Authentication/5
         [HttpPut("{id}")]
         public async Task<IActionResult> PutCredential([FromRoute] string id, [FromBody] Credential credential)
