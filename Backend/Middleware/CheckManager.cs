@@ -18,7 +18,8 @@ namespace Backend.Middleware
             this IApplicationBuilder builder)
         {
             return builder.UseWhen(context => context.Request.Path.StartsWithSegments("/api/GeneralInformations/Manager")
-                                                || context.Request.Path.StartsWithSegments("/api/Marks/Manager"),
+                                                || context.Request.Path.StartsWithSegments("/api/Marks/Manager")
+                                                || context.Request.Path.StartsWithSegments("/api/ClazzAccounts/Manager"),
                                     b => b.UseMiddleware<CheckManager>());
         }
     }
