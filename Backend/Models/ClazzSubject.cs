@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -13,6 +14,9 @@ namespace Backend.Models
             this.UpdatedAt = DateTime.Now;
             this.Status = ClazzSubjectStatus.Studying;
         }
+
+        [Key]
+        public int Id { get; set; }
         public string ClazzId { get; set; }
         public string SubjectId { get; set; }
         public Clazz Clazz { get; set; }

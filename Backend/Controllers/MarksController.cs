@@ -1,5 +1,5 @@
-﻿
 using System;
+
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -124,7 +124,6 @@ namespace Backend.Controllers
             }
             return listMarks;
         }
-
         // GET: api/Marks
         [HttpGet]
         public IEnumerable<Mark> GetMark()

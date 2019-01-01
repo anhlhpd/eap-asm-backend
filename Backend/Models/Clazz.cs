@@ -21,7 +21,7 @@ namespace Backend.Models
         public ClazzSession Session { get; set; }
         public ClazzStatus Status { get; set; }
         [Required(ErrorMessage = "Please input the current subject of the class")]
-        public int CurrentSubjectId { get; set; }
+        public string CurrentSubjectId { get; set; }
         public Subject Subject { get; set; }
     }
 

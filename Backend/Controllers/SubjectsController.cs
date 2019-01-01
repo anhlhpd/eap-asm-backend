@@ -64,6 +64,7 @@ namespace Backend.Controllers
             return clazzSubjects;
         }
 
+
         // GET: api/Subjects
         [HttpGet]
         public IEnumerable<Subject> GetSubject()
