@@ -23,6 +23,7 @@ namespace Backend.Models
         public DbSet<Backend.Models.Credential> Credential { get; set; }
         public DbSet<Backend.Models.AccountRole> AccountRoles { get; set; }
         public DbSet<Backend.Models.ClazzAccount> ClazzAccount { get; set; }
+        public DbSet<Backend.Models.ClazzSubject> ClazzSubject { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -54,10 +55,9 @@ namespace Backend.Models
             modelBuilder.Entity<ClazzAccount>(entity => {
                 entity.HasKey(e => new { e.ClazzId, e.AccountId });
             });
-        }
+
+        public DbSet<Backend.Models.Mark> Mark { get; set; }
 
         public DbSet<Backend.Models.Subject> Subject { get; set; }
-        public DbSet<Backend.Models.ClazzSubject> ClazzSubject { get; set; }
-        public DbSet<Backend.Models.Mark> Mark { get; set; }
     }
 }

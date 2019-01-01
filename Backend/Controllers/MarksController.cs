@@ -1,4 +1,5 @@
-﻿using System;
+using System;
+
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -20,6 +21,109 @@ namespace Backend.Controllers
             _context = context;
         }
 
+        // Student: get all marks in 1 subject
+        // GET: api/Marks/StudentGetMarksOneSubject
+        [HttpGet("StudentGetMarksOneSubject")]
+        public IEnumerable<Mark> StudentGetMarksOneSubject(string subjectId, HttpContext context)
+        {
+            string tokenHeader = context.Request.Headers["Authorization"];
+            var token = tokenHeader.Replace("Basic ", "");
+            var cr =  _context.Credential.SingleOrDefault(c =>
+                    c.AccessToken == token);
+            return _context.Mark.Where(m => m.AccountId == cr.OwnerId && m.SubjectId == subjectId);
+        }
+
+        // Student: get all marks in all subject
+        // GET: api/Marks/StudentGetMarksAllSubject
+        [HttpGet("StudentGetMarksAllSubject")]
+        public IEnumerable<Mark> StudentGetMarksAllSubject(HttpContext context)
+        {
+            // Call method StudentGetAllSubject from SubjectController ?
+            SubjectsController ctrl = new SubjectsController();
+            ctrl.ControllerContext = ControllerContext;
+            IEnumerable<ClazzSubject> listClazzSubjects = ctrl.StudentGetAllSubject(context);
+            IEnumerable<Mark> listMarks = null;
+            foreach (var clazzSubject in listClazzSubjects)
+            {
+                IEnumerable<Mark> listAllMarksOneSubject = StudentGetMarksOneSubject(clazzSubject.SubjectId, context);
+                foreach(var mark in listAllMarksOneSubject)
+                {
+                    listMarks.Append(mark);
+                }
+            }
+            return listMarks;
+        }
+
+        // Manager: get all marks in 1 subject from 1 student
+        // GET: api/Marks/ManagerGetMarksOneSubjectOneStudent
+        [HttpGet("Manager/GetMarksOneSubjectOneStudent")]
+        public IEnumerable<Mark> ManagerGetMarksOneSubjectOneStudent(string subjectId, string studentId)
+        {
+            return _context.Mark.Where(m => m.AccountId == studentId && m.SubjectId == subjectId);
+        }
+
+        // Manager: get all marks in all subject from 1 student
+        // GET: api/Marks/ManagerGetMarksAllSubjectOneStudent
+        [HttpGet("Manager/GetMarksAllSubjectOneStudent")]
+        public IEnumerable<Mark> ManagerGetMarksAllSubjectOneStudent(string studentId)
+        {
+            // Call method StudentGetAllSubject from SubjectController ?
+            SubjectsController ctrl = new SubjectsController();
+            ctrl.ControllerContext = ControllerContext;
+            IEnumerable<ClazzSubject> listClazzSubjects = ctrl.ManagerGetAllSubjectOneStudent(studentId);
+            IEnumerable<Mark> listMarks = null;
+            foreach (var clazzSubject in listClazzSubjects)
+            {
+                IEnumerable<Mark> listAllMarksOneSubject = ManagerGetMarksOneSubjectOneStudent(clazzSubject.SubjectId, studentId);
+                foreach (var mark in listAllMarksOneSubject)
+                {
+                    listMarks.Append(mark);
+                }
+            }
+            return listMarks;
+        }
+
+        // Manager: get all marks in 1 subject from all student
+        // GET: api/Marks/GetMarksOneSubjectAllStudent
+        [HttpGet("Manager/GetMarksOneSubjectAllStudent")]
+        public IEnumerable<Mark> ManagerGetMarksOneSubjectAllStudent(string subjectId)
+        {
+            // Call method ManagerGetAllStudentOneSubject from ClazzAccountsController ?
+            ClazzAccountsController ctrl = new ClazzAccountsController();
+            ctrl.ControllerContext = ControllerContext;
+            IEnumerable<ClazzAccount> listClazzAccounts = ctrl.ManagerGetAllStudentOneSubject(subjectId);
+            IEnumerable<Mark> listMarks = null;
+            foreach (var clazzAccount in listClazzAccounts)
+            {
+                IEnumerable<Mark> listAllMarksOneStudent = ManagerGetMarksOneSubjectOneStudent(subjectId, clazzAccount.AccountId);
+                foreach (var mark in listAllMarksOneStudent)
+                {
+                    listMarks.Append(mark);
+                }
+            }
+            return listMarks;
+        }
+
+        // Manager: get all marks in 1 subject from all student in 1 class
+        // GET: api/Marks/GetMarksOneSubjectAllStudentOneClazz
+        [HttpGet("Manager/GetMarksOneSubjectAllStudentOneClazz")]
+        public IEnumerable<Mark> ManagerGetMarksOneSubjectAllStudentOneClazz(string subjectId, string clazzId)
+        {
+            // Call method ManagerGetAllStudentOneSubject from ClazzAccountsController ?
+            ClazzAccountsController ctrl = new ClazzAccountsController();
+            ctrl.ControllerContext = ControllerContext;
+            IEnumerable<ClazzAccount> listClazzAccounts = ctrl.ManagerGetAllStudentOneClazz(clazzId);
+            IEnumerable<Mark> listMarks = null;
+            foreach (var clazzAccount in listClazzAccounts)
+            {
+                IEnumerable<Mark> listAllMarksOneStudent = ManagerGetMarksOneSubjectOneStudent(subjectId, clazzAccount.AccountId);
+                foreach (var mark in listAllMarksOneStudent)
+                {
+                    listMarks.Append(mark);
+                }
+            }
+            return listMarks;
+        }
         // GET: api/Marks
         [HttpGet]
         public IEnumerable<Mark> GetMark()
