@@ -30,31 +30,40 @@ namespace Backend.Models
             modelBuilder.Entity<AccountRole>()
                 .HasKey(ar => new { ar.AccountId, ar.RoleId });
 
-            modelBuilder.Entity<Account>(entity => {
+            modelBuilder.Entity<Account>(entity =>
+            {
                 entity.HasIndex(e => e.Email).IsUnique();
                 entity.HasIndex(e => e.Username).IsUnique();
             });
-            modelBuilder.Entity<Role>(entity => {
+            modelBuilder.Entity<Role>(entity =>
+            {
                 entity.HasIndex(e => e.Name).IsUnique();
             });
-            modelBuilder.Entity<Clazz>(entity => {
+            modelBuilder.Entity<Clazz>(entity =>
+            {
                 entity.HasIndex(e => new { e.Session, e.StartDate }).IsUnique();
             });
-            modelBuilder.Entity<Subject>(entity => {
+            modelBuilder.Entity<Subject>(entity =>
+            {
                 entity.HasIndex(e => e.Name).IsUnique();
             });
-            modelBuilder.Entity<Credential>(entity => {
+            modelBuilder.Entity<Credential>(entity =>
+            {
                 entity.HasIndex(e => e.AccessToken).IsUnique();
             });
-            modelBuilder.Entity<GeneralInformation>(entity => {
+            modelBuilder.Entity<GeneralInformation>(entity =>
+            {
                 entity.HasIndex(e => e.Phone).IsUnique();
             });
-            modelBuilder.Entity<AccountRole>(entity => {
+            modelBuilder.Entity<AccountRole>(entity =>
+            {
                 entity.HasKey(e => new { e.RoleId, e.AccountId });
             });
-            modelBuilder.Entity<ClazzAccount>(entity => {
+            modelBuilder.Entity<ClazzAccount>(entity =>
+            {
                 entity.HasKey(e => new { e.ClazzId, e.AccountId });
             });
+        }
 
 
         public DbSet<Backend.Models.Mark> Mark { get; set; }
