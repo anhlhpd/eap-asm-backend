@@ -136,7 +136,7 @@ namespace Backend.Data
                 context.AddRange(
                         new AccountRole
                         {
-                            AccountId = "Admin",
+                            AccountId = "ADMIN",
                             RoleId = 1,
                         },
                         new AccountRole
