@@ -59,10 +59,6 @@ namespace Backend.Models
             {
                 entity.HasKey(e => new { e.RoleId, e.AccountId });
             });
-            modelBuilder.Entity<ClazzAccount>(entity =>
-            {
-                entity.HasKey(e => new { e.ClazzId, e.AccountId });
-            });
         }
 
 

@@ -4,7 +4,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 namespace Backend.Migrations
 {
-    public partial class InitDatabase : Migration
+    public partial class init : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
@@ -31,7 +31,7 @@ namespace Backend.Migrations
                 name: "Role",
                 columns: table => new
                 {
-                    RoleId = table.Column<int>(nullable: false)
+                    Id = table.Column<int>(nullable: false)
                         .Annotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn),
                     Name = table.Column<string>(nullable: false),
                     Description = table.Column<string>(nullable: true),
@@ -42,7 +42,7 @@ namespace Backend.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Role", x => x.RoleId);
+                    table.PrimaryKey("PK_Role", x => x.Id);
                 });
 
             migrationBuilder.CreateTable(
@@ -123,7 +123,7 @@ namespace Backend.Migrations
                         name: "FK_AccountRoles_Role_RoleId",
                         column: x => x.RoleId,
                         principalTable: "Role",
-                        principalColumn: "RoleId",
+                        principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                 });
 
@@ -184,24 +184,26 @@ namespace Backend.Migrations
                 name: "ClazzAccount",
                 columns: table => new
                 {
-                    ClazzId = table.Column<string>(nullable: false),
-                    AccountId = table.Column<string>(nullable: false)
+                    Id = table.Column<long>(nullable: false)
+                        .Annotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn),
+                    ClazzId = table.Column<string>(nullable: true),
+                    AccountId = table.Column<string>(nullable: true)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_ClazzAccount", x => new { x.ClazzId, x.AccountId });
+                    table.PrimaryKey("PK_ClazzAccount", x => x.Id);
                     table.ForeignKey(
                         name: "FK_ClazzAccount_Account_AccountId",
                         column: x => x.AccountId,
                         principalTable: "Account",
                         principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
+                        onDelete: ReferentialAction.Restrict);
                     table.ForeignKey(
                         name: "FK_ClazzAccount_Clazz_ClazzId",
                         column: x => x.ClazzId,
                         principalTable: "Clazz",
                         principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
+                        onDelete: ReferentialAction.Restrict);
                 });
 
             migrationBuilder.CreateTable(
@@ -265,6 +267,11 @@ namespace Backend.Migrations
                 name: "IX_ClazzAccount_AccountId",
                 table: "ClazzAccount",
                 column: "AccountId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_ClazzAccount_ClazzId",
+                table: "ClazzAccount",
+                column: "ClazzId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_ClazzSubject_ClazzId",
