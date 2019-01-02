@@ -212,6 +212,12 @@ namespace Backend.Controllers
             };
             _context.Account.Add(account);
             _context.GeneralInformation.Add(generalInformation);
+            AccountRole ar = new AccountRole()
+            {
+                AccountId = account.Id,
+                RoleId = (accountType == "STU" ? 3 :(accountType == "MNG" ? 2 : 1))
+            };
+            _context.AccountRoles.Add(ar);
             LoginInformation responceInformation = new LoginInformation()
             {
                 Username = account.Username,
