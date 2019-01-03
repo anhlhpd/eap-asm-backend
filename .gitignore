@@ -4,3 +4,4 @@ SecurityHandle/bin/*
 SecurityHandle/obj/*
 .vs/*
 Backend/Properties/*
+Backend/appsettings.json

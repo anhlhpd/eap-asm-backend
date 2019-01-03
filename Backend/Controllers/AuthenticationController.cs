@@ -28,7 +28,23 @@ namespace Backend.Controllers
         {
             _context = context;
         }
-
+        // POST: api/Authentication/TokenLogin
+        [Route("TokenLogin")]
+        [HttpPost]
+        public async Task<IActionResult> TokenLogin()
+        {
+            if (HttpContext.Request.Query.ContainsKey("AccessToken"))
+            {
+                var cr = await _context.Credential.SingleOrDefaultAsync(c =>
+                    c.AccessToken == HttpContext.Request.Query["AccessToken"].ToString());
+                if (cr != null)
+                {
+                    var currentInfo = await _context.GeneralInformation.Include(g=>g.Account).SingleOrDefaultAsync(g=>g.AccountId == cr.OwnerId);
+                    return Ok(currentInfo);
+                }
+            }
+            return NotFound();
+        }
         // POST: api/Authentication/StudentLogin
         [Route("StudentLogin")]
         [HttpPost]
