@@ -43,7 +43,7 @@ namespace Backend.Middleware
                 var token = tokenHeader.Replace("Basic ", "");
 
                 HttpClient client = new HttpClient();
-                var responseResult = client.GetAsync("https://localhost:44314/api/Authentication?AccessToken=" + token).Result;
+                var responseResult = client.GetAsync("https://"+context.Request.Host.Value+"/api/Authentication?AccessToken=" + token).Result;
                 if (responseResult.StatusCode == HttpStatusCode.OK)
                 {
                     isValid = true;
