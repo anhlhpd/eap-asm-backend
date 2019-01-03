@@ -8,6 +8,7 @@ namespace Backend.Models
 {
     public class AccountRole
     {
+        
         public int RoleId { get; set; }
         public string AccountId { get; set; }
         public Role Role { get; set; }
