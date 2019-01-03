@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Backend.Middleware;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.HttpsPolicy;
@@ -10,6 +11,9 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
+using Microsoft.EntityFrameworkCore;
+using Backend.Models;
+using Backend.Data;
 
 namespace Backend
 {
@@ -25,7 +29,13 @@ namespace Backend
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_1);
+            services.AddMvc().AddJsonOptions(
+                options => options.SerializerSettings.ReferenceLoopHandling = Newtonsoft.Json.ReferenceLoopHandling.Ignore
+            );
+
+            services.AddDbContext<BackendContext>(options =>
+                    options.UseSqlServer(Configuration.GetConnectionString("BackendContext")));
+
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -39,9 +49,18 @@ namespace Backend
             {
                 app.UseHsts();
             }
-
+            
             app.UseHttpsRedirection();
+            app.UseCheckAdmin();
+            app.UseCheckLogin();
             app.UseMvc();
+
+            using (var s = app.ApplicationServices.GetRequiredService<IServiceScopeFactory>().CreateScope())
+            {
+                var context = s.ServiceProvider.GetService<BackendContext>();
+                context.Database.Migrate();
+                context.Initialize();
+            }
         }
     }
 }
