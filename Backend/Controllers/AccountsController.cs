@@ -71,8 +71,7 @@ namespace Backend.Controllers
                 var tokenUser = await _context.Credential.SingleOrDefaultAsync(c => c.AccessToken == token);
                 if (tokenUser.OwnerId == currentAccount.Id 
                     ||
-                    (await _context.AccountRoles.SingleOrDefaultAsync(ar=>ar.AccountId == tokenUser.OwnerId)).RoleId < (await _context.AccountRoles.SingleOrDefaultAsync(ar => ar.AccountId == currentAccount.Id)).RoleId 
-                    ||
+                    (await _context.AccountRoles.SingleOrDefaultAsync(ar=>ar.AccountId == tokenUser.OwnerId)).RoleId > (await _context.AccountRoles.SingleOrDefaultAsync(ar => ar.AccountId == currentAccount.Id)).RoleId ||
                     tokenUser.OwnerId == "ADMIN"
                     )
                 {
@@ -112,15 +111,34 @@ namespace Backend.Controllers
             }
 
             var account = await _context.Account.FindAsync(id);
-            if (account == null)
+            if (account != null)
             {
-                return NotFound();
+                string tokenHeader = Request.Headers["Authorization"];
+                var token = tokenHeader.Replace("Basic ", "");
+                var tokenUser = await _context.Credential.SingleOrDefaultAsync(c => c.AccessToken == token);
+
+                if (tokenUser.OwnerId == account.Id)//Không được xóa bản thân người dùng
+                {
+                    return BadRequest(new ResponseError("Cannot delete Self Account",400));
+                }
+                // người dùng cần quyền để xóa
+                // fix ý nghĩa id càng to thì xóa được bịn id nhỏ 
+               
+                if ((await _context.AccountRoles.SingleOrDefaultAsync(ar => ar.AccountId == tokenUser.OwnerId)).RoleId < (await _context.AccountRoles.SingleOrDefaultAsync(ar => ar.AccountId == account.Id)).RoleId ||
+                    tokenUser.OwnerId == "ADMIN"
+                    )
+                {
+                    
+                    account.UpdatedAt = DateTime.Now;
+                    account.Status = AccountStatus.Deactive;
+                    _context.Entry(account).State = EntityState.Modified;
+                    //return new JsonResult(account);
+                    await _context.SaveChangesAsync();
+                    return Ok(account);
+                }
             }
-
-            _context.Account.Remove(account);
-            await _context.SaveChangesAsync();
-
-            return Ok(account);
+            return NotFound();
+            
         }
 
         private bool AccountExists(string id)
