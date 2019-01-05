@@ -10,8 +10,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Backend.Migrations
 {
     [DbContext(typeof(BackendContext))]
-    [Migration("20181230074043_InitDatabase")]
-    partial class InitDatabase
+    [Migration("20190102081537_init")]
+    partial class init
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -96,13 +96,19 @@ namespace Backend.Migrations
 
             modelBuilder.Entity("Backend.Models.ClazzAccount", b =>
                 {
-                    b.Property<string>("ClazzId");
+                    b.Property<long>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
                     b.Property<string>("AccountId");
 
-                    b.HasKey("ClazzId", "AccountId");
+                    b.Property<string>("ClazzId");
+
+                    b.HasKey("Id");
 
                     b.HasIndex("AccountId");
+
+                    b.HasIndex("ClazzId");
 
                     b.ToTable("ClazzAccount");
                 });
@@ -223,7 +229,7 @@ namespace Backend.Migrations
 
             modelBuilder.Entity("Backend.Models.Role", b =>
                 {
-                    b.Property<int>("RoleId")
+                    b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
@@ -240,7 +246,7 @@ namespace Backend.Migrations
 
                     b.Property<DateTime>("UpdatedAt");
 
-                    b.HasKey("RoleId");
+                    b.HasKey("Id");
 
                     b.HasIndex("Name")
                         .IsUnique();
@@ -292,13 +298,11 @@ namespace Backend.Migrations
                 {
                     b.HasOne("Backend.Models.Account", "Account")
                         .WithMany()
-                        .HasForeignKey("AccountId")
-                        .OnDelete(DeleteBehavior.Cascade);
+                        .HasForeignKey("AccountId");
 
                     b.HasOne("Backend.Models.Clazz", "Clazz")
                         .WithMany()
-                        .HasForeignKey("ClazzId")
-                        .OnDelete(DeleteBehavior.Cascade);
+                        .HasForeignKey("ClazzId");
                 });
 
             modelBuilder.Entity("Backend.Models.ClazzSubject", b =>

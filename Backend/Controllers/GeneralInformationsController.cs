@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -147,27 +149,32 @@ namespace Backend.Controllers
             }
 
             var numb = await _context.Account.CountAsync(a => a.Id.Contains(accountType)) + 1;
-            string taging;
+            //Random string
+            string RandomString(int length, string method)
+            {
+                string  chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
+                if (method == "taging")
+                {
+                    chars = "0123456789";
+                }
+                
+                Random random = new Random();
+                return new string(Enumerable.Repeat(chars, length)
+                    .Select(s => s[random.Next(s.Length)]).ToArray());
 
-            if (numb < 10)
-            {
-                taging = "000" + numb;
             }
-            else if (numb < 100)
+            //Remove Unsign 
+            string convertToUnSign3(string s)
             {
-                taging = "00" + numb;
-            }
-            else if (numb < 1000)
-            {
-                taging = "0" + numb;
-            }
-            else
-            {
-                taging = numb.ToString();
+                Regex regex = new Regex("\\p{IsCombiningDiacriticalMarks}+");
+                string temp = s.Normalize(NormalizationForm.FormD);
+                return regex.Replace(temp, String.Empty).Replace('\u0111', 'd').Replace('\u0110', 'D');
             }
 
-            generalInformation.AccountId = accountType + taging;
-            //Create userName
+            
+            
+            
+            //Create userName and ID
             var str = generalInformation.LastName.Split(" ");
             string userName = generalInformation.FirstName;
             foreach (var item in str)
@@ -177,25 +184,23 @@ namespace Backend.Controllers
                     userName += item[0];
                 }
             }
-            //return new JsonResult(userN.ToLower());
 
-            //_context.GeneralInformation.Add(generalInformation);
-
-            //var name = generalInformation.FirstName;
+            while (true)
+            {
+                string taging = RandomString(4, "taging");
+                taging += convertToUnSign3(generalInformation.FirstName[0].ToString());
+                generalInformation.AccountId = accountType + taging;
+                if ((await _context.Account.FindAsync(generalInformation.AccountId)) == null)
+                {
+                    userName = convertToUnSign3(userName) + taging;
+                    break;
+                }
+            }
 
             var salt = SecurityHandle.PasswordHandle.GetInstance().GenerateSalt();
             // Create PW
-            //private static Random random = new Random();
-            string RandomString(int length)
-            {
-                Random random = new Random();
-                const string chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
-                return new string(Enumerable.Repeat(chars, length)
-                    .Select(s => s[random.Next(s.Length)]).ToArray());
-            }
-
-            var password = RandomString(8);
-
+            var password = RandomString(8,"PW");
+            
 
             Account account = new Account()
             {
@@ -207,6 +212,12 @@ namespace Backend.Controllers
             };
             _context.Account.Add(account);
             _context.GeneralInformation.Add(generalInformation);
+            AccountRole ar = new AccountRole()
+            {
+                AccountId = account.Id,
+                RoleId = (accountType == "STU" ? 3 :(accountType == "MNG" ? 2 : 1))
+            };
+            _context.AccountRoles.Add(ar);
             LoginInformation responceInformation = new LoginInformation()
             {
                 Username = account.Username,
@@ -215,6 +226,7 @@ namespace Backend.Controllers
             };
             try
             {
+                
                 await _context.SaveChangesAsync();
 
             }

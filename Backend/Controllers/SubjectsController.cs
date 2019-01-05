@@ -20,6 +20,51 @@ namespace Backend.Controllers
             _context = context;
         }
 
+        public SubjectsController()
+        {
+        }
+
+        // Student: get all subjects of 1 student, including start dates
+        // GET: api/Subjects/Student/GetAllSubject
+        [HttpGet("Student/GetAllSubject")]
+        public IEnumerable<ClazzSubject> StudentGetAllSubject(HttpContext context)
+        {
+            string tokenHeader = context.Request.Headers["Authorization"];
+            var token = tokenHeader.Replace("Basic ", "");
+            var cr = _context.Credential.SingleOrDefault(c =>
+                   c.AccessToken == token);
+            IEnumerable<ClazzAccount> clazzAccounts = _context.ClazzAccount.Where(ca => ca.AccountId == cr.OwnerId);
+            IEnumerable<ClazzSubject> clazzSubjects = null;
+            foreach(var clazzAccount in clazzAccounts)
+            {
+                var singleCSs = _context.ClazzSubject.Where(cs => cs.ClazzId == clazzAccount.ClazzId);
+                foreach (var singleCS in singleCSs)
+                {
+                    clazzSubjects.Append(singleCS);
+                }
+            }
+            return clazzSubjects;
+        }
+
+        // Manager: get all subjects of 1 student, including start dates
+        // GET: api/Subjects/Manager/GetAllSubjectOneStudent
+        [HttpGet("Manager/GetAllSubjectOneStudent")]
+        public IEnumerable<ClazzSubject> ManagerGetAllSubjectOneStudent(string studentId)
+        {
+            IEnumerable<ClazzAccount> clazzAccounts = _context.ClazzAccount.Where(ca => ca.AccountId == studentId);
+            IEnumerable<ClazzSubject> clazzSubjects = null;
+            foreach (var clazzAccount in clazzAccounts)
+            {
+                var singleCSs = _context.ClazzSubject.Where(cs => cs.ClazzId == clazzAccount.ClazzId);
+                foreach (var singleCS in singleCSs)
+                {
+                    clazzSubjects.Append(singleCS);
+                }
+            }
+            return clazzSubjects;
+        }
+
+
         // GET: api/Subjects
         [HttpGet]
         public IEnumerable<Subject> GetSubject()

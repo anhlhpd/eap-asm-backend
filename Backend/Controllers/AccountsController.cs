@@ -25,7 +25,7 @@ namespace Backend.Controllers
         [HttpGet]
         public IEnumerable<Account> GetAccount()
         {
-            return _context.Account;
+            return _context.Account.Include(a=>a.GeneralInformation);
         }
 
         // GET: api/Accounts/5

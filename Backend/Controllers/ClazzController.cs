@@ -35,14 +35,13 @@ namespace Backend.Controllers
             {
                 return BadRequest(ModelState);
             }
-
+            
             var clazz = await _context.Clazz.FindAsync(id);
 
             if (clazz == null)
             {
                 return NotFound();
             }
-
             return Ok(clazz);
         }
 
@@ -54,12 +53,12 @@ namespace Backend.Controllers
             {
                 return BadRequest(ModelState);
             }
-
+            
             if (id != clazz.Id)
             {
                 return BadRequest();
             }
-
+            
             _context.Entry(clazz).State = EntityState.Modified;
 
             try
@@ -89,7 +88,7 @@ namespace Backend.Controllers
             {
                 return BadRequest(ModelState);
             }
-
+            
             _context.Clazz.Add(clazz);
             await _context.SaveChangesAsync();
 
@@ -104,13 +103,13 @@ namespace Backend.Controllers
             {
                 return BadRequest(ModelState);
             }
-
+            
             var clazz = await _context.Clazz.FindAsync(id);
             if (clazz == null)
             {
                 return NotFound();
             }
-
+            
             _context.Clazz.Remove(clazz);
             await _context.SaveChangesAsync();
 

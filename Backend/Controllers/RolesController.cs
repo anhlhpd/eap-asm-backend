@@ -55,7 +55,7 @@ namespace Backend.Controllers
                 return BadRequest(ModelState);
             }
 
-            if (id != role.RoleId)
+            if (id != role.Id)
             {
                 return BadRequest();
             }
@@ -93,7 +93,7 @@ namespace Backend.Controllers
             _context.Role.Add(role);
             await _context.SaveChangesAsync();
 
-            return CreatedAtAction("GetRole", new { id = role.RoleId }, role);
+            return CreatedAtAction("GetRole", new { id = role.Id }, role);
         }
 
         // DELETE: api/Roles/5
@@ -119,7 +119,7 @@ namespace Backend.Controllers
 
         private bool RoleExists(int id)
         {
-            return _context.Role.Any(e => e.RoleId == id);
+            return _context.Role.Any(e => e.Id == id);
         }
     }
 }

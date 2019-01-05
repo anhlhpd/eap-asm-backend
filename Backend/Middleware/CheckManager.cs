@@ -7,29 +7,32 @@ using System.Threading.Tasks;
 using Backend.Models;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Http;
+using Microsoft.EntityFrameworkCore;
 using Newtonsoft.Json;
 
 namespace Backend.Middleware
 {
-    public static class RequestCheckLoginExtensions
+    public static class RequestCheckManagerExtensions
     {
-        public static IApplicationBuilder UseCheckLogin(
+        public static IApplicationBuilder UseCheckManager(
             this IApplicationBuilder builder)
         {
-            return builder.UseWhen(context => context.Request.Path.StartsWithSegments("/api/accounts")
-                                                || context.Request.Path.StartsWithSegments("/api/GeneralInformations"),
-                                    b => b.UseMiddleware<CheckLogin>());
+            return builder.UseWhen(context => context.Request.Path.StartsWithSegments("/api/GeneralInformations/Manager")
+                                                || context.Request.Path.StartsWithSegments("/api/Marks/Manager")
+                                                || context.Request.Path.StartsWithSegments("/api/ClazzAccounts/Manager"),
+                                    b => b.UseMiddleware<CheckManager>());
         }
     }
-    public class CheckLogin
+    public class CheckManager
     {
         private readonly RequestDelegate _next;
+        private readonly BackendContext _context;
 
-        public CheckLogin(RequestDelegate next)
+        public CheckManager(RequestDelegate next, BackendContext context)
         {
             _next = next;
+            _context = context;
         }
-
         public async Task InvokeAsync(HttpContext context)
         {
             //StreamReader reader = new StreamReader(context.Request.Body,Encoding.UTF8);
@@ -37,19 +40,25 @@ namespace Backend.Middleware
             //Credential cr = JsonConvert.DeserializeObject<Credential>(datastring);
 
             bool isValid = false;
-            if (context.Request.Headers.ContainsKey("Authorization"))
+            if (context.Request.Query.ContainsKey("AccessToken"))
             {
-                string tokenHeader = context.Request.Headers["Authorization"];
-                var token = tokenHeader.Replace("Basic ", "");
-
-                HttpClient client = new HttpClient();
-                var responseResult = client.GetAsync("https://"+context.Request.Host.Value+"/api/Authentication?AccessToken=" + token).Result;
-                if (responseResult.StatusCode == HttpStatusCode.OK)
+                var cr = await _context.Credential.SingleOrDefaultAsync(c =>
+                    c.AccessToken == context.Request.Query["AccessToken"].ToString());
+                if (cr != null)
                 {
-                    isValid = true;
+                    var ars = _context.AccountRoles.Where(ar => ar.AccountId == cr.OwnerId);
+                    if (ars != null)
+                    {
+                        foreach (var ar in ars)
+                        {
+                            if (_context.Role.SingleOrDefault(r => r.Id == ar.RoleId).Name == "Manager") // if is manager
+                            {
+                                isValid = true;
+                            }
+                        }
+                    }
                 }
             }
-
             if (isValid)
             {
                 // Call the next delegate/middleware in the pipeline
@@ -63,8 +72,6 @@ namespace Backend.Middleware
                 context.Response.StatusCode = (int)HttpStatusCode.Unauthorized;
                 await context.Response.WriteAsync(HttpStatusCode.Unauthorized.ToString() + ": Access Denied");
             }
-
-
         }
     }
 }

@@ -20,6 +20,36 @@ namespace Backend.Controllers
             _context = context;
         }
 
+        public ClazzAccountsController()
+        {
+        }
+
+        // Manager: get all students of 1 subject
+        // GET: api/Subjects/Manager/GetAllStudentOneSubject
+        [HttpGet("Manager/GetAllStudentOneSubject")]
+        public IEnumerable<ClazzAccount> ManagerGetAllStudentOneSubject(string subjectId)
+        {
+            IEnumerable<ClazzSubject> clazzSubjects = _context.ClazzSubject.Where(cs => cs.SubjectId == subjectId);
+            IEnumerable<ClazzAccount> clazzAccounts = null;
+            foreach (var clazzSubject in clazzSubjects)
+            {
+                var singleCAs = _context.ClazzAccount.Where(ca => ca.ClazzId == clazzSubject.ClazzId);
+                foreach (var singleCA in singleCAs)
+                {
+                    clazzAccounts.Append(singleCA);
+                }
+            }
+            return clazzAccounts;
+        }
+
+        // Manager: get all students of 1 class
+        // GET: api/Subjects/Manager/GetAllStudentOneClazz
+        [HttpGet("Manager/GetAllStudentOneClazz")]
+        public IEnumerable<ClazzAccount> ManagerGetAllStudentOneClazz(string clazzId)
+        {
+            return _context.ClazzAccount.Where(ca => ca.ClazzId == clazzId);
+        }
+
         // GET: api/ClazzAccounts
         [HttpGet]
         public IEnumerable<ClazzAccount> GetClazzAccount()
@@ -54,12 +84,11 @@ namespace Backend.Controllers
             {
                 return BadRequest(ModelState);
             }
-
             if (id != clazzAccount.ClazzId)
             {
                 return BadRequest();
             }
-
+            
             _context.Entry(clazzAccount).State = EntityState.Modified;
 
             try
@@ -89,7 +118,7 @@ namespace Backend.Controllers
             {
                 return BadRequest(ModelState);
             }
-
+            
             _context.ClazzAccount.Add(clazzAccount);
             try
             {
@@ -106,7 +135,6 @@ namespace Backend.Controllers
                     throw;
                 }
             }
-
             return CreatedAtAction("GetClazzAccount", new { id = clazzAccount.ClazzId }, clazzAccount);
         }
 
