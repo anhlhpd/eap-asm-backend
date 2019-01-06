@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Backend.Models;
+using Microsoft.AspNetCore.Cors;
 using SecurityHandle;
 
 namespace Backend.Controllers
@@ -101,6 +102,7 @@ namespace Backend.Controllers
 
         // PUT: api/Accounts/5
         [HttpPut("{id}")]
+        [EnableCors("AllowAny")]
         public async Task<IActionResult> PutAccount([FromRoute] string id, [FromBody] Account account)
         {
             _context.ChangeTracker.QueryTrackingBehavior = QueryTrackingBehavior.NoTracking;
