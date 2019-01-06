@@ -141,7 +141,7 @@ namespace Backend.Controllers
         //
 
         [HttpPost("{accountType}")]
-        [EnableCors("AllowAny")]
+        //[EnableCors("AllowAny")]
         public async Task<IActionResult> PostGeneralInformationInformation([FromRoute] string accountType, [FromBody] GeneralInformation generalInformation)
         {
             string[] allType = { "STU", "MNG", "ADM" };

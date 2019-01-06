@@ -24,6 +24,7 @@ namespace Backend.Controllers
 
         // GET: api/Accounts
         [HttpGet]
+        [EnableCors]
         public async Task<IActionResult> GetAccount()
         {
             if (Request.Query.ContainsKey("RoleName"))
@@ -144,6 +145,8 @@ namespace Backend.Controllers
                         account.Password = PasswordHandle.GetInstance().EncryptPassword(account.Password, account.Salt);
                         
                     }
+
+                    
                     account.UpdatedAt = DateTime.Now;
                     _context.Entry(account).State = EntityState.Modified;
                     _context.Entry(account.GeneralInformation).State = EntityState.Modified;

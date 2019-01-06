@@ -23,9 +23,9 @@ namespace Backend.Controllers
         // Student: get all subjects of 1 student, including start dates
         // GET: api/Subjects/Student/GetAllSubject
         [HttpGet("Student/GetAllSubject")]
-        public IEnumerable<ClazzSubject> StudentGetAllSubject(HttpContext context)
+        public IEnumerable<ClazzSubject> StudentGetAllSubject()
         {
-            string tokenHeader = context.Request.Headers["Authorization"];
+            string tokenHeader = Request.Headers["Authorization"];
             var token = tokenHeader.Replace("Basic ", "");
             var cr = _context.Credential.SingleOrDefault(c =>
                    c.AccessToken == token);
