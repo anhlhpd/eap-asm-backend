@@ -34,7 +34,7 @@ namespace Backend.Controllers
                     var currentAccountRole = _context.AccountRoles.Where(ar => ar.RoleId == currentRole.Id).ToList();
                     if (currentAccountRole.Count > 0)
                     {
-                        var listAccounts = await _context.Account.ToListAsync();
+                        var listAccounts = await _context.Account.Include(a=>a.GeneralInformation).ToListAsync();
                         List<Account> listAccountsWithRole = new List<Account>();
                         foreach (var ac in currentAccountRole)
                         {
@@ -43,10 +43,38 @@ namespace Backend.Controllers
                             listAccountsWithRole.Add(currentAccount);
                         }
 
-                        return Ok(listAccountsWithRole);
+                        if (listAccountsWithRole.Any())
+                        {
+                            if (Request.Query.ContainsKey("SearchKey"))
+                            {
+                                List<Account> listAccountsWithRoleAndSearchName = new List<Account>();
+                                var searchKey = Request.Query["SearchKey"].ToString();
+                                
+                                foreach (var a in listAccountsWithRole)
+                                {
+                                    
+                                    if (a.Id.Contains(searchKey)
+                                        || a.Email.Contains(searchKey)
+                                        || a.Username.Contains(searchKey)
+                                        || a.GeneralInformation.FirstName.Contains(searchKey)
+                                        || a.GeneralInformation.LastName.Contains(searchKey)
+                                        || a.GeneralInformation.Phone.Contains(searchKey))
+                                    {
+                                        listAccountsWithRoleAndSearchName.Add(a);
+                                    }
+                                }
+                                
+                                if (listAccountsWithRoleAndSearchName.Any())
+                                {
+                                    return Ok(listAccountsWithRoleAndSearchName);
+                                }
+
+                                return NotFound();
+                            }
+                            return Ok(listAccountsWithRole);
+                        }
                     }
                 }
-
                 return NotFound();
             }
             return Ok(_context.Account.Include(a => a.GeneralInformation));
