@@ -23,9 +23,33 @@ namespace Backend.Controllers
 
         // GET: api/Accounts
         [HttpGet]
-        public IEnumerable<Account> GetAccount()
+        public async Task<IActionResult> GetAccount()
         {
-            return _context.Account.Include(a=>a.GeneralInformation);
+            if (Request.Query.ContainsKey("RoleName"))
+            {
+                var roleName = Request.Query["RoleName"].ToString();
+                var currentRole = await _context.Role.SingleOrDefaultAsync(r => r.Name == roleName);
+                if (currentRole != null)
+                {
+                    var currentAccountRole = _context.AccountRoles.Where(ar => ar.RoleId == currentRole.Id).ToList();
+                    if (currentAccountRole.Count > 0)
+                    {
+                        var listAccounts = await _context.Account.ToListAsync();
+                        List<Account> listAccountsWithRole = new List<Account>();
+                        foreach (var ac in currentAccountRole)
+                        {
+
+                            var currentAccount = listAccounts.SingleOrDefault(a=>a.Id == ac.AccountId);
+                            listAccountsWithRole.Add(currentAccount);
+                        }
+
+                        return Ok(listAccountsWithRole);
+                    }
+                }
+
+                return NotFound();
+            }
+            return Ok(_context.Account.Include(a => a.GeneralInformation));
         }
 
         // GET: api/Accounts/5
