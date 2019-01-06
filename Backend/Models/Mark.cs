@@ -24,8 +24,9 @@ namespace Backend.Models
             this.UpdatedAt = DateTime.Now;
         }
 
-        public Mark(MarkType type, int value, string subjectId, string accountId)
+        public Mark(MarkType type, float value, string subjectId, string accountId)
         {
+            
             this.SubjectId = subjectId;
             this.AccountId = accountId;
             this.MarkType = type;
