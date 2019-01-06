@@ -62,12 +62,12 @@ namespace Backend
             app.UseCheckLogin();
             app.UseMvc();
 
-            using (var s = app.ApplicationServices.GetRequiredService<IServiceScopeFactory>().CreateScope())
-            {
-                var context = s.ServiceProvider.GetService<BackendContext>();
-                context.Database.Migrate();
-                context.Initialize();
-            }
+            //using (var s = app.ApplicationServices.GetRequiredService<IServiceScopeFactory>().CreateScope())
+            //{
+            //    var context = s.ServiceProvider.GetService<BackendContext>();
+            //    context.Database.Migrate();
+            //    context.Initialize();
+            //}
         }
     }
 }
