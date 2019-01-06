@@ -87,6 +87,27 @@ namespace Backend.Controllers
 
             return BadRequest();
         }
+        [Route("Manager")]
+        [HttpPost]
+        public async Task<IActionResult> PostSubject([FromBody] List<Mark> marks)
+        {
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+            List<Mark> ListMark = new List<Mark>();
+            foreach (var mark in marks)
+            {
+                ListMark.Add(new Mark(mark.MarkType, mark.Value, mark.SubjectId, mark.AccountId));
+                _context.Mark.Add(new Mark(mark.MarkType,mark.Value,mark.SubjectId,mark.AccountId));
+                
+            }
+            
+            await _context.SaveChangesAsync();
+
+            //return CreatedAtAction("GetSubject", new { id = subject.Id }, subject);
+            return Created("", ListMark);
+        }
 
     }
 }
