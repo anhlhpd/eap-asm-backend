@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 
 using System.Collections.Generic;
 using System.Linq;
@@ -21,16 +21,23 @@ namespace Backend.Controllers
             _context = context;
         }
 
-        // Student: get all marks in 1 subject
+        // Get all marks in 1 subject
         // GET: api/Marks/
-        [HttpGet("{subjectId}/{classId}")]
-        public IEnumerable<Mark> StudentGetMarksOneSubject(string subjectId, string classId)
+        [Route("student")]
+        [HttpGet("{subjectId}")]
+        public async Task<IActionResult> StudentGetMarksOneSubject(string subjectId)
         {
             string tokenHeader = Request.Headers["Authorization"];
             var token = tokenHeader.Replace("Basic ", "");
             var cr =  _context.Credential.SingleOrDefault(c =>
                     c.AccessToken == token);
-            return _context.Mark.Where(m => m.AccountId == cr.OwnerId && m.SubjectId == subjectId);
+            var accountRoles = _context.AccountRoles.Where(ar => ar.AccountId == cr.OwnerId).Include(ar => ar.Role);
+            if (accountRoles.SingleOrDefault(ar=>ar.Role.Name == "Student") != null) //Nếu là học sinh thì trả về điểm môn này của nó
+            {
+                _context.Mark.Where(m=>m.)
+                return  Ok()
+            }
+            //return _context.Mark.Where(m => m.AccountId == cr.OwnerId && m.SubjectId == subjectId);
         }
 
         // Student: get all marks in all subject
