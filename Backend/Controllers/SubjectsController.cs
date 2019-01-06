@@ -19,7 +19,6 @@ namespace Backend.Controllers
         {
             _context = context;
         }
-
         // Student: get all subjects of 1 student, including start dates
         // GET: api/Subjects/Student/GetAllSubject
         [HttpGet("Student/GetAllSubject")]
@@ -63,9 +62,10 @@ namespace Backend.Controllers
 
         // GET: api/Subjects
         [HttpGet]
-        public IEnumerable<Subject> GetSubject()
+        public async Task<IActionResult> GetSubject()
         {
-            return _context.Subject;
+
+            return Ok();
         }
 
         // GET: api/Subjects/5
