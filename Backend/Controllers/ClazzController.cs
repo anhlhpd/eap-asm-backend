@@ -144,7 +144,7 @@ namespace Backend.Controllers
             List<Account> listAccount = new List<Account>();
             foreach (var clazzStudent in listClazzStudent)
             {
-                var account = _context.Account.Where(a => a.Id == clazzStudent.AccountId).FirstOrDefault();
+                var account = _context.Account.Include(a=>a.GeneralInformation).Where(a => a.Id == clazzStudent.AccountId).FirstOrDefault();
                 listAccount.Add(account);
             }
 
