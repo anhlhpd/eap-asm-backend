@@ -70,7 +70,7 @@ namespace Backend.Controllers
                     var classAccounts = _context.ClazzAccount.Where(ac => ac.AccountId == studentId);
                     if (classAccounts.Any())
                     {
-                        List<Subject> subjects = new List<Subject>();
+                        List<ClazzSubject> ClassSubjectsList = new List<ClazzSubject>();
                         foreach (var classAccount in classAccounts)
                         {
                             var classId = classAccount.ClazzId;
@@ -79,32 +79,31 @@ namespace Backend.Controllers
                             {
                                 foreach (var classSubject in classSubjects)
                                 {
-                                    subjects.Add(classSubject.Subject);
+                                    ClassSubjectsList.Add(classSubject);
                                 }
                             }
                         }
-
-                        if (subjects.Any())
+                        if (ClassSubjectsList.Any())
                         {
-                            return Ok(subjects);
+                            return Ok(ClassSubjectsList);
                         }
                     }
                 }
 
                 if (Request.Query.ContainsKey("ClassId"))
                 {
-                    List<Subject> subjects = new List<Subject>();
+                    List<ClazzSubject> ClassSubjectsList = new List<ClazzSubject>();
                     var classId = Request.Query["ClassId"].ToString();
                     var classSubjects = _context.ClazzSubject.Where(cs => cs.ClazzId == classId).Include(cs => cs.Subject);
                     if (classSubjects.Any())
                     {
                         foreach (var classSubject in classSubjects)
                         {
-                            subjects.Add(classSubject.Subject);
+                            ClassSubjectsList.Add(classSubject);
                         }
                     }
 
-                    return Ok(subjects);
+                    return Ok(ClassSubjectsList);
                 }
                 return NotFound();
             }
