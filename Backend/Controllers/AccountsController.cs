@@ -37,7 +37,7 @@ namespace Backend.Controllers
                 return BadRequest(ModelState);
             }
 
-            var account = await _context.Account.FindAsync(id);
+            var account = await _context.Account.Include(a=>a.GeneralInformation).SingleOrDefaultAsync(a=>a.Id == id);
 
             if (account == null)
             {

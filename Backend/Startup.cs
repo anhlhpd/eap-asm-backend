@@ -29,6 +29,11 @@ namespace Backend
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
+            services.AddCors(options =>
+            {
+                options.AddPolicy("AllowAny",
+                    builder => builder.AllowAnyHeader().AllowAnyMethod().AllowAnyOrigin());
+            });
             services.AddMvc().AddJsonOptions(
                 options => options.SerializerSettings.ReferenceLoopHandling = Newtonsoft.Json.ReferenceLoopHandling.Ignore
             );
@@ -49,8 +54,10 @@ namespace Backend
             {
                 app.UseHsts();
             }
+
             
             app.UseHttpsRedirection();
+            app.UseCors("AllowAny");
             app.UseCheckAdmin();
             app.UseCheckLogin();
             app.UseMvc();
