@@ -35,7 +35,7 @@ namespace Backend.Controllers
 
         // Student: get all marks in all subject
         // GET: api/Marks/StudentGetMarksAllSubject
-        [HttpGet("StudentGetMarksAllSubject")]
+        //[HttpGet("StudentGetMarksAllSubject")]
         //public IEnumerable<Mark> StudentGetMarksAllSubject(HttpContext context)
         //{
         //    // Call method StudentGetAllSubject from SubjectController ?

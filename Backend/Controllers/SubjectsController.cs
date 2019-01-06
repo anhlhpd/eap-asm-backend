@@ -19,8 +19,6 @@ namespace Backend.Controllers
         {
             _context = context;
         }
-
-
         // Student: get all subjects of 1 student, including start dates
         // GET: api/Subjects/Student/GetAllSubject
         [HttpGet("Student/GetAllSubject")]
