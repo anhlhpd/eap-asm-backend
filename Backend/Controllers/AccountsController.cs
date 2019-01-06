@@ -114,7 +114,7 @@ namespace Backend.Controllers
             
             if (id != account.Id)
             {
-                return BadRequest();
+                return BadRequest("ID is not correct");
             }
             
             if ( await _context.Account.SingleOrDefaultAsync(a=>a.Id == account.Id) != null) // Kiem tra account update co ton tai khong
@@ -126,7 +126,7 @@ namespace Backend.Controllers
                 var tokenUser = await _context.Credential.SingleOrDefaultAsync(c => c.AccessToken == token);
                 if (tokenUser.OwnerId == currentAccount.Id 
                     ||
-                    (await _context.AccountRoles.SingleOrDefaultAsync(ar=>ar.AccountId == tokenUser.OwnerId)).RoleId > (await _context.AccountRoles.SingleOrDefaultAsync(ar => ar.AccountId == currentAccount.Id)).RoleId ||
+                    (await _context.AccountRoles.SingleOrDefaultAsync(ar=>ar.AccountId == tokenUser.OwnerId)).RoleId < (await _context.AccountRoles.SingleOrDefaultAsync(ar => ar.AccountId == currentAccount.Id)).RoleId ||
                     tokenUser.OwnerId == "ADMIN"
                     )
                 {
@@ -154,7 +154,7 @@ namespace Backend.Controllers
                     return Ok(_context.Account.Include(a=>a.GeneralInformation).SingleOrDefault(a=>a.Id == account.Id));
                 }
             }
-            return BadRequest();
+            return BadRequest(account.Id);
 
             
         }
