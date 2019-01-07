@@ -24,7 +24,7 @@ namespace Backend.Controllers
 
         // GET: api/Accounts
         [HttpGet]
-        [EnableCors]
+        //[EnableCors]
         public async Task<IActionResult> GetAccount()
         {
             if (Request.Query.ContainsKey("RoleName"))
@@ -36,12 +36,12 @@ namespace Backend.Controllers
                     var currentAccountRole = _context.AccountRoles.Where(ar => ar.RoleId == currentRole.Id).ToList();
                     if (currentAccountRole.Count > 0)
                     {
-                        var listAccounts = await _context.Account.Include(a=>a.GeneralInformation).ToListAsync();
+                        var listAccounts = await _context.Account.Include(a => a.GeneralInformation).ToListAsync();
                         List<Account> listAccountsWithRole = new List<Account>();
                         foreach (var ac in currentAccountRole)
                         {
 
-                            var currentAccount = listAccounts.SingleOrDefault(a=>a.Id == ac.AccountId);
+                            var currentAccount = listAccounts.SingleOrDefault(a => a.Id == ac.AccountId);
                             listAccountsWithRole.Add(currentAccount);
                         }
 
@@ -51,10 +51,10 @@ namespace Backend.Controllers
                             {
                                 List<Account> listAccountsWithRoleAndSearchName = new List<Account>();
                                 var searchKey = Request.Query["SearchKey"].ToString();
-                                
+
                                 foreach (var a in listAccountsWithRole)
                                 {
-                                    
+
                                     if (a.Id.Contains(searchKey)
                                         || a.Email.Contains(searchKey)
                                         || a.Username.Contains(searchKey)
@@ -65,7 +65,7 @@ namespace Backend.Controllers
                                         listAccountsWithRoleAndSearchName.Add(a);
                                     }
                                 }
-                                
+
                                 if (listAccountsWithRoleAndSearchName.Any())
                                 {
                                     return Ok(listAccountsWithRoleAndSearchName);
@@ -79,7 +79,7 @@ namespace Backend.Controllers
                 }
                 return NotFound();
             }
-            return Ok(_context.Account.Include(a => a.GeneralInformation));
+            return Ok(await _context.Account.Include(a => a.GeneralInformation).ToListAsync());
         }
 
         // GET: api/Accounts/5
@@ -198,9 +198,9 @@ namespace Backend.Controllers
             
         }
 
-        private bool AccountExists(string id)
-        {
-            return _context.Account.Any(e => e.Id == id);
-        }
+        //private bool AccountExists(string id)
+        //{
+        //    return _context.Account.Any(e => e.Id == id);
+        //}
     }
 }

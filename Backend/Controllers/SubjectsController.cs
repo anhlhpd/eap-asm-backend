@@ -200,6 +200,22 @@ namespace Backend.Controllers
 
             return Ok(subject);
         }
+        [HttpGet("{id}")]
+        public async Task<IActionResult> GetSubject([FromRoute] string id)
+        {
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+
+            var subject = await _context.Subject.FindAsync(id);
+
+            if (subject == null)
+            {
+                return NotFound();
+            }
+            return Ok(subject);
+        }
 
         private bool SubjectExists(string id)
         {

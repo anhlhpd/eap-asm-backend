@@ -57,13 +57,14 @@ namespace Backend
             }
 
             
-            app.UseHttpsRedirection();
+            
             app.UseCors(
                 option => option.AllowCredentials().AllowAnyHeader().AllowAnyMethod().AllowAnyOrigin());
-            app.UseCheckAdmin();
+            app.UseHttpsRedirection();
+            //app.UseCheckAdmin();
             app.UseCheckLogin();
-            //app.UseCors("AllowAny");
-            
+            app.UseCors("AllowAny");
+
             app.UseMvc();
 
             //using (var s = app.ApplicationServices.GetRequiredService<IServiceScopeFactory>().CreateScope())
