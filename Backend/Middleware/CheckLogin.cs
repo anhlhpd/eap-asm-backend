@@ -17,7 +17,14 @@ namespace Backend.Middleware
             this IApplicationBuilder builder)
         {
             return builder.UseWhen(context => context.Request.Path.StartsWithSegments("/api/accounts")
-                                                || context.Request.Path.StartsWithSegments("/api/GeneralInformations"),
+                                                || context.Request.Path.StartsWithSegments("/api/GeneralInformations")
+                                                || context.Request.Path.StartsWithSegments("/api/Marks")
+                                                || context.Request.Path.StartsWithSegments("/api/Subjects")
+                                                || context.Request.Path.StartsWithSegments("/api/Clazz")
+                                                || context.Request.Path.StartsWithSegments("/api/ClazzSubjects")
+                                                || context.Request.Path.StartsWithSegments("/api/ClazzAccounts")
+                                                || context.Request.Path.StartsWithSegments("/api/AccountRoles")
+                                                || context.Request.Path.StartsWithSegments("/api/Roles"),
                                     b => b.UseMiddleware<CheckLogin>());
         }
     }
@@ -48,6 +55,9 @@ namespace Backend.Middleware
                 {
                     isValid = true;
                 }
+                context.Response.StatusCode = (int)HttpStatusCode.Unauthorized;
+                await context.Response.WriteAsync(HttpStatusCode.Unauthorized.ToString() + "Your Token is expired. Please login again!");
+                return;
             }
 
             if (isValid)
