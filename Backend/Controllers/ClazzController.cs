@@ -109,11 +109,29 @@ namespace Backend.Controllers
             {
                 return NotFound();
             }
-            
-            _context.Clazz.Remove(clazz);
-            await _context.SaveChangesAsync();
+            string tokenHeader = Request.Headers["Authorization"];
+            var token = tokenHeader.Replace("Basic ", "");
+            var tokenUser = await _context.Credential.SingleOrDefaultAsync(c => c.AccessToken == token);
+            foreach (var accountRole in _context.AccountRoles.Include(ar=>ar.Role).Where(ar => ar.AccountId == tokenUser.OwnerId))
+            {
+                if (accountRole.Role.Name == "Admin" || accountRole.Role.Name == "Manager")
+                {
+                    clazz.Status = ClazzStatus.Deactive;
+                    await _context.SaveChangesAsync();
 
-            return Ok(clazz);
+                    return Ok(clazz);
+                }
+                return BadRequest(new ResponseError("You are not allowed!", 400));
+            }
+
+            return BadRequest("Something Wrong");
+
+
+
+
+
+            //_context.Clazz.Remove(clazz);
+
         }
 
         private bool ClazzExists(string id)
