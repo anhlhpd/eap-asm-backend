@@ -111,6 +111,25 @@ namespace Backend.Controllers
             return BadRequest();
         }
 
+
+
+        [Route("All")]
+        [HttpGet]
+        public async Task<IActionResult> GetAllSubject()
+        {
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+
+            var subjects =  _context.Subject.ToList();
+
+            if (!subjects.Any())
+            {
+                return NotFound();
+            }
+            return Ok(subjects);
+        }
         // PUT: api/Subjects/5
         [HttpPut("{id}")]
         public async Task<IActionResult> PutSubject([FromRoute] string id, [FromBody] Subject subject)
