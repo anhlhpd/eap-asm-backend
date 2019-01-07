@@ -55,9 +55,12 @@ namespace Backend.Middleware
                 {
                     isValid = true;
                 }
-                context.Response.StatusCode = (int)HttpStatusCode.Unauthorized;
-                await context.Response.WriteAsync(HttpStatusCode.Unauthorized.ToString() + "Your Token is expired. Please login again!");
-                return;
+                else
+                {
+                    context.Response.StatusCode = (int)HttpStatusCode.Unauthorized;
+                    await context.Response.WriteAsync(HttpStatusCode.Unauthorized.ToString() + "Your Token is expired. Please login again!");
+                    return;
+                }
             }
 
             if (isValid)
