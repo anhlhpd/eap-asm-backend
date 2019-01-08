@@ -20,10 +20,6 @@ namespace Backend.Controllers
             _context = context;
         }
 
-        public ClazzAccountsController()
-        {
-        }
-
         // Manager: get all students of 1 subject
         // GET: api/Subjects/Manager/GetAllStudentOneSubject
         [HttpGet("Manager/GetAllStudentOneSubject")]
@@ -52,9 +48,9 @@ namespace Backend.Controllers
 
         // GET: api/ClazzAccounts
         [HttpGet]
-        public IEnumerable<ClazzAccount> GetClazzAccount()
+        public async Task<IActionResult> GetClazzAccount()
         {
-            return _context.ClazzAccount;
+            return Ok(await _context.ClazzAccount.ToListAsync());
         }
 
         // GET: api/ClazzAccounts/5
@@ -66,14 +62,19 @@ namespace Backend.Controllers
                 return BadRequest(ModelState);
             }
 
-            var ClazzAccount = await _context.ClazzAccount.FindAsync(id);
+            //var ClazzAccount = await _context.ClazzAccount.FindAsync(id);
 
-            if (ClazzAccount == null)
-            {
-                return NotFound();
-            }
+            //if (ClazzAccount == null)
+            //{
+            //    return NotFound();
+            //}
+            string tokenHeader = Request.Headers["Authorization"];
+            var token = tokenHeader.Replace("Basic ", "");
+            var cr = _context.Credential.SingleOrDefault(c =>
+                c.AccessToken == token);
+            var classAccounts = _context.ClazzAccount.Where(ac => ac.AccountId == cr.OwnerId);
 
-            return Ok(ClazzAccount);
+            return Ok(classAccounts);
         }
 
         // PUT: api/ClazzAccounts/5
