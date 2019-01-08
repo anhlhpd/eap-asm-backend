@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Backend.Models;
+using Microsoft.AspNetCore.Cors;
 
 namespace Backend.Controllers
 {
@@ -97,6 +98,7 @@ namespace Backend.Controllers
 
         // DELETE: api/Clazzes/5
         [HttpDelete("{id}")]
+      
         public async Task<IActionResult> DeleteClazz([FromRoute] string id)
         {
             if (!ModelState.IsValid)
@@ -109,11 +111,31 @@ namespace Backend.Controllers
             {
                 return NotFound();
             }
+            string tokenHeader = Request.Headers["Authorization"];
+            var token = tokenHeader.Replace("Basic ", "");
+            var tokenUser = await _context.Credential.SingleOrDefaultAsync(c => c.AccessToken == token);
             
-            _context.Clazz.Remove(clazz);
-            await _context.SaveChangesAsync();
+            foreach (var accountRole in await _context.AccountRoles.Include(ar => ar.Role).Where(ar => ar.AccountId == tokenUser.OwnerId).ToListAsync())
+            {
+                if (accountRole.Role.Name == "Admin" || accountRole.Role.Name == "Manage")
+                {
+                    clazz.Status = ClazzStatus.Deactive;
+                    _context.Entry(clazz).State = EntityState.Modified;
+                    await _context.SaveChangesAsync();
 
-            return Ok(clazz);
+                    return Ok(clazz);
+                }
+                return BadRequest(new ResponseError("You are not allowed!", 400));
+            }
+
+            return BadRequest("Something Wrong");
+
+
+
+
+
+            //_context.Clazz.Remove(clazz);
+
         }
 
         private bool ClazzExists(string id)
@@ -144,7 +166,7 @@ namespace Backend.Controllers
             List<Account> listAccount = new List<Account>();
             foreach (var clazzStudent in listClazzStudent)
             {
-                var account = _context.Account.Where(a => a.Id == clazzStudent.AccountId).FirstOrDefault();
+                var account = _context.Account.Include(a=>a.GeneralInformation).Where(a => a.Id == clazzStudent.AccountId).FirstOrDefault();
                 listAccount.Add(account);
             }
 

@@ -19,78 +19,117 @@ namespace Backend.Controllers
         {
             _context = context;
         }
-
-        public SubjectsController()
-        {
-        }
-
         // Student: get all subjects of 1 student, including start dates
         // GET: api/Subjects/Student/GetAllSubject
-        [HttpGet("Student/GetAllSubject")]
-        public IEnumerable<ClazzSubject> StudentGetAllSubject(HttpContext context)
+        [Route("Student")]
+        [HttpGet]
+        public async Task<IActionResult> StudentGetAllSubject()
         {
-            string tokenHeader = context.Request.Headers["Authorization"];
+            string tokenHeader = Request.Headers["Authorization"];
             var token = tokenHeader.Replace("Basic ", "");
             var cr = _context.Credential.SingleOrDefault(c =>
                    c.AccessToken == token);
-            IEnumerable<ClazzAccount> clazzAccounts = _context.ClazzAccount.Where(ca => ca.AccountId == cr.OwnerId);
-            IEnumerable<ClazzSubject> clazzSubjects = null;
-            foreach(var clazzAccount in clazzAccounts)
+            var classAccounts = _context.ClazzAccount.Where(ac => ac.AccountId == cr.OwnerId);
+            if (classAccounts.Any())
             {
-                var singleCSs = _context.ClazzSubject.Where(cs => cs.ClazzId == clazzAccount.ClazzId);
-                foreach (var singleCS in singleCSs)
+                List<Subject> subjects = new List<Subject>();
+                foreach (var classAccount in classAccounts)
                 {
-                    clazzSubjects.Append(singleCS);
+                    var classId = classAccount.ClazzId;
+                    var classSubjects = _context.ClazzSubject.Where(cs => cs.ClazzId == classId).Include(cs => cs.Subject);
+                    if (classSubjects.Any())
+                    {
+                        foreach (var classSubject in classSubjects)
+                        {
+                            subjects.Add(classSubject.Subject);
+                        }
+                    }
+                }
+
+                if (subjects.Any())
+                {
+                    return Ok(subjects);
                 }
             }
-            return clazzSubjects;
+
+            return NotFound();
         }
 
         // Manager: get all subjects of 1 student, including start dates
         // GET: api/Subjects/Manager/GetAllSubjectOneStudent
-        [HttpGet("Manager/GetAllSubjectOneStudent")]
-        public IEnumerable<ClazzSubject> ManagerGetAllSubjectOneStudent(string studentId)
-        {
-            IEnumerable<ClazzAccount> clazzAccounts = _context.ClazzAccount.Where(ca => ca.AccountId == studentId);
-            IEnumerable<ClazzSubject> clazzSubjects = null;
-            foreach (var clazzAccount in clazzAccounts)
-            {
-                var singleCSs = _context.ClazzSubject.Where(cs => cs.ClazzId == clazzAccount.ClazzId);
-                foreach (var singleCS in singleCSs)
-                {
-                    clazzSubjects.Append(singleCS);
-                }
-            }
-            return clazzSubjects;
-        }
-
-
-        // GET: api/Subjects
+        [Route("Manager")]
         [HttpGet]
-        public IEnumerable<Subject> GetSubject()
+        public async Task<IActionResult> ManagerGetAllSubjectOneStudent()
         {
-            return _context.Subject;
+            bool isValid = Request.Query.ContainsKey("StudentId") != Request.Query.ContainsKey("ClassId");
+            if (isValid)
+            {
+                if (Request.Query.ContainsKey("StudentId"))
+                {
+                    var studentId = Request.Query["StudentId"].ToString();
+                    var classAccounts = _context.ClazzAccount.Where(ac => ac.AccountId == studentId);
+                    if (classAccounts.Any())
+                    {
+                        List<ClazzSubject> ClassSubjectsList = new List<ClazzSubject>();
+                        foreach (var classAccount in classAccounts)
+                        {
+                            var classId = classAccount.ClazzId;
+                            var classSubjects = _context.ClazzSubject.Where(cs => cs.ClazzId == classId).Include(cs => cs.Subject);
+                            if (classSubjects.Any())
+                            {
+                                foreach (var classSubject in classSubjects)
+                                {
+                                    ClassSubjectsList.Add(classSubject);
+                                }
+                            }
+                        }
+                        if (ClassSubjectsList.Any())
+                        {
+                            return Ok(ClassSubjectsList);
+                        }
+                    }
+                }
+
+                if (Request.Query.ContainsKey("ClassId"))
+                {
+                    List<ClazzSubject> ClassSubjectsList = new List<ClazzSubject>();
+                    var classId = Request.Query["ClassId"].ToString();
+                    var classSubjects = _context.ClazzSubject.Where(cs => cs.ClazzId == classId).Include(cs => cs.Subject);
+                    if (classSubjects.Any())
+                    {
+                        foreach (var classSubject in classSubjects)
+                        {
+                            ClassSubjectsList.Add(classSubject);
+                        }
+                    }
+
+                    return Ok(ClassSubjectsList);
+                }
+                return NotFound();
+            }
+
+            return BadRequest();
         }
 
-        // GET: api/Subjects/5
-        [HttpGet("{id}")]
-        public async Task<IActionResult> GetSubject([FromRoute] string id)
+
+
+        [Route("All")]
+        [HttpGet]
+        public async Task<IActionResult> GetAllSubject()
         {
             if (!ModelState.IsValid)
             {
                 return BadRequest(ModelState);
             }
 
-            var subject = await _context.Subject.FindAsync(id);
+            var subjects =  _context.Subject.ToList();
 
-            if (subject == null)
+            if (!subjects.Any())
             {
                 return NotFound();
             }
-
-            return Ok(subject);
+            return Ok(subjects);
         }
-
         // PUT: api/Subjects/5
         [HttpPut("{id}")]
         public async Task<IActionResult> PutSubject([FromRoute] string id, [FromBody] Subject subject)
@@ -159,6 +198,22 @@ namespace Backend.Controllers
             _context.Subject.Remove(subject);
             await _context.SaveChangesAsync();
 
+            return Ok(subject);
+        }
+        [HttpGet("{id}")]
+        public async Task<IActionResult> GetSubject([FromRoute] string id)
+        {
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+
+            var subject = await _context.Subject.FindAsync(id);
+
+            if (subject == null)
+            {
+                return NotFound();
+            }
             return Ok(subject);
         }
 

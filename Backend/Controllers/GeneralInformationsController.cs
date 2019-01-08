@@ -8,6 +8,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Backend.Models;
+using Microsoft.AspNetCore.Cors;
 using Microsoft.AspNetCore.Routing;
 
 namespace Backend.Controllers
@@ -140,6 +141,7 @@ namespace Backend.Controllers
         //
 
         [HttpPost("{accountType}")]
+        //[EnableCors("AllowAny")]
         public async Task<IActionResult> PostGeneralInformationInformation([FromRoute] string accountType, [FromBody] GeneralInformation generalInformation)
         {
             string[] allType = { "STU", "MNG", "ADM" };
