@@ -20,22 +20,22 @@ namespace Backend.Controllers
             _context = context;
         }
 
-        // Manager: get all students of 1 subject
-        // GET: api/Subjects/Manager/GetAllStudentOneSubject
-        [HttpGet("Manager/GetAllStudentOneSubject")]
-        public IEnumerable<ClazzAccount> ManagerGetAllStudentOneSubject(string subjectId)
+        // GET: api/ClazzAccounts/5
+        [HttpGet("{studentId}")]
+        public async Task<IActionResult> GetClazz([FromRoute] string studentId)
         {
-            IEnumerable<ClazzSubject> clazzSubjects = _context.ClazzSubject.Where(cs => cs.SubjectId == subjectId);
-            IEnumerable<ClazzAccount> clazzAccounts = null;
-            foreach (var clazzSubject in clazzSubjects)
+            if (!ModelState.IsValid)
             {
-                var singleCAs = _context.ClazzAccount.Where(ca => ca.ClazzId == clazzSubject.ClazzId);
-                foreach (var singleCA in singleCAs)
-                {
-                    clazzAccounts.Append(singleCA);
-                }
+                return BadRequest(ModelState);
             }
-            return clazzAccounts;
+
+            var clazz = _context.ClazzAccount.Where(ca => ca.AccountId == studentId).First();
+
+            if (clazz == null)
+            {
+                return NotFound();
+            }
+            return Ok(clazz);
         }
 
         // Manager: get all students of 1 class
