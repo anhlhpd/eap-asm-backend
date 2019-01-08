@@ -29,7 +29,7 @@ namespace Backend.Controllers
                 return BadRequest(ModelState);
             }
 
-            var clazz = await _context.ClazzAccount.FindAsync(studentId);
+            var clazz = _context.ClazzAccount.Where(ca => ca.AccountId == studentId).First();
 
             if (clazz == null)
             {
