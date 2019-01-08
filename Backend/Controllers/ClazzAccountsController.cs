@@ -50,32 +50,38 @@ namespace Backend.Controllers
         [HttpGet]
         public async Task<IActionResult> GetClazzAccount()
         {
-            return Ok(await _context.ClazzAccount.ToListAsync());
-        }
-
-        // GET: api/ClazzAccounts/5
-        [HttpGet("{id}")]
-        public async Task<IActionResult> GetClazzAccount([FromRoute] string id)
-        {
-            if (!ModelState.IsValid)
+            if (Request.Query.ContainsKey("ClassID"))
             {
-                return BadRequest(ModelState);
+                //Request.Query["ClassID"].ToString();
+                return Ok(await _context.ClazzAccount.Where(ca=>ca.ClazzId == Request.Query["ClassID"].ToString()).ToListAsync());
             }
-
-            //var ClazzAccount = await _context.ClazzAccount.FindAsync(id);
-
-            //if (ClazzAccount == null)
-            //{
-            //    return NotFound();
-            //}
-            string tokenHeader = Request.Headers["Authorization"];
-            var token = tokenHeader.Replace("Basic ", "");
-            var cr = _context.Credential.SingleOrDefault(c =>
-                c.AccessToken == token);
-            var classAccounts = _context.ClazzAccount.Where(ac => ac.AccountId == cr.OwnerId);
-
-            return Ok(classAccounts);
+            return Ok(await _context.ClazzAccount.ToListAsync());
+            
         }
+
+        //// GET: api/ClazzAccounts/5
+        //[HttpGet("{id}")]
+        //public async Task<IActionResult> GetClazzAccount([FromRoute] string id)
+        //{
+        //    if (!ModelState.IsValid)
+        //    {
+        //        return BadRequest(ModelState);
+        //    }
+
+        //    //var ClazzAccount = await _context.ClazzAccount.FindAsync(id);
+
+        //    //if (ClazzAccount == null)
+        //    //{
+        //    //    return NotFound();
+        //    //}
+        //    string tokenHeader = Request.Headers["Authorization"];
+        //    var token = tokenHeader.Replace("Basic ", "");
+        //    var cr = _context.Credential.SingleOrDefault(c =>
+        //        c.AccessToken == token);
+        //    var classAccounts = _context.ClazzAccount.Where(ac => ac.AccountId == cr.OwnerId);
+
+        //    return Ok(classAccounts);
+        //}
 
         // PUT: api/ClazzAccounts/5
         [HttpPut("{id}")]
