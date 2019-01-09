@@ -20,26 +20,22 @@ namespace Backend.Controllers
             _context = context;
         }
 
-        public ClazzAccountsController()
+        // GET: api/ClazzAccounts/5
+        [HttpGet("{studentId}")]
+        public async Task<IActionResult> GetClazz([FromRoute] string studentId)
         {
-        }
-
-        // Manager: get all students of 1 subject
-        // GET: api/Subjects/Manager/GetAllStudentOneSubject
-        [HttpGet("Manager/GetAllStudentOneSubject")]
-        public IEnumerable<ClazzAccount> ManagerGetAllStudentOneSubject(string subjectId)
-        {
-            IEnumerable<ClazzSubject> clazzSubjects = _context.ClazzSubject.Where(cs => cs.SubjectId == subjectId);
-            IEnumerable<ClazzAccount> clazzAccounts = null;
-            foreach (var clazzSubject in clazzSubjects)
+            if (!ModelState.IsValid)
             {
-                var singleCAs = _context.ClazzAccount.Where(ca => ca.ClazzId == clazzSubject.ClazzId);
-                foreach (var singleCA in singleCAs)
-                {
-                    clazzAccounts.Append(singleCA);
-                }
+                return BadRequest(ModelState);
             }
-            return clazzAccounts;
+
+            var clazz = _context.ClazzAccount.Where(ca => ca.AccountId == studentId).First();
+
+            if (clazz == null)
+            {
+                return NotFound();
+            }
+            return Ok(clazz);
         }
 
         // Manager: get all students of 1 class
@@ -52,29 +48,40 @@ namespace Backend.Controllers
 
         // GET: api/ClazzAccounts
         [HttpGet]
-        public IEnumerable<ClazzAccount> GetClazzAccount()
+        public async Task<IActionResult> GetClazzAccount()
         {
-            return _context.ClazzAccount;
+            if (Request.Query.ContainsKey("ClassID"))
+            {
+                //Request.Query["ClassID"].ToString();
+                return Ok(await _context.ClazzAccount.Where(ca=>ca.ClazzId == Request.Query["ClassID"].ToString()).ToListAsync());
+            }
+            return Ok(await _context.ClazzAccount.ToListAsync());
+            
         }
 
-        // GET: api/ClazzAccounts/5
-        [HttpGet("{id}")]
-        public async Task<IActionResult> GetClazzAccount([FromRoute] string id)
-        {
-            if (!ModelState.IsValid)
-            {
-                return BadRequest(ModelState);
-            }
+        //// GET: api/ClazzAccounts/5
+        //[HttpGet("{id}")]
+        //public async Task<IActionResult> GetClazzAccount([FromRoute] string id)
+        //{
+        //    if (!ModelState.IsValid)
+        //    {
+        //        return BadRequest(ModelState);
+        //    }
 
-            var ClazzAccount = await _context.ClazzAccount.FindAsync(id);
+        //    //var ClazzAccount = await _context.ClazzAccount.FindAsync(id);
 
-            if (ClazzAccount == null)
-            {
-                return NotFound();
-            }
+        //    //if (ClazzAccount == null)
+        //    //{
+        //    //    return NotFound();
+        //    //}
+        //    string tokenHeader = Request.Headers["Authorization"];
+        //    var token = tokenHeader.Replace("Basic ", "");
+        //    var cr = _context.Credential.SingleOrDefault(c =>
+        //        c.AccessToken == token);
+        //    var classAccounts = _context.ClazzAccount.Where(ac => ac.AccountId == cr.OwnerId);
 
-            return Ok(ClazzAccount);
-        }
+        //    return Ok(classAccounts);
+        //}
 
         // PUT: api/ClazzAccounts/5
         [HttpPut("{id}")]
